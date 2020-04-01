@@ -263,12 +263,12 @@ const createTripPointsContainer = () => {
   );
 };
 
-const createTripPointTemplate = i => {
+const createTripPointTemplate = (i) => {
   return (
     `<li class="trip-days__item  day">
       <div class="day__info">
-        <span class="day__counter">${i+1}</span>
-        <time class="day__date" datetime="2019-03-${i+18}">MAR ${i+18}</time>
+        <span class="day__counter">${i + 1}</span>
+        <time class="day__date" datetime="2019-03-${i + 18}">MAR ${i + 18}</time>
       </div>
 
       <ul class="trip-events__list">
@@ -424,8 +424,8 @@ const dayOneEvents = () => {
         </button>
       </div>
     </li>`
-  )
-}
+  );
+};
 
 const dayTwoEvents = () => {
   return (
@@ -534,8 +534,8 @@ const dayTwoEvents = () => {
         </button>
       </div>
     </li>`
-  )
-}
+  );
+};
 
 const dayThreeEvents = () => {
   return (
@@ -590,39 +590,39 @@ const dayThreeEvents = () => {
         </button>
       </div>
     </li>`
-  )
-}
+  );
+};
 
 const render = (container, template, place= `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
 
-const siteHeaderElem = document.querySelector('.trip-main');
-const tripControlsElem = siteHeaderElem.querySelector('.trip-main__trip-controls');
-const tripControlsHeaderElem = tripControlsElem.querySelectorAll('h2')[1];
+const siteHeaderElem = document.querySelector(`.trip-main`);
+const tripControlsElem = siteHeaderElem.querySelector(`.trip-main__trip-controls`);
+const tripControlsHeaderElem = tripControlsElem.querySelectorAll(`h2`)[1];
 
 render(siteHeaderElem, createTripInfoTemplate(), `afterbegin`);
 render(tripControlsHeaderElem, createSiteMenuTemplate(), `beforebegin`);
 render(tripControlsElem, createFilterTemplate());
 
-const tripInfoElem = siteHeaderElem.querySelector('.trip-main__trip-info');
+const tripInfoElem = siteHeaderElem.querySelector(`.trip-main__trip-info`);
 render(tripInfoElem, createRouteInfoTemplate());
 render(tripInfoElem, createTripCostTemplate());
 
-const siteMainElem = document.querySelector('.trip-events');
+const siteMainElem = document.querySelector(`.trip-events`);
 render(siteMainElem, createSortingTemplate());
 render(siteMainElem, createNewEventTemplate());
 render(siteMainElem, createTripPointsContainer());
 
-const tripPointsContainer = siteMainElem.querySelector('.trip-days');
+const tripPointsContainer = siteMainElem.querySelector(`.trip-days`);
 
-for(let i = 0; i < TRIP_POINTS_COUNT; i++) {
+for (let i = 0; i < TRIP_POINTS_COUNT; i++) {
   render(tripPointsContainer, createTripPointTemplate(i));
 }
 
-const eventList = tripPointsContainer.querySelectorAll('.trip-events__list');
+const eventList = tripPointsContainer.querySelectorAll(`.trip-events__list`);
 let tripEventsByDay = [dayOneEvents(), dayTwoEvents(), dayThreeEvents()];
 
-for(let i = 0; i < TRIP_POINTS_COUNT; i++) {
+for (let i = 0; i < TRIP_POINTS_COUNT; i++) {
   render(eventList[i], tripEventsByDay[i]);
 }

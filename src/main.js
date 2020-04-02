@@ -1,6 +1,6 @@
 "use strict";
 
-const TRIP_DAYS = [1,2,3];
+const TRIP_DAYS = [1, 2, 3];
 
 const createTripInfoTemplate = () => {
   return (
@@ -319,7 +319,7 @@ const createEvent = (event) => {
         </button>
       </div>
     </li>`
-  )
+  );
 };
 
 const render = (container, template, place = `beforeend`) => {
@@ -363,9 +363,9 @@ const tripEventsByDay = [{
   },
   offer2: {
     name: ` `,
-    price: ` ` 
+    price: ` `
   }
-}, { 
+}, {
   day: 18,
   type: `flight`,
   title: `Flight to Chamonix`,
@@ -379,9 +379,9 @@ const tripEventsByDay = [{
   },
   offer2: {
     name: `Switch to comfort`,
-    price: `80` 
+    price: `80`
   }
-},{
+}, {
   day: 18,
   type: `drive`,
   title: `Drive to Chamonix`,
@@ -395,9 +395,9 @@ const tripEventsByDay = [{
   },
   offer2: {
     name: ` `,
-    price: ` ` 
+    price: ` `
   }
-},{
+}, {
   day: 18,
   type: `check-in`,
   title: `Check-in in Chamonix`,
@@ -411,13 +411,13 @@ const tripEventsByDay = [{
   },
   offer2: {
     name: ` `,
-    price: ` ` 
+    price: ` `
   }
 }];
 
 const eventList = tripPointsContainer.querySelectorAll(`.trip-events__list`);
 
-//TODO пока сделал события для первого дня
+// TODO пока сделал события для первого дня
 tripEventsByDay.map((event) => {
   render(eventList[0], createEvent(event));
 });

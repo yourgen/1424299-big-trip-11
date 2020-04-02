@@ -1,6 +1,6 @@
 "use strict";
 
-const TRIP_POINTS_COUNT = 3;
+const TRIP_DAYS = [1,2,3];
 
 const createTripInfoTemplate = () => {
   return (
@@ -263,12 +263,12 @@ const createTripPointsContainer = () => {
   );
 };
 
-const createTripPointTemplate = (i) => {
+const createTripPointTemplate = (day) => {
   return (
     `<li class="trip-days__item  day">
       <div class="day__info">
-        <span class="day__counter">${i + 1}</span>
-        <time class="day__date" datetime="2019-03-${i + 18}">MAR ${i + 18}</time>
+        <span class="day__counter">${day}</span>
+        <time class="day__date" datetime="2019-03-${17 + day}">MAR ${17 + day}</time>
       </div>
 
       <ul class="trip-events__list">
@@ -278,144 +278,39 @@ const createTripPointTemplate = (i) => {
   );
 };
 
-const dayOneEvents = () => {
+const createEvent = (event) => {
   return (
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${event.type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">Taxi to Amsterdam</h3>
+        <h3 class="event__title">${event.title}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+            <time class="event__start-time" datetime="2019-03-${event.day}T${event.start}">${event.start}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+            <time class="event__end-time" datetime="2019-03-${event.day}T${event.end}">${event.end}</time>
           </p>
-          <p class="event__duration">30M</p>
+          <p class="event__duration">${event.duration}</p>
         </div>
 
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">20</span>
+          &euro;&nbsp;<span class="event__price-value">${event.price}</span>
         </p>
 
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
           <li class="event__offer">
-            <span class="event__offer-title">Order Uber</span>
+            <span class="event__offer-title">${event.offer1.name}</span>
             &plus;
-            &euro;&nbsp;<span class="event__offer-price">20</span>
-          </li>
-        </ul>
-
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
-        </button>
-      </div>
-    </li>
-
-    <li class="trip-events__item">
-      <div class="event">
-        <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/flight.png" alt="Event type icon">
-        </div>
-        <h3 class="event__title">Flight to Chamonix</h3>
-
-        <div class="event__schedule">
-          <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T12:25">12:25</time>
-            &mdash;
-            <time class="event__end-time" datetime="2019-03-18T13:35">13:35</time>
-          </p>
-          <p class="event__duration">1H 10M</p>
-        </div>
-
-        <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">160</span>
-        </p>
-
-        <h4 class="visually-hidden">Offers:</h4>
-        <ul class="event__selected-offers">
-          <li class="event__offer">
-            <span class="event__offer-title">Add luggage</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">50</span>
+            &euro;&nbsp;<span class="event__offer-price">${event.offer1.price}</span>
           </li>
           <li class="event__offer">
-            <span class="event__offer-title">Switch to comfort</span>
+            <span class="event__offer-title">${event.offer2.name}</span>
             &plus;
-            &euro;&nbsp;<span class="event__offer-price">80</span>
-            </li>
-        </ul>
-
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
-        </button>
-      </div>
-    </li>
-
-    <li class="trip-events__item">
-      <div class="event">
-        <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/drive.png" alt="Event type icon">
-        </div>
-        <h3 class="event__title">Drive to Chamonix</h3>
-
-        <div class="event__schedule">
-          <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T14:30">14:30</time>
-            &mdash;
-            <time class="event__end-time" datetime="2019-03-18T16:05">16:05</time>
-          </p>
-          <p class="event__duration">1H 35M</p>
-        </div>
-
-        <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">160</span>
-        </p>
-
-        <h4 class="visually-hidden">Offers:</h4>
-        <ul class="event__selected-offers">
-          <li class="event__offer">
-            <span class="event__offer-title">Rent a car</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">200</span>
-          </li>
-        </ul>
-
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
-        </button>
-      </div>
-    </li>
-
-    <li class="trip-events__item">
-      <div class="event">
-        <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/check-in.png" alt="Event type icon">
-        </div>
-        <h3 class="event__title">Check-in in Chamonix</h3>
-
-        <div class="event__schedule">
-          <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T12:25">16:20</time>
-            &mdash;
-            <time class="event__end-time" datetime="2019-03-18T13:35">17:00</time>
-          </p>
-          <p class="event__duration">40M</p>
-        </div>
-
-        <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">600</span>
-        </p>
-
-        <h4 class="visually-hidden">Offers:</h4>
-        <ul class="event__selected-offers">
-          <li class="event__offer">
-            <span class="event__offer-title">Add breakfast</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">50</span>
+            &euro;&nbsp;<span class="event__offer-price">${event.offer2.price}</span>
           </li>
         </ul>
 
@@ -424,173 +319,7 @@ const dayOneEvents = () => {
         </button>
       </div>
     </li>`
-  );
-};
-
-const dayTwoEvents = () => {
-  return (
-    `<li class="trip-events__item">
-      <div class="event">
-        <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/sightseeing.png" alt="Event type icon">
-        </div>
-        <h3 class="event__title">Sightseeing in Chamonix</h3>
-
-        <div class="event__schedule">
-          <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-19T11:20">14:20</time>
-            &mdash;
-            <time class="event__end-time" datetime="2019-03-19T13:00">13:00</time>
-          </p>
-          <p class="event__duration">1H 20M</p>
-        </div>
-
-        <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">50</span>
-        </p>
-
-        <h4 class="visually-hidden">Offers:</h4>
-        <ul class="event__selected-offers">
-          <li class="event__offer">
-            <span class="event__offer-title">Book tickets</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">40</span>
-          </li>
-          <li class="event__offer">
-            <span class="event__offer-title">Lunch in city</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">30</span>
-            </li>
-        </ul>
-
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
-        </button>
-      </div>
-    </li>
-
-    <li class="trip-events__item">
-      <div class="event">
-        <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/drive.png" alt="Event type icon">
-        </div>
-        <h3 class="event__title">Drive to Geneva</h3>
-
-        <div class="event__schedule">
-          <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-19T10:00">16:00</time>
-            &mdash;
-            <time class="event__end-time" datetime="2019-03-19T11:00">17:00</time>
-          </p>
-          <p class="event__duration">1H</p>
-        </div>
-
-        <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">20</span>
-        </p>
-
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
-        </button>
-      </div>
-    </li>
-
-    <li class="trip-events__item">
-      <div class="event">
-        <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/flight.png" alt="Event type icon">
-        </div>
-        <h3 class="event__title">Flight to Geneva</h3>
-
-        <div class="event__schedule">
-          <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-19T18:00">18:00</time>
-            &mdash;
-            <time class="event__end-time" datetime="2019-03-19T19:00">19:00</time>
-          </p>
-          <p class="event__duration">1H</p>
-        </div>
-
-        <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">20</span>
-        </p>
-
-        <h4 class="visually-hidden">Offers:</h4>
-        <ul class="event__selected-offers">
-          <li class="event__offer">
-            <span class="event__offer-title">Add luggage</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">30</span>
-          </li>
-          <li class="event__offer">
-            <span class="event__offer-title">Switch to comfort</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">100</span>
-            </li>
-        </ul>
-
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
-        </button>
-      </div>
-    </li>`
-  );
-};
-
-const dayThreeEvents = () => {
-  return (
-    `<li class="trip-events__item">
-      <div class="event">
-        <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/drive.png" alt="Event type icon">
-        </div>
-        <h3 class="event__title">Drive to Geneva</h3>
-
-        <div class="event__schedule">
-          <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-20T08:25">08:25</time>
-            &mdash;
-            <time class="event__end-time" datetime="2019-03-20T09:25">09:25</time>
-          </p>
-          <p class="event__duration">1H</p>
-        </div>
-
-        <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">20</span>
-        </p>
-
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
-        </button>
-      </div>
-    </li>
-
-    <li class="trip-events__item">
-      <div class="event">
-        <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/sightseeing.png" alt="Event type icon">
-        </div>
-        <h3 class="event__title">Sightseeing in Geneva</h3>
-
-        <div class="event__schedule">
-          <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-20T11:15">11:15</time>
-            &mdash;
-            <time class="event__end-time" datetime="2019-03-20T12:15">12:15</time>
-          </p>
-          <p class="event__duration">1H</p>
-        </div>
-
-        <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">180</span>
-        </p>
-
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
-        </button>
-      </div>
-    </li>`
-  );
+  )
 };
 
 const render = (container, template, place = `beforeend`) => {
@@ -616,13 +345,79 @@ render(siteMainElem, createTripPointsContainer());
 
 const tripPointsContainer = siteMainElem.querySelector(`.trip-days`);
 
-for (let i = 0; i < TRIP_POINTS_COUNT; i++) {
-  render(tripPointsContainer, createTripPointTemplate(i));
-}
+TRIP_DAYS.forEach((day) => {
+  render(tripPointsContainer, createTripPointTemplate(day));
+});
+
+const tripEventsByDay = [{
+  day: 18,
+  type: `taxi`,
+  title: `Taxi to Amsterdam`,
+  start: `10:30`,
+  end: `11:00`,
+  duration: `30M`,
+  price: `20`,
+  offer1: {
+    name: `Order Uber`,
+    price: `20`
+  },
+  offer2: {
+    name: ` `,
+    price: ` ` 
+  }
+}, { 
+  day: 18,
+  type: `flight`,
+  title: `Flight to Chamonix`,
+  start: `12:25`,
+  end: `13:35`,
+  duration: `1H 10M`,
+  price: `160`,
+  offer1: {
+    name: `Add luggage`,
+    price: `50`
+  },
+  offer2: {
+    name: `Switch to comfort`,
+    price: `80` 
+  }
+},{
+  day: 18,
+  type: `drive`,
+  title: `Drive to Chamonix`,
+  start: `14:30`,
+  end: `16:05`,
+  duration: `1H 35M`,
+  price: `160`,
+  offer1: {
+    name: `Rent a car`,
+    price: `200`
+  },
+  offer2: {
+    name: ` `,
+    price: ` ` 
+  }
+},{
+  day: 18,
+  type: `check-in`,
+  title: `Check-in in Chamonix`,
+  start: `16:20`,
+  end: `17:00`,
+  duration: `40M`,
+  price: `600`,
+  offer1: {
+    name: `Add breakfast`,
+    price: `50`
+  },
+  offer2: {
+    name: ` `,
+    price: ` ` 
+  }
+}];
 
 const eventList = tripPointsContainer.querySelectorAll(`.trip-events__list`);
-let tripEventsByDay = [dayOneEvents(), dayTwoEvents(), dayThreeEvents()];
 
-for (let i = 0; i < TRIP_POINTS_COUNT; i++) {
-  render(eventList[i], tripEventsByDay[i]);
-}
+//TODO пока сделал события для первого дня
+tripEventsByDay.map((event) => {
+  render(eventList[0], createEvent(event));
+});

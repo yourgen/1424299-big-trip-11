@@ -304,13 +304,13 @@ const createEvent = (event) => {
         <ul class="event__selected-offers">
           <li class="event__offer">
             <span class="event__offer-title">${event.offer1.name}</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">${event.offer1.price}</span>
+            ${event.offer1.symbol}
+            ${event.offer1.currency}&nbsp;<span class="event__offer-price">${event.offer1.price}</span>
           </li>
           <li class="event__offer">
             <span class="event__offer-title">${event.offer2.name}</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">${event.offer2.price}</span>
+            ${event.offer2.symbol}
+            ${event.offer2.currency}&nbsp;<span class="event__offer-price">${event.offer2.price}</span>
           </li>
         </ul>
 
@@ -349,7 +349,7 @@ TRIP_DAYS.forEach((day) => {
   render(tripPointsContainer, createTripPointTemplate(day));
 });
 
-const tripEventsByDay = [{
+const dayOneEvents = [{
   day: 18,
   type: `taxi`,
   title: `Taxi to Amsterdam`,
@@ -359,11 +359,15 @@ const tripEventsByDay = [{
   price: `20`,
   offer1: {
     name: `Order Uber`,
-    price: `20`
+    symbol: `&plus;`,
+    price: `20`,
+    currency: `&euro;`
   },
   offer2: {
     name: ` `,
-    price: ` `
+    symbol: ` `,
+    price: ` `,
+    currency: ` `
   }
 }, {
   day: 18,
@@ -375,11 +379,15 @@ const tripEventsByDay = [{
   price: `160`,
   offer1: {
     name: `Add luggage`,
-    price: `50`
+    symbol: `&plus;`,
+    price: `50`,
+    currency: `&euro;`
   },
   offer2: {
     name: `Switch to comfort`,
-    price: `80`
+    symbol: `&plus;`,
+    price: `80`,
+    currency: `&euro;`
   }
 }, {
   day: 18,
@@ -391,11 +399,15 @@ const tripEventsByDay = [{
   price: `160`,
   offer1: {
     name: `Rent a car`,
-    price: `200`
+    symbol: `&plus;`,
+    price: `200`,
+    currency: `&euro;`
   },
   offer2: {
     name: ` `,
-    price: ` `
+    symbol: ` `,
+    price: ` `,
+    currency: ` `
   }
 }, {
   day: 18,
@@ -407,17 +419,126 @@ const tripEventsByDay = [{
   price: `600`,
   offer1: {
     name: `Add breakfast`,
-    price: `50`
+    symbol: `&plus;`,
+    price: `50`,
+    currency: `&euro;`
   },
   offer2: {
     name: ` `,
-    price: ` `
+    symbol: ` `,
+    price: ` `,
+    currency: ` `
   }
 }];
+const dayTwoEvents = [{
+  day: 19,
+  type: `sightseeing`,
+  title: `Sightseeing in Chamonix`,
+  start: `13:00`,
+  end: `14:20`,
+  duration: `1H 20M`,
+  price: `50`,
+  offer1: {
+    name: `Book tickets`,
+    symbol: `&plus;`,
+    price: `40`,
+    currency: `&euro;`
+  },
+  offer2: {
+    name: `Lunch in city`,
+    symbol: `&plus;`,
+    price: `30`,
+    currency: `&euro;`
+  }
+}, {
+  day: 19,
+  type: `drive`,
+  title: `Drive to Geneva`,
+  start: `16:00`,
+  end: `17:00`,
+  duration: `1H`,
+  price: `20`,
+  offer1: {
+    name: ` `,
+    symbol: ` `,
+    price: ` `,
+    currency: ` `
+  },
+  offer2: {
+    name: ` `,
+    symbol: ` `,
+    price: ` `,
+    currency: ` `
+  }
+}, {
+  day: 19,
+  type: `flight`,
+  title: `Flight to Geneva`,
+  start: `18:00`,
+  end: `19:00`,
+  duration: `1H`,
+  price: `20`,
+  offer1: {
+    name: `Add luggage`,
+    symbol: `&plus;`,
+    price: `30`,
+    currency: `&euro;`
+  },
+  offer2: {
+    name: `Switch to comfort`,
+    symbol: `&plus;`,
+    price: `100`,
+    currency: `&euro;`
+  }
+}];
+const dayThreeEvents = [{
+  day: 20,
+  type: `drive`,
+  title: `Drive to Geneva`,
+  start: `08:25`,
+  end: `09:25`,
+  duration: `1H`,
+  price: `20`,
+  offer1: {
+    name: ` `,
+    symbol: ` `,
+    price: ` `,
+    currency: ` `
+  },
+  offer2: {
+    name: ` `,
+    symbol: ` `,
+    price: ` `,
+    currency: ` `
+  }
+}, {
+  day: 20,
+  type: `sightseeing`,
+  title: `Sightseeing in Geneva`,
+  start: `11:15`,
+  end: `12:15`,
+  duration: `1H`,
+  price: `180`,
+  offer1: {
+    name: ` `,
+    symbol: ` `,
+    price: ` `,
+    currency: ` `
+  },
+  offer2: {
+    name: ` `,
+    symbol: ` `,
+    price: ` `,
+    currency: ` `
+  }
+}];
+const eventListByDay = [dayOneEvents, dayTwoEvents, dayThreeEvents];
 
-const eventList = tripPointsContainer.querySelectorAll(`.trip-events__list`);
+const eventContainer = tripPointsContainer.querySelectorAll(`.trip-events__list`);
 
-// TODO пока сделал события для первого дня
-tripEventsByDay.map((event) => {
-  render(eventList[0], createEvent(event));
+eventListByDay.map((eventlist, i) => {
+  let container = eventContainer[i];
+  eventlist.map((event) => {
+    render(container, createEvent(event));
+  });
 });

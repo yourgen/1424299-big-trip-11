@@ -1,6 +1,116 @@
 "use strict";
 
-const TRIP_DAYS = [1, 2, 3];
+const eventListByDay = [
+  [{
+    day: 18,
+    type: `taxi`,
+    title: `Taxi to Amsterdam`,
+    start: `10:30`,
+    end: `11:00`,
+    duration: `30M`,
+    price: `20`,
+    offers: [{
+      name: `Order Uber`,
+      price: `20`
+    }]
+  }, {
+    day: 18,
+    type: `flight`,
+    title: `Flight to Chamonix`,
+    start: `12:25`,
+    end: `13:35`,
+    duration: `1H 10M`,
+    price: `160`,
+    offers: [{
+      name: `Add luggage`,
+      price: `50`
+    }, {
+      name: `Switch to comfort`,
+      price: `80`
+    }]
+  }, {
+    day: 18,
+    type: `drive`,
+    title: `Drive to Chamonix`,
+    start: `14:30`,
+    end: `16:05`,
+    duration: `1H 35M`,
+    price: `160`,
+    offers: [{
+      name: `Rent a car`,
+      price: `200`
+    }]
+  }, {
+    day: 18,
+    type: `check-in`,
+    title: `Check-in in Chamonix`,
+    start: `16:20`,
+    end: `17:00`,
+    duration: `40M`,
+    price: `600`,
+    offers: [{
+      name: `Add breakfast`,
+      price: `50`
+    }]
+  }], [{
+    day: 19,
+    type: `sightseeing`,
+    title: `Sightseeing in Chamonix`,
+    start: `13:00`,
+    end: `14:20`,
+    duration: `1H 20M`,
+    price: `50`,
+    offers: [{
+      name: `Book tickets`,
+      price: `40`
+    }, {
+      name: `Lunch in city`,
+      price: `30`
+    }]
+  }, {
+    day: 19,
+    type: `drive`,
+    title: `Drive to Geneva`,
+    start: `16:00`,
+    end: `17:00`,
+    duration: `1H`,
+    price: `20`,
+    offers: []
+  }, {
+    day: 19,
+    type: `flight`,
+    title: `Flight to Geneva`,
+    start: `18:00`,
+    end: `19:00`,
+    duration: `1H`,
+    price: `20`,
+    offers: [{
+      name: `Add luggage`,
+      price: `30`
+    }, {
+      name: `Switch to comfort`,
+      price: `100`
+    }]
+  }], [{
+    day: 20,
+    type: `drive`,
+    title: `Drive to Geneva`,
+    start: `08:25`,
+    end: `09:25`,
+    duration: `1H`,
+    price: `20`,
+    offers: []
+  }, {
+    day: 20,
+    type: `sightseeing`,
+    title: `Sightseeing in Geneva`,
+    start: `11:15`,
+    end: `12:15`,
+    duration: `1H`,
+    price: `180`,
+    offers: []
+  }]
+];
 
 const createTripInfoTemplate = () => {
   return (
@@ -302,22 +412,23 @@ const createEvent = (event) => {
 
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          <li class="event__offer">
-            <span class="event__offer-title">${event.offer1.name}</span>
-            ${event.offer1.symbol}
-            ${event.offer1.currency}&nbsp;<span class="event__offer-price">${event.offer1.price}</span>
-          </li>
-          <li class="event__offer">
-            <span class="event__offer-title">${event.offer2.name}</span>
-            ${event.offer2.symbol}
-            ${event.offer2.currency}&nbsp;<span class="event__offer-price">${event.offer2.price}</span>
-          </li>
+
         </ul>
 
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
       </div>
+    </li>`
+  );
+};
+
+const createOffer = (offer) => {
+  return (
+    `<li class="event__offer">
+      <span class="event__offer-title">${offer.name}</span>
+      &plus;
+      &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
     </li>`
   );
 };
@@ -343,202 +454,21 @@ render(siteMainElem, createSortingTemplate());
 render(siteMainElem, createNewEventTemplate());
 render(siteMainElem, createTripPointsContainer());
 
-const tripPointsContainer = siteMainElem.querySelector(`.trip-days`);
-
-TRIP_DAYS.forEach((day) => {
-  render(tripPointsContainer, createTripPointTemplate(day));
-});
-
-const dayOneEvents = [{
-  day: 18,
-  type: `taxi`,
-  title: `Taxi to Amsterdam`,
-  start: `10:30`,
-  end: `11:00`,
-  duration: `30M`,
-  price: `20`,
-  offer1: {
-    name: `Order Uber`,
-    symbol: `&plus;`,
-    price: `20`,
-    currency: `&euro;`
-  },
-  offer2: {
-    name: ` `,
-    symbol: ` `,
-    price: ` `,
-    currency: ` `
-  }
-}, {
-  day: 18,
-  type: `flight`,
-  title: `Flight to Chamonix`,
-  start: `12:25`,
-  end: `13:35`,
-  duration: `1H 10M`,
-  price: `160`,
-  offer1: {
-    name: `Add luggage`,
-    symbol: `&plus;`,
-    price: `50`,
-    currency: `&euro;`
-  },
-  offer2: {
-    name: `Switch to comfort`,
-    symbol: `&plus;`,
-    price: `80`,
-    currency: `&euro;`
-  }
-}, {
-  day: 18,
-  type: `drive`,
-  title: `Drive to Chamonix`,
-  start: `14:30`,
-  end: `16:05`,
-  duration: `1H 35M`,
-  price: `160`,
-  offer1: {
-    name: `Rent a car`,
-    symbol: `&plus;`,
-    price: `200`,
-    currency: `&euro;`
-  },
-  offer2: {
-    name: ` `,
-    symbol: ` `,
-    price: ` `,
-    currency: ` `
-  }
-}, {
-  day: 18,
-  type: `check-in`,
-  title: `Check-in in Chamonix`,
-  start: `16:20`,
-  end: `17:00`,
-  duration: `40M`,
-  price: `600`,
-  offer1: {
-    name: `Add breakfast`,
-    symbol: `&plus;`,
-    price: `50`,
-    currency: `&euro;`
-  },
-  offer2: {
-    name: ` `,
-    symbol: ` `,
-    price: ` `,
-    currency: ` `
-  }
-}];
-const dayTwoEvents = [{
-  day: 19,
-  type: `sightseeing`,
-  title: `Sightseeing in Chamonix`,
-  start: `13:00`,
-  end: `14:20`,
-  duration: `1H 20M`,
-  price: `50`,
-  offer1: {
-    name: `Book tickets`,
-    symbol: `&plus;`,
-    price: `40`,
-    currency: `&euro;`
-  },
-  offer2: {
-    name: `Lunch in city`,
-    symbol: `&plus;`,
-    price: `30`,
-    currency: `&euro;`
-  }
-}, {
-  day: 19,
-  type: `drive`,
-  title: `Drive to Geneva`,
-  start: `16:00`,
-  end: `17:00`,
-  duration: `1H`,
-  price: `20`,
-  offer1: {
-    name: ` `,
-    symbol: ` `,
-    price: ` `,
-    currency: ` `
-  },
-  offer2: {
-    name: ` `,
-    symbol: ` `,
-    price: ` `,
-    currency: ` `
-  }
-}, {
-  day: 19,
-  type: `flight`,
-  title: `Flight to Geneva`,
-  start: `18:00`,
-  end: `19:00`,
-  duration: `1H`,
-  price: `20`,
-  offer1: {
-    name: `Add luggage`,
-    symbol: `&plus;`,
-    price: `30`,
-    currency: `&euro;`
-  },
-  offer2: {
-    name: `Switch to comfort`,
-    symbol: `&plus;`,
-    price: `100`,
-    currency: `&euro;`
-  }
-}];
-const dayThreeEvents = [{
-  day: 20,
-  type: `drive`,
-  title: `Drive to Geneva`,
-  start: `08:25`,
-  end: `09:25`,
-  duration: `1H`,
-  price: `20`,
-  offer1: {
-    name: ` `,
-    symbol: ` `,
-    price: ` `,
-    currency: ` `
-  },
-  offer2: {
-    name: ` `,
-    symbol: ` `,
-    price: ` `,
-    currency: ` `
-  }
-}, {
-  day: 20,
-  type: `sightseeing`,
-  title: `Sightseeing in Geneva`,
-  start: `11:15`,
-  end: `12:15`,
-  duration: `1H`,
-  price: `180`,
-  offer1: {
-    name: ` `,
-    symbol: ` `,
-    price: ` `,
-    currency: ` `
-  },
-  offer2: {
-    name: ` `,
-    symbol: ` `,
-    price: ` `,
-    currency: ` `
-  }
-}];
-const eventListByDay = [dayOneEvents, dayTwoEvents, dayThreeEvents];
-
-const eventContainer = tripPointsContainer.querySelectorAll(`.trip-events__list`);
+const tripDaysContainer = siteMainElem.querySelector(`.trip-days`);
 
 eventListByDay.map((eventlist, i) => {
-  let container = eventContainer[i];
-  eventlist.map((event) => {
+  render(tripDaysContainer, createTripPointTemplate(i + 1));
+});
+
+const eventContainer = tripDaysContainer.querySelectorAll(`.trip-events__list`);
+
+eventListByDay.map((eventlist, i) => {
+  const container = eventContainer[i];
+  eventlist.map((event, j) => {
     render(container, createEvent(event));
+    const offerContainer = container.querySelectorAll(`.event__selected-offers`);
+    event.offers.map((offer) => {
+      render(offerContainer[j], createOffer(offer));
+    });
   });
 });

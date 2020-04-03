@@ -463,10 +463,9 @@ eventListByDay.map((eventlist, i) => {
 const eventContainer = tripDaysContainer.querySelectorAll(`.trip-events__list`);
 
 eventListByDay.map((eventlist, i) => {
-  const container = eventContainer[i];
   eventlist.map((event, j) => {
-    render(container, createEvent(event));
-    const offerContainer = container.querySelectorAll(`.event__selected-offers`);
+    render(eventContainer[i], createEvent(event));
+    const offerContainer = eventContainer[i].querySelectorAll(`.event__selected-offers`);
     event.offers.map((offer) => {
       render(offerContainer[j], createOffer(offer));
     });

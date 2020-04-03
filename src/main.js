@@ -367,7 +367,7 @@ const createNewEventTemplate = () => {
   );
 };
 
-const createTripPointsContainer = () => {
+const createTripDaysContainer = () => {
   return (
     `<ul class="trip-days"></ul>`
   );
@@ -452,17 +452,13 @@ render(tripInfoElem, createTripCostTemplate());
 const siteMainElem = document.querySelector(`.trip-events`);
 render(siteMainElem, createSortingTemplate());
 render(siteMainElem, createNewEventTemplate());
-render(siteMainElem, createTripPointsContainer());
+render(siteMainElem, createTripDaysContainer());
 
 const tripDaysContainer = siteMainElem.querySelector(`.trip-days`);
 
 eventListByDay.map((eventlist, i) => {
   render(tripDaysContainer, createTripPointTemplate(i + 1));
-});
-
-const eventContainer = tripDaysContainer.querySelectorAll(`.trip-events__list`);
-
-eventListByDay.map((eventlist, i) => {
+  const eventContainer = tripDaysContainer.querySelectorAll(`.trip-events__list`);
   eventlist.map((event, j) => {
     render(eventContainer[i], createEvent(event));
     const offerContainer = eventContainer[i].querySelectorAll(`.event__selected-offers`);

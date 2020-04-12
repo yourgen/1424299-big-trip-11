@@ -3,6 +3,7 @@ import {getRandomNumber, arrPicker} from "../utils.js";
 const EVENT_COUNT = 20;
 const MAX_EVENT_PER_DAY = 4;
 const TRIP_DURATION = 5;
+const MAX_OFFER_COUNT = 5;
 
 const eventTypes = [
   `Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`
@@ -14,22 +15,27 @@ const destinations = [
 
 const generateEvent = () => {
   // const dueDate = Math.random() > 0.5 ? null : getRandomDate();
+  const generateOffer = () => {
+    return {
+      name: `test`,
+      price: getRandomNumber(0, 100)
+    };
+  };
+
+  const generateOffers = (count) => {
+    return new Array(count)
+      .fill(``)
+      .map(generateOffer);
+  };
+
   return {
     type: arrPicker(eventTypes),
     destination: arrPicker(destinations),
     pic: `http://picsum.photos/248/152?r=${Math.random()}`,
     duration: null,
     price: `20`,
-    offers: null,
+    offers: generateOffers(getRandomNumber(0, MAX_OFFER_COUNT + 1)),
 
-  };
-};
-
-const generateOffer = () => {
-  return {
-    type: arrPicker(eventTypes),
-    destination: arrPicker(destinations),
-    price: `20`,
   };
 };
 

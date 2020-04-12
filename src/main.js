@@ -40,9 +40,9 @@ tripDays.map((eventlist, i) => {
   const eventContainer = tripDaysContainer.querySelectorAll(`.trip-events__list`);
   eventlist.map((event, j) => {
     render(eventContainer[i], createEvent(event));
-    /* const offerContainer = eventContainer[i].querySelectorAll(`.event__selected-offers`);
+    const offerContainer = eventContainer[i].querySelectorAll(`.event__selected-offers`);
     event.offers.map((offer) => {
       render(offerContainer[j], createOffer(offer));
-    }); */
+    });
   });
 });

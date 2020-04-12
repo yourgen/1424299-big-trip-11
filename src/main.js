@@ -16,6 +16,8 @@ const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
 
+const tripStart = new Date();
+
 const headerElem = document.querySelector(`.trip-main`);
 const tripControlsElem = headerElem.querySelector(`.trip-main__trip-controls`);
 const tripControlsHeaderElem = tripControlsElem.querySelectorAll(`h2`)[1];
@@ -25,7 +27,7 @@ render(tripControlsHeaderElem, menuTemplate(), `beforebegin`);
 render(tripControlsElem, filterTemplate());
 
 const tripInfoElem = headerElem.querySelector(`.trip-main__trip-info`);
-render(tripInfoElem, routeInfoTemplate());
+render(tripInfoElem, routeInfoTemplate(tripStart));
 render(tripInfoElem, tripCostTemplate());
 
 const mainElem = document.querySelector(`.trip-events`);
@@ -36,7 +38,7 @@ render(mainElem, tripDaysTemplate());
 const tripDaysContainer = mainElem.querySelector(`.trip-days`);
 
 tripDays.map((eventlist, i) => {
-  render(tripDaysContainer, tripPointTemplate(i + 1));
+  render(tripDaysContainer, tripPointTemplate(i, tripStart));
   const eventContainer = tripDaysContainer.querySelectorAll(`.trip-events__list`);
   eventlist.map((event, j) => {
     render(eventContainer[i], createEvent(event));

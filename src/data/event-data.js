@@ -12,19 +12,38 @@ const eventTypes = [
   {name: `Ship`, offers: [`Switch to comfort`, `Switch to business`]},
   {name: `Transport`, offers: [`Switch to comfort`, `Switch to business`]},
   {name: `Drive`, offers: [`Rent a car`, `Rent premium-class car`]},
-  {name: `Flight`, offers: [`Add luggage`, `Switch to business`]},
+  {name: `Flight`, offers: [`Add luggage`, `Switch to business`, `Choose seats`]},
   {name: `Check-in`, offers: [`Add breakfast`, `Add lunch`, `Transfer to hotel`, `Luggage Forwarding`]},
   {name: `Sightseeing`, offers: [`Book tickets`, `Museum`, `All-day tour guide`]},
-  {name: `Restaurant`, offers: [`Order Uber`]}
+  {name: `Restaurant`, offers: [`Try luxury-class`]}
 ];
 
 const destinations = [
   `Amsterdam`, `London`, `Paris`, `Prague`, `Rome`
 ];
 
+const descriptionTemplates = [
+  `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+  `Cras aliquet varius magna, non porta ligula feugiat eget.`,
+  `Fusce tristique felis at fermentum pharetra.`,
+  `Aliquam id orci ut lectus varius viverra.`,
+  `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`
+];
+
 const generateEvent = () => {
-  // const dueDate = Math.random() > 0.5 ? null : getRandomDate();
+
   const getEventType = arrPicker(eventTypes);
+  const descrSentenceCount = Math.floor(Math.random() * descriptionTemplates.length);
+
+  const generateDescription = (count) => {
+    const descriptionOutput = descriptionTemplates
+      .slice()
+      .sort(() => Math.random() - 0.5);
+    return descriptionOutput
+      .slice(1, count + 1)
+      .join(` `);
+  };
+
   const generateOffers = (count, eventType) => {
     return new Array(count)
       .fill(``)
@@ -39,11 +58,11 @@ const generateEvent = () => {
   return {
     type: getEventType.name,
     destination: arrPicker(destinations),
+    offers: generateOffers(getRandomNumber(0, MAX_OFFER_COUNT + 1), getEventType),
+    description: generateDescription(descrSentenceCount),
     pic: `http://picsum.photos/248/152?r=${Math.random()}`,
     duration: null,
-    price: `20`,
-    offers: generateOffers(getRandomNumber(0, MAX_OFFER_COUNT + 1), getEventType),
-
+    price: getRandomNumber(0, 1000)
   };
 };
 

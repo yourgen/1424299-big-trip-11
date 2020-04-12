@@ -6,7 +6,16 @@ const TRIP_DURATION = 5;
 const MAX_OFFER_COUNT = 5;
 
 const eventTypes = [
-  `Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`
+  {name: `Taxi`, offers: [`Order Uber`]},
+  {name: `Bus`, offers: [`Switch to comfort`, `Switch to business`]},
+  {name: `Train`, offers: [`Switch to comfort`, `Switch to business`]},
+  {name: `Ship`, offers: [`Switch to comfort`, `Switch to business`]},
+  {name: `Transport`, offers: [`Switch to comfort`, `Switch to business`]},
+  {name: `Drive`, offers: [`Rent a car`, `Rent premium-class car`]},
+  {name: `Flight`, offers: [`Add luggage`, `Switch to business`]},
+  {name: `Check-in`, offers: [`Add breakfast`, `Add lunch`, `Transfer to hotel`, `Luggage Forwarding`]},
+  {name: `Sightseeing`, offers: [`Book tickets`, `Museum`, `All-day tour guide`]},
+  {name: `Restaurant`, offers: [`Order Uber`]}
 ];
 
 const destinations = [
@@ -15,26 +24,25 @@ const destinations = [
 
 const generateEvent = () => {
   // const dueDate = Math.random() > 0.5 ? null : getRandomDate();
-  const generateOffer = () => {
-    return {
-      name: `test`,
-      price: getRandomNumber(0, 100)
-    };
-  };
-
-  const generateOffers = (count) => {
+  const getEventType = arrPicker(eventTypes);
+  const generateOffers = (count, eventType) => {
     return new Array(count)
       .fill(``)
-      .map(generateOffer);
+      .map(() => {
+        return {
+          name: arrPicker(eventType.offers),
+          price: getRandomNumber(0, 100)
+        };
+      });
   };
 
   return {
-    type: arrPicker(eventTypes),
+    type: getEventType.name,
     destination: arrPicker(destinations),
     pic: `http://picsum.photos/248/152?r=${Math.random()}`,
     duration: null,
     price: `20`,
-    offers: generateOffers(getRandomNumber(0, MAX_OFFER_COUNT + 1)),
+    offers: generateOffers(getRandomNumber(0, MAX_OFFER_COUNT + 1), getEventType),
 
   };
 };

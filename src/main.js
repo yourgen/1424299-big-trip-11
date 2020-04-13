@@ -41,7 +41,7 @@ tripDays.map((eventlist, i) => {
   render(tripDaysContainer, tripPointTemplate(i, tripStart));
   const eventContainer = tripDaysContainer.querySelectorAll(`.trip-events__list`);
   eventlist.map((event, j) => {
-    render(eventContainer[i], createEvent(event));
+    render(eventContainer[i], createEvent(event, i, tripStart));
     const offerContainer = eventContainer[i].querySelectorAll(`.event__selected-offers`);
     event.offers.map((offer) => {
       render(offerContainer[j], createOffer(offer));

@@ -58,7 +58,7 @@ const generateEvent = () => {
   const startTime = getRandomNumber(0, 1440);
   const durationTime = getRandomNumber(10, 120);
   const endTime = startTime + durationTime;
-  
+
   const generateStartTime = () => {
     const startHours = castTimeFormat(Math.trunc(startTime / 60));
     const startMinutes = castTimeFormat(startTime % 60);

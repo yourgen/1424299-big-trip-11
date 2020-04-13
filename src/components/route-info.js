@@ -24,7 +24,7 @@ const routeInfoTemplate = (date) => {
         ${tripDays[0][0].destination} &mdash; ${middleDestination} &mdash; ${lastDay[lastDay.length - 1].destination}
       </h1>
 
-      <p class="trip-info__dates">${month} ${day}&nbsp;&mdash;&nbsp;${day + tripDays.length}</p>
+      <p class="trip-info__dates">${month} ${day}&nbsp;&mdash;&nbsp;${day + tripDays.length - 1}</p>
     </div>`
   );
 };

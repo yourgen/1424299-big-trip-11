@@ -10,6 +10,7 @@ import {newEventTemplate} from './components/event-new';
 import {eventTypeMarkup} from './components/event-new-items';
 import {destinationListMarkup} from './components/event-new-destinations';
 import {newEventOffersMarkUp} from './components/event-new-offers';
+import {newEventPhotoMarkUp} from './components/event-new-photos';
 import {tripDaysTemplate} from './components/trip-days';
 import {tripPointTemplate} from './components/trip-points';
 import {createEvent} from './components/event';
@@ -69,6 +70,11 @@ eventTypes.forEach((item) => {
 });
 avaliableOffers.forEach((avaliableoffer, i) => {
   render(newEventOfferContainer, newEventOffersMarkUp(avaliableoffer, i));
+});
+
+const newEventPhotosContainer = newEventContainer.querySelector(`.event__photos-tape`);
+newEventData.photos.map((photo) => {
+  render(newEventPhotosContainer, newEventPhotoMarkUp(photo));
 });
 
 render(mainElem, tripDaysTemplate());

@@ -1,7 +1,6 @@
 import {castTimeFormat} from "../utils";
 
 const newEventTemplate = (event, date) => {
-
   const normalizeFormData = (data, defaultData = ``) => {
     return data ? data : defaultData;
   };
@@ -92,6 +91,18 @@ const newEventTemplate = (event, date) => {
 
           <div class="event__available-offers">
             
+          </div>
+        </section>
+        <section class="event__section  event__section--destination">
+          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+          <p class="event__destination-description">
+            ${event.description}
+          </p>
+
+          <div class="event__photos-container">
+            <div class="event__photos-tape">
+
+            </div>
           </div>
         </section>
       </section>

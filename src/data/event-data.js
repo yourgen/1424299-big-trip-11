@@ -48,7 +48,7 @@ const generateEvent = () => {
       });
   };
 
-  const descrSentenceCount = Math.floor(Math.random() * descriptionTemplates.length);
+  const descrSentenceCount = getRandomNumber(1, descriptionTemplates.length);
   const generateDescription = (count) => {
     const descriptionOutput = descriptionTemplates
       .slice()
@@ -56,6 +56,15 @@ const generateEvent = () => {
     return descriptionOutput
       .slice(1, count + 1)
       .join(` `);
+  };
+
+  const photosCount = getRandomNumber(1, 5);
+  const generatePhotos = (count) => {
+    return new Array(count)
+      .fill(``)
+      .map(() => {
+        return `http://picsum.photos/248/152?r=${Math.random()}`;
+      });
   };
 
   const startTime = getRandomNumber(0, 1440);
@@ -87,7 +96,7 @@ const generateEvent = () => {
     destination: arrPicker(destinations),
     offers: generateOffers(getRandomNumber(0, MAX_OFFER_COUNT + 1), getEventType),
     description: generateDescription(descrSentenceCount),
-    pic: `http://picsum.photos/248/152?r=${Math.random()}`,
+    photos: generatePhotos(photosCount),
     start: generateStartTime(),
     duration: generateDuration(),
     end: generateEndTime(),

@@ -1,4 +1,4 @@
-import {getRandomNumber, arrPicker} from "../utils.js";
+import {getRandomNumber, arrPicker, castTimeFormat} from "../utils.js";
 
 const EVENT_COUNT = 20;
 const MAX_EVENT_PER_DAY = 4;
@@ -33,16 +33,6 @@ const descriptionTemplates = [
 const generateEvent = () => {
 
   const getEventType = arrPicker(eventTypes);
-  const descrSentenceCount = Math.floor(Math.random() * descriptionTemplates.length);
-
-  const generateDescription = (count) => {
-    const descriptionOutput = descriptionTemplates
-      .slice()
-      .sort(() => Math.random() - 0.5);
-    return descriptionOutput
-      .slice(1, count + 1)
-      .join(` `);
-  };
 
   const generateOffers = (count, eventType) => {
     return new Array(count)
@@ -55,13 +45,49 @@ const generateEvent = () => {
       });
   };
 
+  const descrSentenceCount = Math.floor(Math.random() * descriptionTemplates.length);
+  const generateDescription = (count) => {
+    const descriptionOutput = descriptionTemplates
+      .slice()
+      .sort(() => Math.random() - 0.5);
+    return descriptionOutput
+      .slice(1, count + 1)
+      .join(` `);
+  };
+
+  const startTime = getRandomNumber(0, 1440);
+  const durationTime = getRandomNumber(10, 120);
+  const endTime = startTime + durationTime;
+  
+  const generateStartTime = () => {
+    const startHours = castTimeFormat(Math.trunc(startTime / 60));
+    const startMinutes = castTimeFormat(startTime % 60);
+    return `${startHours}:${startMinutes}`;
+  };
+
+  const generateDuration = () => {
+    const durationHours = castTimeFormat(Math.trunc(durationTime / 60));
+    const durationMinutes = castTimeFormat(durationTime % 60);
+    return (
+      durationHours !== `00` ? `${durationHours}H ${durationMinutes}M` : `${durationMinutes}M`
+    );
+  };
+
+  const generateEndTime = () => {
+    const endHours = castTimeFormat(Math.trunc(endTime / 60));
+    const endMinutes = castTimeFormat(endTime % 60);
+    return `${endHours}:${endMinutes}`;
+  };
+
   return {
     type: getEventType.name,
     destination: arrPicker(destinations),
     offers: generateOffers(getRandomNumber(0, MAX_OFFER_COUNT + 1), getEventType),
     description: generateDescription(descrSentenceCount),
     pic: `http://picsum.photos/248/152?r=${Math.random()}`,
-    duration: null,
+    start: generateStartTime(),
+    duration: generateDuration(),
+    end: generateEndTime(),
     price: getRandomNumber(0, 1000)
   };
 };

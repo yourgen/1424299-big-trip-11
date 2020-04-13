@@ -1,22 +1,17 @@
-import {tripDays} from "../data/event-data";
+import {tripDays, tripDestinations} from "../data/event-data";
 import {months} from '../data/common-data';
 
 const routeInfoTemplate = (date) => {
 
+  const normalizeArrMiddle = (arr) => {
+    return arr.length % 2 === 0 ? arr[arr.length / 2] : arr[(arr.length - 1) / 2];
+  };
+
   const day = date.getDate();
   const month = months[date.getMonth()];
-
-  const tripDestinations = new Set();
-  tripDays.forEach((eventlist) => {
-    eventlist.forEach((event) => {
-      tripDestinations.add(event.destination);
-    });
-  });
-
-  const middleDay = tripDays[tripDays.length / 2];
+  const middleDay = normalizeArrMiddle(tripDays);
   const lastDay = tripDays[tripDays.length - 1];
-
-  const middleDestination = tripDestinations.size > 3 ? `...` : middleDay[middleDay.length / 2].destination;
+  const middleDestination = tripDestinations.size > 3 ? `...` : normalizeArrMiddle(middleDay).destination;
 
   return (
     `<div class="trip-info__main">

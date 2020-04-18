@@ -1,4 +1,4 @@
-import {tripPoints, newEventData, eventTypes, tripDestinations} from './data/event-data';
+import {tripPoints} from './data/event-data';
 
 import TripInfo from './components/trip-info';
 import RouteInfo from './components/route-info';
@@ -11,69 +11,26 @@ import TripPoint from './components/trip-points';
 
 import Event from './components/event';
 import Offer from './components/offer';
-import NewEvent from './components/event-new';
-import NewEventTypeItem from './components/event-new-items';
-import NewEventDestinationList from './components/event-new-destinations';
-import NewEventOffer from './components/event-new-offers';
-import NewEventPhoto from './components/event-new-photos';
+import EditEvent from './components/event-edit';
 
 import {render, renderPosition} from "./utils.js";
 
 const tripStart = new Date();
 
-
-const renderEventEditComponent = (newEventComponent) => {
-
-  const transferTypes = [];
-  const activityTypes = [];
-
-  const formSubtypesList = (subtype, index) => {
-    eventTypes[index].forEach((item) => {
-      subtype.push(item.name);
-    });
-    subtype.forEach((eventType) => {
-      const subtypeContainer = newEventComponent.querySelectorAll(`.event__type-group`)[index];
-      render(subtypeContainer, new NewEventTypeItem(eventType, newEventData).getElement());
-    });
-  };
-  formSubtypesList(transferTypes, 0);
-  formSubtypesList(activityTypes, 1);
-
-  const destinationListContainer = newEventComponent.querySelector(`#destination-list-1`);
-  for (let destination of tripDestinations) {
-    render(destinationListContainer, new NewEventDestinationList(destination).getElement());
-  }
-
-  const newEventOfferContainer = newEventComponent.querySelector(`.event__available-offers`);
-  const avaliableOffers = [];
-  eventTypes.forEach((item) => {
-    item.forEach((eventType) => {
-      if (eventType.name === newEventData.type) {
-        avaliableOffers.push(...eventType.offers);
-      }
-    });
+const renderEventComponent = (container, dayCount, event, eventCount) => {
+  render(container[dayCount], new Event(event, dayCount, tripStart).getElement());
+  const offerContainer = container[dayCount].querySelectorAll(`.event__selected-offers`);
+  event.offers.map((offer) => {
+    render(offerContainer[eventCount], new Offer(offer).getElement());
   });
-  avaliableOffers.forEach((avaliableoffer, i) => {
-    render(newEventOfferContainer, new NewEventOffer(avaliableoffer, i).getElement());
-  });
-
-  const newEventPhotosContainer = newEventComponent.querySelector(`.event__photos-tape`);
-  newEventData.photos.map((photoLink) => {
-    render(newEventPhotosContainer, new NewEventPhoto(photoLink).getElement());
-  });
-
 };
 
 const renderTrip = (tripDaysComponent) => {
-  tripPoints.map((eventlist, i) => {
-    render(tripDaysComponent, new TripPoint(i, tripStart).getElement());
+  tripPoints.map((eventlist, dayCount) => {
+    render(tripDaysComponent, new TripPoint(dayCount, tripStart).getElement());
     const eventContainer = tripDaysComponent.querySelectorAll(`.trip-events__list`);
-    eventlist.map((event, j) => {
-      render(eventContainer[i], new Event(event, i, tripStart).getElement());
-      const offerContainer = eventContainer[i].querySelectorAll(`.event__selected-offers`);
-      event.offers.map((offer) => {
-        render(offerContainer[j], new Offer(offer).getElement());
-      });
+    eventlist.map((event, eventCount) => {
+      renderEventComponent(eventContainer, dayCount, event, eventCount);
     });
   });
 };
@@ -92,10 +49,7 @@ render(tripControlsElem, new Filter().getElement());
 const mainElem = document.querySelector(`.trip-events`);
 render(mainElem, new Sorting().getElement());
 
-const newEventComponent = new NewEvent(newEventData, tripStart);
-
-render(mainElem, newEventComponent.getElement());
-renderEventEditComponent(newEventComponent.getElement());
+render(mainElem, new EditEvent(tripPoints[0][0], 0, tripStart).getElement());
 
 const tripDaysComponent = new TripDays();
 render(mainElem, tripDaysComponent.getElement());

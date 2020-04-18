@@ -1,5 +1,5 @@
 import {eventTypes, tripDestinations} from '../data/event-data';
-import {castTimeFormat, createElement, getRandomNumber} from "../utils";
+import {castTimeFormat, createElement, getRandomNumber, getEventTitle} from "../utils";
 
 const getEditEventTemplate = (event, dayCount, date) => {
   const transferTypes = [];
@@ -95,17 +95,6 @@ const getEditEventTemplate = (event, dayCount, date) => {
     return photoList;
   };
 
-  const normalizeFormData = (data = ``) => {
-    return data;
-  };
-
-  const getEventTitle = () => {
-    if (event.type === `Check-in` || event.type === `Sightseeing` || event.type === `Restaurant`) {
-      return `${event.type} in `;
-    } else {
-      return `${event.type} to `;
-    }
-  };
   const day = date.getDate() || ``;
   const monthNum = castTimeFormat(date.getMonth()) || ``;
   const year = date.getFullYear() % 100 || ``;
@@ -116,7 +105,7 @@ const getEditEventTemplate = (event, dayCount, date) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${normalizeFormData(event.type, `flight`).toLowerCase()}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${event.type.toLowerCase() || `flight`}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -135,14 +124,14 @@ const getEditEventTemplate = (event, dayCount, date) => {
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-            ${normalizeFormData(getEventTitle())} 
+            ${getEventTitle(event)}
           </label>
           <input 
             class="event__input  event__input--destination" 
             id="event-destination-1" 
             type="text" 
             name="event-destination" 
-            value="${normalizeFormData(event.destination)}" 
+            value="${event.destination || ``}" 
             list="destination-list-1"
           >
           <datalist id="destination-list-1">
@@ -159,7 +148,7 @@ const getEditEventTemplate = (event, dayCount, date) => {
             id="event-start-time-1" 
             type="text" 
             name="event-start-time" 
-            value="${day + dayCount}/${monthNum}/${year} ${normalizeFormData(event.start)}"
+            value="${day + dayCount}/${monthNum}/${year} ${event.start || ``}"
           >
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">
@@ -170,7 +159,7 @@ const getEditEventTemplate = (event, dayCount, date) => {
             id="event-end-time-1" 
             type="text" 
             name="event-end-time" 
-            value="${day + dayCount}/${monthNum}/${year} ${normalizeFormData(event.end)}"
+            value="${day + dayCount}/${monthNum}/${year} ${event.end || ``}"
           >
         </div>
 
@@ -179,7 +168,7 @@ const getEditEventTemplate = (event, dayCount, date) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${normalizeFormData(event.price)}">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${event.price || ``}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -196,7 +185,7 @@ const getEditEventTemplate = (event, dayCount, date) => {
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">
-            ${event.description}
+            ${event.description || ``}
           </p>
 
           <div class="event__photos-container">

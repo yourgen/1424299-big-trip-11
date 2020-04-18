@@ -10,6 +10,14 @@ export const arrPicker = (arr) => {
   return arr[getRandomNumber(0, arr.length)];
 };
 
+export const getEventTitle = (event) => {
+  if (event.type === `Check-in` || event.type === `Sightseeing` || event.type === `Restaurant`) {
+    return `${event.type} in`;
+  } else {
+    return `${event.type} to`;
+  }
+};
+
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;

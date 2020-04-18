@@ -7,12 +7,12 @@ const MAX_OFFER_COUNT = 5;
 
 const eventTypes = [
   [
-    {name: `Taxi`, offers: [`Order Uber`, `Order Yandex`]},
+    {name: `Taxi`, offers: [`Switch to comfort`, `Switch to comfort plus`, `Switch to business`, `Switch to premium`, `Switch to minivan`]},
     {name: `Bus`, offers: [`Switch to comfort`, `Switch to business`, `Switch to express`]},
-    {name: `Train`, offers: [`Switch to comfort`, `Switch to business`, `Switch to express`]},
-    {name: `Ship`, offers: [`Switch to comfort`, `Switch to business`, `Pool pass`]},
+    {name: `Train`, offers: [`Switch to comfort`, `Switch to business`, `Switch to express`, `On-board catering`]},
+    {name: `Ship`, offers: [`Switch to comfort`, `Switch to business`, `Pool pass`, `Bar card`]},
     {name: `Transport`, offers: [`Switch to comfort`, `Switch to business`]},
-    {name: `Drive`, offers: [`Rent economy-class car`, `Rent premium-class car`]},
+    {name: `Drive`, offers: [`Rent economy-class car`, `Rent premium-class car`, `Rent sport car`, `Rent bike`]},
     {name: `Flight`, offers: [`Add luggage`, `Switch to business`, `Choose seats`]}
   ], [
     {name: `Check-in`, offers: [`Add breakfast`, `Add lunch`, `Transfer to hotel`, `Luggage Forwarding`]},

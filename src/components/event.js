@@ -1,4 +1,4 @@
-import {createElement, castTimeFormat} from "../utils";
+import {createElement, castTimeFormat, getEventTitle} from "../utils";
 
 const getEventTemplate = (event, dayCount, date) => {
   const getOfferMarkup = (offer) => {
@@ -18,14 +18,6 @@ const getEventTemplate = (event, dayCount, date) => {
     return offerList;
   };
 
-  const getEventTitle = () => {
-    if (event.type === `Check-in` || event.type === `Sightseeing` || event.type === `Restaurant`) {
-      return `${event.type} in ${event.destination}`;
-    } else {
-      return `${event.type} to ${event.destination}`;
-    }
-  };
-
   const day = date.getDate();
   const monthNum = castTimeFormat(date.getMonth());
   const year = date.getFullYear();
@@ -36,7 +28,7 @@ const getEventTemplate = (event, dayCount, date) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${event.type.toLowerCase()}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${getEventTitle()}</h3>
+        <h3 class="event__title">${getEventTitle(event)} ${event.destination}</h3>
 
         <div class="event__schedule">
           <p class="event__time">

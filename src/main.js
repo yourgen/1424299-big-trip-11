@@ -10,27 +10,18 @@ import TripDays from './components/trip-days';
 import TripPoint from './components/trip-points';
 
 import Event from './components/event';
-import Offer from './components/offer';
 import EditEvent from './components/event-edit';
 
 import {render, renderPosition} from "./utils.js";
 
 const tripStart = new Date();
 
-const renderEventComponent = (container, dayCount, event, eventCount) => {
-  render(container[dayCount], new Event(event, dayCount, tripStart).getElement());
-  const offerContainer = container[dayCount].querySelectorAll(`.event__selected-offers`);
-  event.offers.map((offer) => {
-    render(offerContainer[eventCount], new Offer(offer).getElement());
-  });
-};
-
 const renderTrip = (tripDaysComponent) => {
   tripPoints.map((eventlist, dayCount) => {
     render(tripDaysComponent, new TripPoint(dayCount, tripStart).getElement());
     const eventContainer = tripDaysComponent.querySelectorAll(`.trip-events__list`);
-    eventlist.map((event, eventCount) => {
-      renderEventComponent(eventContainer, dayCount, event, eventCount);
+    eventlist.map((event) => {
+      render(eventContainer[dayCount], new Event(event, dayCount, tripStart).getElement());
     });
   });
 };

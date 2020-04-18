@@ -51,13 +51,13 @@ const getEditEventTemplate = (event, dayCount, date) => {
   };
 
   const getEditEventOffersMarkUp = (avaliableOffer, offerNumber) => {
-    const checkRandomizer = () => {
+    const activeOffersCheck = () => {
       return Math.random() > 0.5 ? `checked` : ``;
     };
 
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerNumber}" type="checkbox" name="event-offer" ${checkRandomizer()}>
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerNumber}" type="checkbox" name="event-offer" ${activeOffersCheck()}>
         <label class="event__offer-label" for="event-offer-${offerNumber}">
           <span class="event__offer-title">${avaliableOffer}</span>
           &plus;

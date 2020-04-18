@@ -8,16 +8,16 @@ const MAX_OFFER_COUNT = 5;
 const eventTypes = [
   [
     {name: `Taxi`, offers: [`Switch to comfort`, `Switch to comfort plus`, `Switch to business`, `Switch to premium`, `Switch to minivan`]},
-    {name: `Bus`, offers: [`Switch to comfort`, `Switch to business`, `Switch to express`]},
-    {name: `Train`, offers: [`Switch to comfort`, `Switch to business`, `Switch to express`, `On-board catering`]},
-    {name: `Ship`, offers: [`Switch to comfort`, `Switch to business`, `Pool pass`, `Bar card`]},
-    {name: `Transport`, offers: [`Switch to comfort`, `Switch to business`]},
-    {name: `Drive`, offers: [`Rent economy-class car`, `Rent premium-class car`, `Rent sport car`, `Rent bike`]},
-    {name: `Flight`, offers: [`Add luggage`, `Switch to business`, `Choose seats`]}
+    {name: `Bus`, offers: [`Switch to comfort`, `Switch to business`, `Switch to express`, `On-board catering`, `Access to priority services`]},
+    {name: `Train`, offers: [`Switch to comfort`, `Switch to business`, `Switch to express`, `On-board catering`, `Access to priority services`]},
+    {name: `Ship`, offers: [`Switch to comfort`, `Switch to business`, `Pool pass`, `Bar card`, `Lounge pass`]},
+    {name: `Transport`, offers: [`Switch to comfort`, `Switch to business`, `Switch to express`, `On-board catering`, `Access to priority services`]},
+    {name: `Drive`, offers: [`Rent economy-class car`, `Rent premium-class car`, `Rent sport car`, `Rent bike`, `Rent sport bike`]},
+    {name: `Flight`, offers: [`Add luggage`, `Switch to business`, `Choose seats`, `Baggage carrier`, `Access to lounge`]}
   ], [
     {name: `Check-in`, offers: [`Add breakfast`, `Add lunch`, `Transfer to hotel`, `Luggage Forwarding`]},
     {name: `Sightseeing`, offers: [`Book tickets`, `Museum`, `All-day tour guide`, `Part-day tour guide`]},
-    {name: `Restaurant`, offers: [`Try luxury-class`]}
+    {name: `Restaurant`, offers: [`Try luxury-class`, `Advanced meal`]}
   ]
 ];
 
@@ -38,11 +38,12 @@ const generateEvent = () => {
   const getEventType = arrPicker(eventTypes[Math.round(Math.random())]);
 
   const generateOffers = (count, eventType) => {
-    return new Array(count)
-      .fill(``)
-      .map(() => {
+    const shuffledOffers = eventType.offers.sort(() => Math.random() - 0.5);
+    return shuffledOffers
+      .slice(0, count)
+      .map((offer) => {
         return {
-          name: arrPicker(eventType.offers),
+          name: offer,
           price: getRandomNumber(0, 100)
         };
       });

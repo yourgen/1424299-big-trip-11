@@ -1,6 +1,6 @@
-import {castTimeFormat} from "../utils";
+import {castTimeFormat, createElement} from "../utils";
 
-const newEventTemplate = (event, date) => {
+const getNewEventTemplate = (event, date) => {
   const normalizeFormData = (data, defaultData = ``) => {
     return data ? data : defaultData;
   };
@@ -110,5 +110,26 @@ const newEventTemplate = (event, date) => {
   );
 };
 
+export default class NewEvent {
+  constructor(event, date) {
+    this._event = event;
+    this._date = date;
+    this._element = null;
+  }
 
-export {newEventTemplate};
+  getTemplate() {
+    return getNewEventTemplate(this._event, this._date);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,20 +1,21 @@
-import {tripDays, newEventData, eventTypes, tripDestinations} from './data/event-data';
+import {tripPoints, newEventData, eventTypes, tripDestinations} from './data/event-data';
 
-import {tripInfoTemplate} from './components/trip-info';
-import {routeInfoTemplate} from './components/route-info';
-import {tripCostTemplate} from './components/trip-cost';
-import {menuTemplate} from './components/menu';
-import {filterTemplate} from './components/filter';
-import {sortingTemplate} from './components/sorting';
-import {newEventTemplate} from './components/event-new';
-import {eventTypeMarkup} from './components/event-new-items';
-import {destinationListMarkup} from './components/event-new-destinations';
-import {newEventOffersMarkUp} from './components/event-new-offers';
-import {newEventPhotoMarkUp} from './components/event-new-photos';
-import {tripDaysTemplate} from './components/trip-days';
-import {tripPointTemplate} from './components/trip-points';
-import {createEvent} from './components/event';
-import {createOffer} from './components/offer';
+import TripInfo from './components/trip-info';
+import RouteInfo from './components/route-info';
+import TripCost from './components/trip-cost';
+import Menu from './components/menu';
+import Filter from './components/filter';
+import Sorting from './components/sorting';
+import TripDays from './components/trip-days';
+import TripPoint from './components/trip-points';
+
+import Event from './components/event';
+import Offer from './components/offer';
+import NewEvent from './components/event-new';
+import NewEventTypeItem from './components/event-new-items';
+import NewEventDestinationList from './components/event-new-destinations';
+import NewEventOffer from './components/event-new-offers';
+import NewEventPhoto from './components/event-new-photos';
 
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
@@ -81,7 +82,7 @@ render(mainElem, tripDaysTemplate());
 
 const tripDaysContainer = mainElem.querySelector(`.trip-days`);
 
-tripDays.map((eventlist, i) => {
+tripPoints.map((eventlist, i) => {
   render(tripDaysContainer, tripPointTemplate(i, tripStart));
   const eventContainer = tripDaysContainer.querySelectorAll(`.trip-events__list`);
   eventlist.map((event, j) => {

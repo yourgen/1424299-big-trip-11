@@ -119,21 +119,21 @@ const generateTrip = (duration) => {
     .fill(``);
 };
 
-const tripDays = generateTrip(TRIP_DURATION);
+const tripPoints = generateTrip(TRIP_DURATION);
 
 let start = 0;
-tripDays.forEach((event, i) => {
+tripPoints.forEach((event, i) => {
   const getRandomEventCount = getRandomNumber(1, MAX_EVENT_PER_DAY + 1);
   const end = start + getRandomEventCount;
-  tripDays[i] = tripEvents.slice(start, end);
+  tripPoints[i] = tripEvents.slice(start, end);
   start = end;
 });
 
 const tripDestinations = new Set();
-tripDays.forEach((eventlist) => {
+tripPoints.forEach((eventlist) => {
   eventlist.forEach((event) => {
     tripDestinations.add(event.destination);
   });
 });
 
-export {tripDays, newEventData, eventTypes, tripDestinations};
+export {tripPoints, newEventData, eventTypes, tripDestinations};

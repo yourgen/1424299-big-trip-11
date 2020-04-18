@@ -1,14 +1,14 @@
-import {tripDays} from "../data/event-data";
+import {tripPoints} from "../data/event-data";
+import {createElement} from "../utils";
 
-const tripCostTemplate = () => {
+const getTripCostTemplate = () => {
   const eventPrices = [];
-  tripDays.forEach((eventlist) => {
+  tripPoints.forEach((eventlist) => {
     eventlist.forEach((event) => {
       eventPrices.push(event.price);
     });
   });
-  const reducer = (accumulator, currentValue) => accumulator + currentValue;
-  const tripCost = eventPrices.reduce(reducer);
+  const tripCost = eventPrices.reduce((acc, value) => acc + value);
 
   return (
     `<p class="trip-info__cost">
@@ -17,4 +17,24 @@ const tripCostTemplate = () => {
   );
 };
 
-export {tripCostTemplate};
+export default class TripCost {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return getTripCostTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

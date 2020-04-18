@@ -1,6 +1,6 @@
 import {tripPoints, tripDestinations} from "../data/event-data";
 import {months} from '../data/common-data';
-import {createElement} from '../data/common-data';
+import {createElement} from "../utils";
 
 const getRouteInfoTemplate = (date) => {
 

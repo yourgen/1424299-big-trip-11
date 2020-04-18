@@ -17,79 +17,86 @@ import NewEventDestinationList from './components/event-new-destinations';
 import NewEventOffer from './components/event-new-offers';
 import NewEventPhoto from './components/event-new-photos';
 
-const render = (container, template, place = `beforeend`) => {
-  container.insertAdjacentHTML(place, template);
-};
+import {render, renderPosition} from "./utils.js";
 
 const tripStart = new Date();
+
+
+const renderEventEditComponent = (newEventComponent) => {
+
+  const transferTypes = [];
+  const activityTypes = [];
+
+  const formSubtypesList = (subtype, index) => {
+    eventTypes[index].forEach((item) => {
+      subtype.push(item.name);
+    });
+    subtype.forEach((eventType) => {
+      const subtypeContainer = newEventComponent.querySelectorAll(`.event__type-group`)[index];
+      render(subtypeContainer, new NewEventTypeItem(eventType, newEventData).getElement());
+    });
+  };
+  formSubtypesList(transferTypes, 0);
+  formSubtypesList(activityTypes, 1);
+
+  const destinationListContainer = newEventComponent.querySelector(`#destination-list-1`);
+  for (let destination of tripDestinations) {
+    render(destinationListContainer, new NewEventDestinationList(destination).getElement());
+  }
+
+  const newEventOfferContainer = newEventComponent.querySelector(`.event__available-offers`);
+  const avaliableOffers = [];
+  eventTypes.forEach((item) => {
+    item.forEach((eventType) => {
+      if (eventType.name === newEventData.type) {
+        avaliableOffers.push(...eventType.offers);
+      }
+    });
+  });
+  avaliableOffers.forEach((avaliableoffer, i) => {
+    render(newEventOfferContainer, new NewEventOffer(avaliableoffer, i).getElement());
+  });
+
+  const newEventPhotosContainer = newEventComponent.querySelector(`.event__photos-tape`);
+  newEventData.photos.map((photoLink) => {
+    render(newEventPhotosContainer, new NewEventPhoto(photoLink).getElement());
+  });
+
+};
+
+const renderTrip = (tripDaysComponent) => {
+  tripPoints.map((eventlist, i) => {
+    render(tripDaysComponent, new TripPoint(i, tripStart).getElement());
+    const eventContainer = tripDaysComponent.querySelectorAll(`.trip-events__list`);
+    eventlist.map((event, j) => {
+      render(eventContainer[i], new Event(event, i, tripStart).getElement());
+      const offerContainer = eventContainer[i].querySelectorAll(`.event__selected-offers`);
+      event.offers.map((offer) => {
+        render(offerContainer[j], new Offer(offer).getElement());
+      });
+    });
+  });
+};
 
 const headerElem = document.querySelector(`.trip-main`);
 const tripControlsElem = headerElem.querySelector(`.trip-main__trip-controls`);
 const tripControlsHeaderElem = tripControlsElem.querySelectorAll(`h2`)[1];
 
-render(headerElem, tripInfoTemplate(), `afterbegin`);
-render(tripControlsHeaderElem, menuTemplate(), `beforebegin`);
-render(tripControlsElem, filterTemplate());
-
-const tripInfoElem = headerElem.querySelector(`.trip-main__trip-info`);
-render(tripInfoElem, routeInfoTemplate(tripStart));
-render(tripInfoElem, tripCostTemplate());
+const tripInfoComponent = new TripInfo();
+render(headerElem, tripInfoComponent.getElement(), renderPosition.AFTERBEGIN);
+render(tripInfoComponent.getElement(), new RouteInfo(tripStart).getElement());
+render(tripInfoComponent.getElement(), new TripCost(tripStart).getElement());
+render(tripControlsHeaderElem, new Menu().getElement(), renderPosition.BEFOREBEGIN);
+render(tripControlsElem, new Filter().getElement());
 
 const mainElem = document.querySelector(`.trip-events`);
-render(mainElem, sortingTemplate());
-render(mainElem, newEventTemplate(newEventData, tripStart));
+render(mainElem, new Sorting().getElement());
 
-const transferTypes = [];
-const activityTypes = [];
-const newEventContainer = mainElem.querySelector(`.trip-events__item`);
+const newEventComponent = new NewEvent(newEventData, tripStart);
 
-const formSubtypesList = (subtype, index) => {
-  eventTypes[index].forEach((item) => {
-    subtype.push(item.name);
-  });
-  subtype.forEach((eventtype) => {
-    const subtypeContainer = newEventContainer.querySelectorAll(`.event__type-group`)[index];
-    render(subtypeContainer, eventTypeMarkup(eventtype, newEventData));
-  });
-};
-formSubtypesList(transferTypes, 0);
-formSubtypesList(activityTypes, 1);
+render(mainElem, newEventComponent.getElement());
+renderEventEditComponent(newEventComponent.getElement());
 
-const destinationListContainer = newEventContainer.querySelector(`#destination-list-1`);
-for (let destination of tripDestinations) {
-  render(destinationListContainer, destinationListMarkup(destination));
-}
-
-const newEventOfferContainer = newEventContainer.querySelector(`.event__available-offers`);
-const avaliableOffers = [];
-eventTypes.forEach((item) => {
-  item.forEach((eventtype) => {
-    if (eventtype.name === newEventData.type) {
-      avaliableOffers.push(...eventtype.offers);
-    }
-  });
-});
-avaliableOffers.forEach((avaliableoffer, i) => {
-  render(newEventOfferContainer, newEventOffersMarkUp(avaliableoffer, i));
-});
-
-const newEventPhotosContainer = newEventContainer.querySelector(`.event__photos-tape`);
-newEventData.photos.map((photo) => {
-  render(newEventPhotosContainer, newEventPhotoMarkUp(photo));
-});
-
-render(mainElem, tripDaysTemplate());
-
-const tripDaysContainer = mainElem.querySelector(`.trip-days`);
-
-tripPoints.map((eventlist, i) => {
-  render(tripDaysContainer, tripPointTemplate(i, tripStart));
-  const eventContainer = tripDaysContainer.querySelectorAll(`.trip-events__list`);
-  eventlist.map((event, j) => {
-    render(eventContainer[i], createEvent(event, i, tripStart));
-    const offerContainer = eventContainer[i].querySelectorAll(`.event__selected-offers`);
-    event.offers.map((offer) => {
-      render(offerContainer[j], createOffer(offer));
-    });
-  });
-});
+const tripDaysComponent = new TripDays();
+render(mainElem, tripDaysComponent.getElement());
+renderTrip(tripDaysComponent.getElement());

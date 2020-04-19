@@ -7,17 +7,17 @@ const MAX_OFFER_COUNT = 5;
 
 const eventTypes = [
   [
-    {name: `Taxi`, offers: [`Order Uber`, `Order Yandex`]},
-    {name: `Bus`, offers: [`Switch to comfort`, `Switch to business`, `Switch to express`]},
-    {name: `Train`, offers: [`Switch to comfort`, `Switch to business`, `Switch to express`]},
-    {name: `Ship`, offers: [`Switch to comfort`, `Switch to business`, `Pool pass`]},
-    {name: `Transport`, offers: [`Switch to comfort`, `Switch to business`]},
-    {name: `Drive`, offers: [`Rent economy-class car`, `Rent premium-class car`]},
-    {name: `Flight`, offers: [`Add luggage`, `Switch to business`, `Choose seats`]}
+    {name: `Taxi`, offers: [`Switch to comfort`, `Switch to comfort plus`, `Switch to business`, `Switch to premium`, `Switch to minivan`]},
+    {name: `Bus`, offers: [`Switch to comfort`, `Switch to business`, `Switch to express`, `On-board catering`, `Access to priority services`]},
+    {name: `Train`, offers: [`Switch to comfort`, `Switch to business`, `Switch to express`, `On-board catering`, `Access to priority services`]},
+    {name: `Ship`, offers: [`Switch to comfort`, `Switch to business`, `Pool pass`, `Bar card`, `Lounge pass`]},
+    {name: `Transport`, offers: [`Switch to comfort`, `Switch to business`, `Switch to express`, `On-board catering`, `Access to priority services`]},
+    {name: `Drive`, offers: [`Rent economy-class car`, `Rent premium-class car`, `Rent sport car`, `Rent bike`, `Rent sport bike`]},
+    {name: `Flight`, offers: [`Add luggage`, `Switch to business`, `Choose seats`, `Baggage carrier`, `Access to lounge`]}
   ], [
     {name: `Check-in`, offers: [`Add breakfast`, `Add lunch`, `Transfer to hotel`, `Luggage Forwarding`]},
     {name: `Sightseeing`, offers: [`Book tickets`, `Museum`, `All-day tour guide`, `Part-day tour guide`]},
-    {name: `Restaurant`, offers: [`Try luxury-class`]}
+    {name: `Restaurant`, offers: [`Try luxury-class`, `Advanced meal`]}
   ]
 ];
 
@@ -38,11 +38,12 @@ const generateEvent = () => {
   const getEventType = arrPicker(eventTypes[Math.round(Math.random())]);
 
   const generateOffers = (count, eventType) => {
-    return new Array(count)
-      .fill(``)
-      .map(() => {
+    const shuffledOffers = eventType.offers.sort(() => Math.random() - 0.5);
+    return shuffledOffers
+      .slice(0, count)
+      .map((offer) => {
         return {
-          name: arrPicker(eventType.offers),
+          name: offer,
           price: getRandomNumber(0, 100)
         };
       });
@@ -119,21 +120,21 @@ const generateTrip = (duration) => {
     .fill(``);
 };
 
-const tripDays = generateTrip(TRIP_DURATION);
+const tripPoints = generateTrip(TRIP_DURATION);
 
 let start = 0;
-tripDays.forEach((event, i) => {
+tripPoints.forEach((event, i) => {
   const getRandomEventCount = getRandomNumber(1, MAX_EVENT_PER_DAY + 1);
   const end = start + getRandomEventCount;
-  tripDays[i] = tripEvents.slice(start, end);
+  tripPoints[i] = tripEvents.slice(start, end);
   start = end;
 });
 
 const tripDestinations = new Set();
-tripDays.forEach((eventlist) => {
+tripPoints.forEach((eventlist) => {
   eventlist.forEach((event) => {
     tripDestinations.add(event.destination);
   });
 });
 
-export {tripDays, newEventData, eventTypes, tripDestinations};
+export {tripPoints, newEventData, eventTypes, tripDestinations};

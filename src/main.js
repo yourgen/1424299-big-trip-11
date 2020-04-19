@@ -1,94 +1,69 @@
-import {tripDays, newEventData, eventTypes, tripDestinations} from './data/event-data';
+import {tripPoints} from './data/event-data';
 
-import {tripInfoTemplate} from './components/trip-info';
-import {routeInfoTemplate} from './components/route-info';
-import {tripCostTemplate} from './components/trip-cost';
-import {menuTemplate} from './components/menu';
-import {filterTemplate} from './components/filter';
-import {sortingTemplate} from './components/sorting';
-import {newEventTemplate} from './components/event-new';
-import {eventTypeMarkup} from './components/event-new-items';
-import {destinationListMarkup} from './components/event-new-destinations';
-import {newEventOffersMarkUp} from './components/event-new-offers';
-import {newEventPhotoMarkUp} from './components/event-new-photos';
-import {tripDaysTemplate} from './components/trip-days';
-import {tripPointTemplate} from './components/trip-points';
-import {createEvent} from './components/event';
-import {createOffer} from './components/offer';
+import TripInfo from './components/trip-info';
+import RouteInfo from './components/route-info';
+import TripCost from './components/trip-cost';
+import Menu from './components/menu';
+import Filter from './components/filter';
+import Sorting from './components/sorting';
+import TripDays from './components/trip-days';
+import TripPoint from './components/trip-points';
 
-const render = (container, template, place = `beforeend`) => {
-  container.insertAdjacentHTML(place, template);
-};
+import Event from './components/event';
+import EditEvent from './components/event-edit';
+
+import {render, renderPosition} from "./utils.js";
 
 const tripStart = new Date();
+
+const renderEvent = (container, event, dayCount, date) => {
+  const replaceEventToEdit = () => {
+    container.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  };
+
+  const replaceEditToEvent = () => {
+    container.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  };
+
+  const eventComponent = new Event(event, dayCount, date);
+  const editBtn = eventComponent.getElement().querySelector(`.event__rollup-btn`);
+  editBtn.addEventListener(`click`, () => {
+    replaceEventToEdit();
+  });
+
+  const eventEditComponent = new EditEvent(event, dayCount, date);
+  eventEditComponent.getElement().addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    replaceEditToEvent();
+  });
+
+  render(container, eventComponent.getElement());
+};
+
+const renderTrip = (tripDaysComponent) => {
+  tripPoints.map((eventlist, dayCount) => {
+    render(tripDaysComponent, new TripPoint(dayCount, tripStart).getElement());
+    const eventContainer = tripDaysComponent.querySelectorAll(`.trip-events__list`);
+    eventlist.map((event) => {
+      renderEvent(eventContainer[dayCount], event, dayCount, tripStart);
+    });
+  });
+};
 
 const headerElem = document.querySelector(`.trip-main`);
 const tripControlsElem = headerElem.querySelector(`.trip-main__trip-controls`);
 const tripControlsHeaderElem = tripControlsElem.querySelectorAll(`h2`)[1];
 
-render(headerElem, tripInfoTemplate(), `afterbegin`);
-render(tripControlsHeaderElem, menuTemplate(), `beforebegin`);
-render(tripControlsElem, filterTemplate());
-
-const tripInfoElem = headerElem.querySelector(`.trip-main__trip-info`);
-render(tripInfoElem, routeInfoTemplate(tripStart));
-render(tripInfoElem, tripCostTemplate());
+const tripInfoComponent = new TripInfo();
+render(headerElem, tripInfoComponent.getElement(), renderPosition.AFTERBEGIN);
+render(tripInfoComponent.getElement(), new RouteInfo(tripStart).getElement());
+render(tripInfoComponent.getElement(), new TripCost(tripStart).getElement());
+render(tripControlsHeaderElem, new Menu().getElement(), renderPosition.BEFOREBEGIN);
+render(tripControlsElem, new Filter().getElement());
 
 const mainElem = document.querySelector(`.trip-events`);
-render(mainElem, sortingTemplate());
-render(mainElem, newEventTemplate(newEventData, tripStart));
+render(mainElem, new Sorting().getElement());
 
-const transferTypes = [];
-const activityTypes = [];
-const newEventContainer = mainElem.querySelector(`.trip-events__item`);
-
-const formSubtypesList = (subtype, index) => {
-  eventTypes[index].forEach((item) => {
-    subtype.push(item.name);
-  });
-  subtype.forEach((eventtype) => {
-    const subtypeContainer = newEventContainer.querySelectorAll(`.event__type-group`)[index];
-    render(subtypeContainer, eventTypeMarkup(eventtype, newEventData));
-  });
-};
-formSubtypesList(transferTypes, 0);
-formSubtypesList(activityTypes, 1);
-
-const destinationListContainer = newEventContainer.querySelector(`#destination-list-1`);
-for (let destination of tripDestinations) {
-  render(destinationListContainer, destinationListMarkup(destination));
-}
-
-const newEventOfferContainer = newEventContainer.querySelector(`.event__available-offers`);
-const avaliableOffers = [];
-eventTypes.forEach((item) => {
-  item.forEach((eventtype) => {
-    if (eventtype.name === newEventData.type) {
-      avaliableOffers.push(...eventtype.offers);
-    }
-  });
-});
-avaliableOffers.forEach((avaliableoffer, i) => {
-  render(newEventOfferContainer, newEventOffersMarkUp(avaliableoffer, i));
-});
-
-const newEventPhotosContainer = newEventContainer.querySelector(`.event__photos-tape`);
-newEventData.photos.map((photo) => {
-  render(newEventPhotosContainer, newEventPhotoMarkUp(photo));
-});
-
-render(mainElem, tripDaysTemplate());
-
-const tripDaysContainer = mainElem.querySelector(`.trip-days`);
-
-tripDays.map((eventlist, i) => {
-  render(tripDaysContainer, tripPointTemplate(i, tripStart));
-  const eventContainer = tripDaysContainer.querySelectorAll(`.trip-events__list`);
-  eventlist.map((event, j) => {
-    render(eventContainer[i], createEvent(event, i, tripStart));
-    const offerContainer = eventContainer[i].querySelectorAll(`.event__selected-offers`);
-    event.offers.map((offer) => {
-      render(offerContainer[j], createOffer(offer));
-    });
-  });
-});
+const tripDaysComponent = new TripDays();
+render(mainElem, tripDaysComponent.getElement());
+renderTrip(tripDaysComponent.getElement());

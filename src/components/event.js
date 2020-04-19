@@ -1,12 +1,21 @@
-import {castTimeFormat} from "../utils";
+import {createElement, castTimeFormat, getEventTitle} from "../utils";
 
-const createEvent = (event, daycount, date) => {
-  const getEventTitle = () => {
-    if (event.type === `Check-in` || event.type === `Sightseeing` || event.type === `Restaurant`) {
-      return `${event.type} in ${event.destination}`;
-    } else {
-      return `${event.type} to ${event.destination}`;
-    }
+const getEventTemplate = (event, dayCount, date) => {
+  const getOfferMarkup = (offer) => {
+    return (
+      `<li class="event__offer">
+        <span class="event__offer-title">${offer.name}</span>
+        &plus;
+        &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+      </li>`
+    );
+  };
+  const formOfferList = () => {
+    const offerList = event.offers
+      .map((offer) => getOfferMarkup(offer))
+      .join(`\n`);
+
+    return offerList;
   };
 
   const day = date.getDate();
@@ -19,13 +28,13 @@ const createEvent = (event, daycount, date) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${event.type.toLowerCase()}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${getEventTitle()}</h3>
+        <h3 class="event__title">${getEventTitle(event)} ${event.destination}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${year}-${monthNum}-${day + daycount}T${event.start}">${event.start}</time>
+            <time class="event__start-time" datetime="${year}-${monthNum}-${day + dayCount}T${event.start}">${event.start}</time>
             &mdash;
-            <time class="event__end-time" datetime="${year}-${monthNum}-${day + daycount}T${event.end}">${event.end}</time>
+            <time class="event__end-time" datetime="${year}-${monthNum}-${day + dayCount}T${event.end}">${event.end}</time>
           </p>
           <p class="event__duration">${event.duration}</p>
         </div>
@@ -36,7 +45,7 @@ const createEvent = (event, daycount, date) => {
 
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-
+          ${formOfferList()}
         </ul>
 
         <button class="event__rollup-btn" type="button">
@@ -47,4 +56,27 @@ const createEvent = (event, daycount, date) => {
   );
 };
 
-export {createEvent};
+export default class Event {
+  constructor(event, dayCount, date) {
+    this._event = event;
+    this._dayCount = dayCount;
+    this._date = date;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return getEventTemplate(this._event, this._dayCount, this._date);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

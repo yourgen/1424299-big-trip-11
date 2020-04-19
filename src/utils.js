@@ -11,10 +11,21 @@ export const arrPicker = (arr) => {
 };
 
 export const getEventTitle = (event) => {
-  if (event.type === `Check-in` || event.type === `Sightseeing` || event.type === `Restaurant`) {
-    return `${event.type} in`;
-  } else {
-    return `${event.type} to`;
+  switch (event.type) {
+    case `Check-in`:
+    case `Sightseeing`:
+    case `Restaurant`:
+      return `${event.type} in`;
+    case `Bus`:
+    case `Train`:
+    case `Taxi`:
+    case `Ship`:
+    case `Transport`:
+    case `Drive`:
+    case `Flight`:
+      return `${event.type} to`;
+    default:
+      return ``;
   }
 };
 

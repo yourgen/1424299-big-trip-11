@@ -13,7 +13,7 @@ import NoPoints from "./components/no-points";
 import Event from './components/event';
 import EditEvent from './components/event-edit';
 
-import {render, renderPosition} from "./utils.js";
+import {render, ElementPosition} from "./utils.js";
 
 const tripStart = new Date();
 
@@ -64,7 +64,7 @@ const renderTrip = () => {
     return;
   }
   renderHeader(tripInfoComponent);
-  
+
   render(mainElem, new Sorting().getElement());
   const tripDaysComponent = new TripDays().getElement();
   render(mainElem, tripDaysComponent);
@@ -83,8 +83,8 @@ const tripControlsElem = headerElem.querySelector(`.trip-main__trip-controls`);
 const tripControlsHeaderElem = tripControlsElem.querySelectorAll(`h2`)[1];
 
 const tripInfoComponent = new TripInfo();
-render(headerElem, tripInfoComponent.getElement(), renderPosition.AFTERBEGIN);
-render(tripControlsHeaderElem, new Menu().getElement(), renderPosition.BEFOREBEGIN);
+render(headerElem, tripInfoComponent.getElement(), ElementPosition.AFTERBEGIN);
+render(tripControlsHeaderElem, new Menu().getElement(), ElementPosition.BEFOREBEGIN);
 render(tripControlsElem, new Filter().getElement());
 
 renderTrip();

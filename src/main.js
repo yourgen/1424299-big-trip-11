@@ -25,16 +25,27 @@ const renderEvent = (container, event, dayCount, date) => {
     container.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
   };
 
+  const onEscKeyDown = (evt) => {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      replaceEditToEvent();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
   const eventComponent = new Event(event, dayCount, date);
   const editBtn = eventComponent.getElement().querySelector(`.event__rollup-btn`);
   editBtn.addEventListener(`click`, () => {
     replaceEventToEdit();
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   const eventEditComponent = new EditEvent(event, dayCount, date);
   eventEditComponent.getElement().addEventListener(`submit`, (evt) => {
     evt.preventDefault();
     replaceEditToEvent();
+    document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
   render(container, eventComponent.getElement());

@@ -8,6 +8,7 @@ import Filter from './components/filter';
 import Sorting from './components/sorting';
 import TripDays from './components/trip-days';
 import TripPoint from './components/trip-points';
+import NoPoints from "./components/no-points";
 
 import Event from './components/event';
 import EditEvent from './components/event-edit';
@@ -51,7 +52,23 @@ const renderEvent = (container, event, dayCount, date) => {
   render(container, eventComponent.getElement());
 };
 
-const renderTrip = (tripDaysComponent) => {
+const renderHeader = (container) => {
+  render(container.getElement(), new RouteInfo(tripStart).getElement());
+  render(container.getElement(), new TripCost(tripStart).getElement());
+}
+
+const renderTrip = () => {
+  const mainElem = document.querySelector(`.trip-events`);
+  if (tripPoints.length === 0) {
+    render(mainElem, new NoPoints().getElement());
+    return;
+  }
+  renderHeader(tripInfoComponent);
+  
+  render(mainElem, new Sorting().getElement());
+  const tripDaysComponent = new TripDays().getElement();
+  render(mainElem, tripDaysComponent);
+
   tripPoints.map((eventlist, dayCount) => {
     render(tripDaysComponent, new TripPoint(dayCount, tripStart).getElement());
     const eventContainer = tripDaysComponent.querySelectorAll(`.trip-events__list`);
@@ -67,14 +84,7 @@ const tripControlsHeaderElem = tripControlsElem.querySelectorAll(`h2`)[1];
 
 const tripInfoComponent = new TripInfo();
 render(headerElem, tripInfoComponent.getElement(), renderPosition.AFTERBEGIN);
-render(tripInfoComponent.getElement(), new RouteInfo(tripStart).getElement());
-render(tripInfoComponent.getElement(), new TripCost(tripStart).getElement());
 render(tripControlsHeaderElem, new Menu().getElement(), renderPosition.BEFOREBEGIN);
 render(tripControlsElem, new Filter().getElement());
 
-const mainElem = document.querySelector(`.trip-events`);
-render(mainElem, new Sorting().getElement());
-
-const tripDaysComponent = new TripDays();
-render(mainElem, tripDaysComponent.getElement());
-renderTrip(tripDaysComponent.getElement());
+renderTrip();

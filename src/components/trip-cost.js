@@ -2,17 +2,19 @@ import {tripPoints} from "../data/event-data";
 import {createElement} from "../utils";
 
 const getTripCostTemplate = () => {
-  const eventPrices = [];
-  tripPoints.forEach((eventlist) => {
-    eventlist.forEach((event) => {
-      eventPrices.push(event.price);
+  const countTripCost = () => {
+    const tripCost = [];
+    tripPoints.forEach((eventlist) => {
+      eventlist.forEach((event) => {
+        tripCost.push(event.price);
+      });
     });
-  });
-  const tripCost = eventPrices.reduce((acc, value) => acc + value);
+    return tripCost.reduce((acc, value) => acc + value);
+  };
 
   return (
     `<p class="trip-info__cost">
-      Total: &euro;&nbsp;<span class="trip-info__cost-value">${tripCost}</span>
+      Total: &euro;&nbsp;<span class="trip-info__cost-value">${countTripCost()}</span>
     </p>`
   );
 };

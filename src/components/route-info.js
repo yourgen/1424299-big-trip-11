@@ -3,24 +3,28 @@ import {months} from '../data/common-data';
 import {createElement} from "../utils";
 
 const getRouteInfoTemplate = (date) => {
-
-  const normalizeArrMiddle = (arr) => {
-    return arr.length % 2 === 0 ? arr[arr.length / 2] : arr[(arr.length - 1) / 2];
-  };
-
   const day = date.getDate();
   const month = months[date.getMonth()];
-  const middleDay = normalizeArrMiddle(tripPoints);
-  const lastDay = tripPoints[tripPoints.length - 1];
-  const middleDestination = tripDestinations.size > 3 ? `...` : normalizeArrMiddle(middleDay).destination;
+
+  const getMiddleDestination = () => {
+    switch (tripDestinations.length) {
+      case 3:
+        return `&mdash; ${tripDestinations[1]} &mdash;`;
+      case 2:
+      case 1:
+        return `&mdash;`;
+      default:
+        return `&mdash; ... &mdash;`;
+    }
+  };
 
   return (
     `<div class="trip-info__main">
       <h1 class="trip-info__title">
-        ${tripPoints[0][0].destination} &mdash; ${middleDestination} &mdash; ${lastDay[lastDay.length - 1].destination}
+        ${tripDestinations[0]} ${getMiddleDestination()} ${tripDestinations[tripDestinations.length - 1]}
       </h1>
 
-      <p class="trip-info__dates">${month} ${day}&nbsp;&mdash;&nbsp;${day + tripPoints.length - 1}</p>
+      <p class="trip-info__dates">${month} ${day}&nbsp;&mdash;&nbsp;${day + (tripPoints.length - 1) || ``}</p>
     </div>`
   );
 };

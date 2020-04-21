@@ -130,11 +130,12 @@ tripPoints.forEach((event, i) => {
   start = end;
 });
 
-const tripDestinations = new Set();
+const visitedCities = new Set();
 tripPoints.forEach((eventlist) => {
   eventlist.forEach((event) => {
-    tripDestinations.add(event.destination);
+    visitedCities.add(event.destination);
   });
 });
+const tripDestinations = Array.from(visitedCities);
 
 export {tripPoints, newEventData, eventTypes, tripDestinations};

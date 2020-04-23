@@ -7,7 +7,7 @@ import Menu from './components/menu';
 import Filter from './components/filter';
 import Sorting from './components/sorting';
 import TripDays from './components/trip-days';
-import TripPoint from './components/trip-points';
+import TripPoint from './components/trip-point';
 import NoPoints from "./components/no-points";
 
 import Event from './components/event';
@@ -55,7 +55,7 @@ const renderEvent = (container, event, dayCount, date) => {
 const renderHeader = (container) => {
   render(container.getElement(), new RouteInfo(tripStart).getElement());
   render(container.getElement(), new TripCost(tripStart).getElement());
-}
+};
 
 const renderTrip = () => {
   const mainElem = document.querySelector(`.trip-events`);

@@ -6,12 +6,15 @@ const getRouteInfoTemplate = (date) => {
   const day = date.getDate();
   const month = months[date.getMonth()];
 
+  const MAX_VISIBLE_DESTINATION_COUNT = 3;
+  const MIN_VISIBLE_DESTINATION_COUNT = 1;
+
   const getMiddleDestination = () => {
     switch (tripDestinations.length) {
-      case 3:
+      case MAX_VISIBLE_DESTINATION_COUNT:
         return `&mdash; ${tripDestinations[1]} &mdash;`;
-      case 2:
-      case 1:
+      case MAX_VISIBLE_DESTINATION_COUNT - MIN_VISIBLE_DESTINATION_COUNT:
+      case MIN_VISIBLE_DESTINATION_COUNT:
         return `&mdash;`;
       default:
         return `&mdash; ... &mdash;`;

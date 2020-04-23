@@ -13,7 +13,7 @@ import NoPoints from "./components/no-points";
 import Event from './components/event';
 import EditEvent from './components/event-edit';
 
-import {render, replace, remove, ElementPosition} from "./utils/render.js";
+import {render, replace, ElementPosition} from "./utils/render.js";
 
 const tripStart = new Date();
 
@@ -36,14 +36,14 @@ const renderEvent = (container, event, dayCount, date) => {
   };
 
   const eventComponent = new Event(event, dayCount, date);
-  const editBtn = eventComponent.getElement().querySelector(`.event__rollup-btn`);
-  editBtn.addEventListener(`click`, () => {
+  const eventEditComponent = new EditEvent(event, dayCount, date);
+
+  eventComponent.setEditBtnClickHandler(() => {
     replaceEventToEdit();
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
-  const eventEditComponent = new EditEvent(event, dayCount, date);
-  eventEditComponent.getElement().addEventListener(`submit`, (evt) => {
+  eventEditComponent.setSubmitHandler((evt) => {
     evt.preventDefault();
     replaceEditToEvent();
     document.removeEventListener(`keydown`, onEscKeyDown);

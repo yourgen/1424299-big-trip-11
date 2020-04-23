@@ -212,4 +212,7 @@ export default class EditEvent extends AbstractComponent {
   getTemplate() {
     return getEditEventTemplate(this._event, this._dayCount, this._date);
   }
+  setSubmitHandler(handler) {
+    this.getElement().addEventListener(`submit`, handler);
+  }
 }

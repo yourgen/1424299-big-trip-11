@@ -1,4 +1,4 @@
-import {createElement, castTimeFormat} from "../utils";
+import {createElement, castTimeFormat} from "../utils/common";
 import {months} from '../data/common-data';
 
 const getTripPointTemplate = (dayCount, date) => {

@@ -13,7 +13,7 @@ import NoPoints from "./components/no-points";
 import Event from './components/event';
 import EditEvent from './components/event-edit';
 
-import {render, ElementPosition} from "./utils.js";
+import {render, ElementPosition} from "./utils/common.js";
 
 const tripStart = new Date();
 

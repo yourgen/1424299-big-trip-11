@@ -1,5 +1,5 @@
 import {tripPoints} from "../data/event-data";
-import {createElement} from "../utils";
+import {createElement} from "../utils/common";
 
 const getTripCostTemplate = () => {
   const countTripCost = () => {

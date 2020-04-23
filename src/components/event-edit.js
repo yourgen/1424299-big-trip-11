@@ -1,5 +1,5 @@
 import {eventTypes, tripDestinations} from '../data/event-data';
-import {castTimeFormat, createElement, getRandomNumber, getEventTitle} from "../utils";
+import {castTimeFormat, createElement, getRandomNumber, getEventTitle} from "../utils/common";
 
 const getEditEventTemplate = (event, dayCount, date) => {
   const transferTypes = [];

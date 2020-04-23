@@ -1,4 +1,4 @@
-import {getRandomNumber, arrPicker, castTimeFormat} from "../utils.js";
+import {getRandomNumber, arrPicker, castTimeFormat} from "../utils/common.js";
 
 const EVENT_COUNT = 20;
 const MAX_EVENT_PER_DAY = 4;

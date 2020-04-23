@@ -1,4 +1,4 @@
-import {createElement, castTimeFormat, getEventTitle} from "../utils";
+import {createElement, castTimeFormat, getEventTitle} from "../utils/common";
 
 const getEventTemplate = (event, dayCount, date) => {
   const getOfferMarkup = (offer) => {

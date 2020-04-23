@@ -10,6 +10,8 @@ import TripDays from './components/trip-days';
 import TripPoint from './components/trip-point';
 import NoPoints from "./components/no-points";
 
+import TripController from "./controllers/trip";
+
 import Event from './components/event';
 import EditEvent from './components/event-edit';
 

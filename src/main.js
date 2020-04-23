@@ -13,17 +13,17 @@ import NoPoints from "./components/no-points";
 import Event from './components/event';
 import EditEvent from './components/event-edit';
 
-import {render, ElementPosition} from "./utils/render.js";
+import {render, replace, remove, ElementPosition} from "./utils/render.js";
 
 const tripStart = new Date();
 
 const renderEvent = (container, event, dayCount, date) => {
   const replaceEventToEdit = () => {
-    container.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+    replace(eventEditComponent, eventComponent);
   };
 
   const replaceEditToEvent = () => {
-    container.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+    replace(eventComponent, eventEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -49,29 +49,31 @@ const renderEvent = (container, event, dayCount, date) => {
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
-  render(container, eventComponent.getElement());
+  render(container, eventComponent);
 };
 
 const renderHeader = (container) => {
-  render(container.getElement(), new RouteInfo(tripStart).getElement());
-  render(container.getElement(), new TripCost(tripStart).getElement());
+  render(container, new RouteInfo(tripStart));
+  render(container, new TripCost(tripStart));
 };
 
 const renderTrip = () => {
   const mainElem = document.querySelector(`.trip-events`);
+
   if (tripPoints.length === 0) {
-    render(mainElem, new NoPoints().getElement());
+    render(mainElem, new NoPoints());
     return;
   }
-  renderHeader(tripInfoComponent);
 
-  render(mainElem, new Sorting().getElement());
-  const tripDaysComponent = new TripDays().getElement();
+  renderHeader(tripInfoComponent.getElement());
+
+  render(mainElem, new Sorting());
+  const tripDaysComponent = new TripDays();
   render(mainElem, tripDaysComponent);
 
   tripPoints.map((eventlist, dayCount) => {
-    render(tripDaysComponent, new TripPoint(dayCount, tripStart).getElement());
-    const eventContainer = tripDaysComponent.querySelectorAll(`.trip-events__list`);
+    render(tripDaysComponent.getElement(), new TripPoint(dayCount, tripStart));
+    const eventContainer = tripDaysComponent.getElement().querySelectorAll(`.trip-events__list`);
     eventlist.map((event) => {
       renderEvent(eventContainer[dayCount], event, dayCount, tripStart);
     });
@@ -83,8 +85,8 @@ const tripControlsElem = headerElem.querySelector(`.trip-main__trip-controls`);
 const tripControlsHeaderElem = tripControlsElem.querySelectorAll(`h2`)[1];
 
 const tripInfoComponent = new TripInfo();
-render(headerElem, tripInfoComponent.getElement(), ElementPosition.AFTERBEGIN);
-render(tripControlsHeaderElem, new Menu().getElement(), ElementPosition.BEFOREBEGIN);
-render(tripControlsElem, new Filter().getElement());
+render(headerElem, tripInfoComponent, ElementPosition.AFTERBEGIN);
+render(tripControlsHeaderElem, new Menu(), ElementPosition.BEFOREBEGIN);
+render(tripControlsElem, new Filter());
 
 renderTrip();

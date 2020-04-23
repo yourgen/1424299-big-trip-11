@@ -11,16 +11,16 @@ export const ElementPosition = {
   BEFOREEND: `beforeend`
 };
 
-export const render = (container, element, place = ElementPosition.BEFOREEND) => {
+export const render = (container, component, place = ElementPosition.BEFOREEND) => {
   switch (place) {
     case ElementPosition.AFTERBEGIN:
-      container.prepend(element);
+      container.prepend(component.getElement());
       break;
     case ElementPosition.BEFOREBEGIN:
-      container.before(element);
+      container.before(component.getElement());
       break;
     case ElementPosition.BEFOREEND:
-      container.append(element);
+      container.append(component.getElement());
       break;
   }
 };

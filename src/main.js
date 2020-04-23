@@ -6,7 +6,6 @@ import Filter from './components/filter';
 
 import TripController from "./controllers/trip";
 
-
 import {render, ElementPosition} from "./utils/render.js";
 
 const tripStart = new Date();

@@ -52,23 +52,25 @@ const renderEvent = (container, event, dayCount, date) => {
 export default class TripController {
   constructor(container) {
     this._container = container;
+    this._sortingComponent = new Sorting();
+    this._tripDaysComponent = new TripDays();
+    this._noPointsComponent = new NoPoints();
   }
 
   render(headerContainer, tripPoints, tripStart) {
     const container = this._container;
     if (tripPoints.length === 0) {
-      render(container, new NoPoints());
+      render(container, this._noPointsComponent);
       return;
     }
     renderHeader(headerContainer.getElement(), tripStart);
 
-    render(container, new Sorting());
-    const tripDaysComponent = new TripDays();
-    render(container, tripDaysComponent);
+    render(container, this._sortingComponent);
+    render(container, this._tripDaysComponent);
 
     tripPoints.map((eventlist, dayCount) => {
-      render(tripDaysComponent.getElement(), new TripPoint(dayCount, tripStart));
-      const eventContainer = tripDaysComponent.getElement().querySelectorAll(`.trip-events__list`);
+      render(this._tripDaysComponent.getElement(), new TripPoint(dayCount, tripStart));
+      const eventContainer = this._tripDaysComponent.getElement().querySelectorAll(`.trip-events__list`);
       eventlist.map((event) => {
         renderEvent(eventContainer[dayCount], event, dayCount, tripStart);
       });

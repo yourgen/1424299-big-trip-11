@@ -1,4 +1,6 @@
-import {createElement, castTimeFormat, getEventTitle} from "../utils/common";
+import {castTimeFormat, getEventTitle} from "../utils/common";
+import AbstractComponent from "./abstract-component.js";
+
 
 const getEventTemplate = (event, dayCount, date) => {
   const getOfferMarkup = (offer) => {
@@ -56,27 +58,15 @@ const getEventTemplate = (event, dayCount, date) => {
   );
 };
 
-export default class Event {
+export default class Event extends AbstractComponent {
   constructor(event, dayCount, date) {
+    super();
     this._event = event;
     this._dayCount = dayCount;
     this._date = date;
-    this._element = null;
   }
 
   getTemplate() {
     return getEventTemplate(this._event, this._dayCount, this._date);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

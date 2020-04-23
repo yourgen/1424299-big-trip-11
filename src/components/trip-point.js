@@ -1,5 +1,7 @@
-import {createElement, castTimeFormat} from "../utils/common";
+import {castTimeFormat} from "../utils/common";
 import {months} from '../data/common-data';
+import AbstractComponent from "./abstract-component.js";
+
 
 const getTripPointTemplate = (dayCount, date) => {
 
@@ -22,26 +24,14 @@ const getTripPointTemplate = (dayCount, date) => {
   );
 };
 
-export default class TripPoint {
+export default class TripPoint extends AbstractComponent {
   constructor(dayCount, date) {
+    super();
     this._dayCount = dayCount;
     this._date = date;
-    this._element = null;
   }
 
   getTemplate() {
     return getTripPointTemplate(this._dayCount, this._date);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

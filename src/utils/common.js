@@ -28,31 +28,3 @@ export const getEventTitle = (event) => {
       return ``;
   }
 };
-
-export const createElement = (template) => {
-  const newElement = document.createElement(`div`);
-  newElement.innerHTML = template;
-
-  return newElement.firstChild;
-};
-
-export const ElementPosition = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREBEGIN: `beforebegin`,
-  BEFOREEND: `beforeend`
-};
-
-export const render = (container, element, place = ElementPosition.BEFOREEND) => {
-  switch (place) {
-    case ElementPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case ElementPosition.BEFOREBEGIN:
-      container.before(element);
-      break;
-    case ElementPosition.BEFOREEND:
-      container.append(element);
-      break;
-  }
-};
-

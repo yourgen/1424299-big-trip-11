@@ -1,5 +1,7 @@
 import {eventTypes, tripDestinations} from '../data/event-data';
-import {castTimeFormat, createElement, getRandomNumber, getEventTitle} from "../utils";
+import {castTimeFormat, getRandomNumber, getEventTitle} from "../utils/common";
+import AbstractComponent from "./abstract-component.js";
+
 
 const getEditEventTemplate = (event, dayCount, date) => {
   const transferTypes = [];
@@ -199,27 +201,18 @@ const getEditEventTemplate = (event, dayCount, date) => {
   );
 };
 
-export default class EditEvent {
+export default class EditEvent extends AbstractComponent {
   constructor(event, dayCount, date) {
+    super();
     this._event = event;
     this._dayCount = dayCount;
     this._date = date;
-    this._element = null;
   }
 
   getTemplate() {
     return getEditEventTemplate(this._event, this._dayCount, this._date);
   }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setSubmitHandler(handler) {
+    this.getElement().addEventListener(`submit`, handler);
   }
 }

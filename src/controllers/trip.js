@@ -57,7 +57,7 @@ export default class TripController {
     this._noPointsComponent = new NoPoints();
   }
 
-  render(headerContainer, tripPoints, tripStart) {
+  render(headerContainer, tripPoints, tripEvents, tripStart) {
     const container = this._container;
     if (tripPoints.length === 0) {
       render(container, this._noPointsComponent);

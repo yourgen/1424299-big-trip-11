@@ -1,6 +1,6 @@
 import AbstractComponent from "./abstract-component.js";
 
-const SortingType = {
+export const SortingType = {
   DURATION: `duration`,
   PRICE: `price`,
   DEFAULT: `default`,

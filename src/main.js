@@ -1,4 +1,4 @@
-import {tripPoints} from './data/event-data';
+import {tripPoints, tripEvents} from './data/event-data';
 
 import TripInfo from './components/trip-info';
 import Menu from './components/menu';
@@ -21,4 +21,4 @@ render(tripControlsHeaderElem, new Menu(), ElementPosition.BEFOREBEGIN);
 render(tripControlsElem, new Filter());
 
 const tripController = new TripController(mainElem);
-tripController.render(tripInfoComponent, tripPoints, tripStart);
+tripController.render(tripInfoComponent, tripPoints, tripEvents, tripStart);

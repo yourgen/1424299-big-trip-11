@@ -8,8 +8,8 @@ export const castDurationFormat = (durationTime) => {
   const durationDays = castTimeFormat(Math.trunc(durationTime / 1440));
   if (durationTime > 1440) {
     return `${durationDays}D ${durationHours}H ${durationMinutes}M`;
-  } else if (durationTime > 1440) {
-    return `${durationHours}D ${durationMinutes}M`;
+  } else if (durationTime > 60) {
+    return `${durationHours}H ${durationMinutes}M`;
   } else {
     return `${durationMinutes}M`;
   }

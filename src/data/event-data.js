@@ -130,4 +130,4 @@ tripPoints.forEach((eventlist) => {
 });
 const tripDestinations = Array.from(visitedCities);
 
-export {tripPoints, tripEvents, newEventData, eventTypes, tripDestinations};
+export {tripPoints, newEventData, eventTypes, tripDestinations};

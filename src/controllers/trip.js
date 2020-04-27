@@ -1,6 +1,6 @@
 import RouteInfo from '../components/route-info';
 import TripCost from '../components/trip-cost';
-import Sorting from '../components/sorting';
+import Sorting, {SortingType} from '../components/sorting';
 import TripDays from '../components/trip-days';
 import TripPoint from '../components/trip-point';
 import NoPoints from "../components/no-points";
@@ -47,6 +47,25 @@ const renderEvent = (container, event, dayCount, date) => {
   });
 
   render(container, eventComponent);
+};
+
+const getSortedEvents = (events, sortingType) => {
+  let sortedEvents = [];
+  const activeEvents = events.slice();
+
+  switch (sortingType) {
+    case SortingType.DURATION:
+      sortedEvents = activeEvents.sort((a, b) => b.duration - a.duration);
+      break;
+    case SortingType.PRICE:
+      sortedEvents = activeEvents.sort((a, b) => b.price - a.price);
+      break;
+    case SortingType.DEFAULT:
+      sortedEvents = activeEvents;
+      break;
+  }
+
+  return sortedEvents;
 };
 
 export default class TripController {

@@ -88,17 +88,37 @@ export default class TripController {
     render(container, this._sortingComponent);
     render(container, this._tripDaysComponent);
 
-    tripPoints.map((eventlist, dayCount) => {
-      render(this._tripDaysComponent.getElement(), new TripPoint(dayCount, tripStart));
+    const tripDaysElement = this._tripDaysComponent.getElement();
 
-      const eventContainer = this._tripDaysComponent.getElement().querySelectorAll(`.trip-events__list`);
+    tripPoints.map((eventlist, dayCount) => {
+      render(tripDaysElement, new TripPoint(dayCount, tripStart));
+
+      const eventContainer = tripDaysElement.querySelectorAll(`.trip-events__list`);
       eventlist.map((event) => {
         renderEvent(eventContainer[dayCount], event, dayCount, tripStart);
       });
     });
 
-    this._sortingComponent.setSortingTypeChangeHandler(() => {
+    this._sortingComponent.setSortingTypeChangeHandler((sortingType) => {
+      const sortedEvents = getSortedEvents(tripPoints, sortingType);
+      tripDaysElement.innerHTML = ``;
 
+      if (sortingType === SortingType.DEFAULT) {
+        sortedEvents.map((eventlist, dayCount) => {
+          render(tripDaysElement, new TripPoint(dayCount, tripStart));
+
+          const eventContainer = tripDaysElement.querySelectorAll(`.trip-events__list`);
+          eventlist.map((event) => {
+            renderEvent(eventContainer[dayCount], event, dayCount, tripStart);
+          });
+        });
+      } else {
+        render(tripDaysElement, new TripPoint(0, tripStart));
+        const eventCommonContainer = tripDaysElement.querySelector(`.trip-events__list`);
+        sortedEvents.map((event) => {
+          renderEvent(eventCommonContainer, event, 0, tripStart);
+        });
+      }
     });
   }
 }

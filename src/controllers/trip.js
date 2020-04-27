@@ -14,6 +14,13 @@ const renderHeader = (container, tripStart) => {
   render(container, new TripCost(tripStart));
 };
 
+const renderEventList = (eventlist, parent, dayCount = 0, date) => {
+  const container = parent.querySelectorAll(`.trip-events__list`);
+  eventlist.map((event) => {
+    renderEvent(container[dayCount], event, dayCount, date);
+  });
+};
+
 const renderEvent = (container, event, dayCount, date) => {
   const replaceEventToEdit = () => {
     replace(eventEditComponent, eventComponent);
@@ -91,12 +98,9 @@ export default class TripController {
     const tripDaysElement = this._tripDaysComponent.getElement();
 
     tripPoints.map((eventlist, dayCount) => {
-      render(tripDaysElement, new TripPoint(dayCount, tripStart));
+      render(tripDaysElement, new TripPoint(dayCount + 1, tripStart));
 
-      const eventContainer = tripDaysElement.querySelectorAll(`.trip-events__list`);
-      eventlist.map((event) => {
-        renderEvent(eventContainer[dayCount], event, dayCount, tripStart);
-      });
+      renderEventList(eventlist, tripDaysElement, dayCount, tripStart);
     });
 
     this._sortingComponent.setSortingTypeChangeHandler((sortingType) => {
@@ -105,20 +109,16 @@ export default class TripController {
 
       if (sortingType === SortingType.DEFAULT) {
         sortedEvents.map((eventlist, dayCount) => {
-          render(tripDaysElement, new TripPoint(dayCount, tripStart));
+          render(tripDaysElement, new TripPoint(dayCount + 1, tripStart));
 
-          const eventContainer = tripDaysElement.querySelectorAll(`.trip-events__list`);
-          eventlist.map((event) => {
-            renderEvent(eventContainer[dayCount], event, dayCount, tripStart);
-          });
+          renderEventList(eventlist, tripDaysElement, dayCount, tripStart);
         });
       } else {
-        render(tripDaysElement, new TripPoint(0, tripStart));
-        const eventCommonContainer = tripDaysElement.querySelector(`.trip-events__list`);
-        sortedEvents.map((event) => {
-          renderEvent(eventCommonContainer, event, 0, tripStart);
-        });
+        const NO_DAYS = 0;
+        render(tripDaysElement, new TripPoint(NO_DAYS, tripStart));
+        renderEventList(sortedEvents, tripDaysElement, NO_DAYS, tripStart);
       }
     });
   }
 }
+

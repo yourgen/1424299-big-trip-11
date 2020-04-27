@@ -75,5 +75,9 @@ export default class TripController {
         renderEvent(eventContainer[dayCount], event, dayCount, tripStart);
       });
     });
+
+    this._sortingComponent.setSortingTypeChangeHandler(() => {
+
+    });
   }
 }

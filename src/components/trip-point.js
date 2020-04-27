@@ -4,7 +4,6 @@ import AbstractComponent from "./abstract-component.js";
 
 
 const getTripPointTemplate = (dayCount, date) => {
-
   const day = date.getDate();
   const monthText = months[date.getMonth()];
   const monthNum = castTimeFormat(date.getMonth());
@@ -13,8 +12,10 @@ const getTripPointTemplate = (dayCount, date) => {
   return (
     `<li class="trip-days__item  day">
       <div class="day__info">
-        <span class="day__counter">${dayCount + 1}</span>
-        <time class="day__date" datetime="${year}-${monthNum}-${day + dayCount}">${monthText.toUpperCase()} ${day + dayCount}</time>
+      ${dayCount ? `
+        <span class="day__counter">${dayCount}</span>
+        <time class="day__date" datetime="${year}-${monthNum}-${day - 1 + dayCount}">${monthText.toUpperCase()} ${day + dayCount}</time>
+      ` : ``}
       </div>
 
       <ul class="trip-events__list">

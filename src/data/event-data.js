@@ -69,25 +69,17 @@ const generateEvent = () => {
   };
 
   const startTime = getRandomNumber(0, 1440);
-  const durationTime = getRandomNumber(10, 120);
+  const durationTime = getRandomNumber(10, 12000);
   const endTime = startTime + durationTime;
 
   const generateStartTime = () => {
-    const startHours = castTimeFormat(Math.trunc(startTime / 60));
+    const startHours = castTimeFormat(Math.trunc(startTime / 60) % 24);
     const startMinutes = castTimeFormat(startTime % 60);
     return `${startHours}:${startMinutes}`;
   };
 
-  const generateDuration = () => {
-    const durationHours = castTimeFormat(Math.trunc(durationTime / 60));
-    const durationMinutes = castTimeFormat(durationTime % 60);
-    return (
-      durationHours !== `00` ? `${durationHours}H ${durationMinutes}M` : `${durationMinutes}M`
-    );
-  };
-
   const generateEndTime = () => {
-    const endHours = castTimeFormat(Math.trunc(endTime / 60));
+    const endHours = castTimeFormat(Math.trunc(endTime / 60) % 24);
     const endMinutes = castTimeFormat(endTime % 60);
     return `${endHours}:${endMinutes}`;
   };
@@ -99,7 +91,7 @@ const generateEvent = () => {
     description: generateDescription(descrSentenceCount),
     photos: generatePhotos(photosCount),
     start: generateStartTime(),
-    duration: generateDuration(),
+    duration: durationTime,
     end: generateEndTime(),
     price: getRandomNumber(0, 1000)
   };

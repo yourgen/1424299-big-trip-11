@@ -1,4 +1,4 @@
-import {castTimeFormat, getEventTitle} from "../utils/common";
+import {castTimeFormat, getEventTitle, castDurationFormat} from "../utils/common";
 import AbstractComponent from "./abstract-component.js";
 
 
@@ -38,7 +38,7 @@ const getEventTemplate = (event, dayCount, date) => {
             &mdash;
             <time class="event__end-time" datetime="${year}-${monthNum}-${day + dayCount}T${event.end}">${event.end}</time>
           </p>
-          <p class="event__duration">${event.duration}</p>
+          <p class="event__duration">${castDurationFormat(event.duration)}</p>
         </div>
 
         <p class="event__price">

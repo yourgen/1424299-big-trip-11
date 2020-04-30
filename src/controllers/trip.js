@@ -56,22 +56,24 @@ export default class TripController {
   render(headerContainer, events, tripStart) {
     this._events = events;
     this._tripStart = tripStart;
+
     const container = this._container;
-    if (events.length === 0) {
+
+    if (this._events.length === 0) {
       render(container, this._noPointsComponent);
       return;
     }
-    renderHeader(headerContainer.getElement(), tripStart);
+    renderHeader(headerContainer.getElement(), this._tripStart);
 
     render(container, this._sortingComponent);
     render(container, this._tripDaysComponent);
 
     const tripDaysElement = this._tripDaysComponent.getElement();
 
-    events.map((eventlist, dayCount) => {
-      render(tripDaysElement, new TripPoint(dayCount + 1, tripStart));
+    this._events.map((eventlist, dayCount) => {
+      render(tripDaysElement, new TripPoint(dayCount + 1, this._tripStart));
 
-      renderEventList(eventlist, tripDaysElement, dayCount, tripStart);
+      renderEventList(eventlist, tripDaysElement, dayCount, this._tripStart);
     });
   }
 
@@ -90,5 +92,5 @@ export default class TripController {
       render(tripDaysElement, new TripPoint(NO_DAYS, this._tripStart));
       renderEventList(sortedEvents, tripDaysElement, NO_DAYS, this._tripStart);
     }
-  };
+  }
 }

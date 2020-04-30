@@ -5,6 +5,8 @@ import TripDays from '../components/trip-days';
 import TripPoint from '../components/trip-point';
 import NoPoints from "../components/no-points";
 
+import EventController from "./event";
+
 import {render} from "../utils/render.js";
 
 const renderHeader = (container, tripStart) => {
@@ -13,9 +15,10 @@ const renderHeader = (container, tripStart) => {
 };
 
 const renderEventList = (eventlist, parent, dayCount = 0, date) => {
-  const container = parent.querySelectorAll(`.trip-events__list`);
+  const container = parent.querySelectorAll(`.trip-events__list`)[dayCount];
   eventlist.map((event) => {
-    renderEvent(container[dayCount], event, dayCount, date);
+    const eventController = new EventController(container);
+    eventController.render(event, dayCount, date);
   });
 };
 
@@ -72,7 +75,6 @@ export default class TripController {
 
     this._events.map((eventlist, dayCount) => {
       render(tripDaysElement, new TripPoint(dayCount + 1, this._tripStart));
-
       renderEventList(eventlist, tripDaysElement, dayCount, this._tripStart);
     });
   }

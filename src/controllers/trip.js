@@ -4,10 +4,8 @@ import Sorting, {SortingType} from '../components/sorting';
 import TripDays from '../components/trip-days';
 import TripPoint from '../components/trip-point';
 import NoPoints from "../components/no-points";
-import Event from '../components/event';
-import EditEvent from '../components/event-edit';
 
-import {render, replace} from "../utils/render.js";
+import {render} from "../utils/render.js";
 
 const renderHeader = (container, tripStart) => {
   render(container, new RouteInfo(tripStart));
@@ -21,40 +19,6 @@ const renderEventList = (eventlist, parent, dayCount = 0, date) => {
   });
 };
 
-const renderEvent = (container, event, dayCount, date) => {
-  const replaceEventToEdit = () => {
-    replace(eventEditComponent, eventComponent);
-  };
-
-  const replaceEditToEvent = () => {
-    replace(eventComponent, eventEditComponent);
-  };
-
-  const onEscKeyDown = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      replaceEditToEvent();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  const eventComponent = new Event(event, dayCount, date);
-  const eventEditComponent = new EditEvent(event, dayCount, date);
-
-  eventComponent.setEditBtnClickHandler(() => {
-    replaceEventToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
-
-  eventEditComponent.setSubmitHandler((evt) => {
-    evt.preventDefault();
-    replaceEditToEvent();
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  });
-
-  render(container, eventComponent);
-};
 
 const getSortedEvents = (events, sortingType) => {
   let sortedEvents = [];
@@ -110,7 +74,6 @@ export default class TripController {
       if (sortingType === SortingType.DEFAULT) {
         sortedEvents.map((eventlist, dayCount) => {
           render(tripDaysElement, new TripPoint(dayCount + 1, tripStart));
-
           renderEventList(eventlist, tripDaysElement, dayCount, tripStart);
         });
       } else {
@@ -121,4 +84,3 @@ export default class TripController {
     });
   }
 }
-

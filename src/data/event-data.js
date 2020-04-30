@@ -93,7 +93,8 @@ const generateEvent = () => {
     start: generateStartTime(),
     duration: durationTime,
     end: generateEndTime(),
-    price: getRandomNumber(0, 1000)
+    price: getRandomNumber(0, 1000),
+    isFavorite: Math.random() > 0.5
   };
 };
 

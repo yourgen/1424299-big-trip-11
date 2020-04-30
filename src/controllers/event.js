@@ -3,8 +3,9 @@ import EditEvent from '../components/event-edit';
 import {render, replace} from "../utils/render.js";
 
 export default class EventController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
+    this._onDataChange = onDataChange;
 
     this._eventComponent = null;
     this._eventEditComponent = null;
@@ -13,6 +14,9 @@ export default class EventController {
   }
 
   render(event, dayCount, date, eventIndex) {
+    const oldEventComponent = this._eventComponent;
+    const oldEventEditComponent = this._eventEditComponent;
+
     this._eventComponent = new Event(event, dayCount, date);
     this._eventEditComponent = new EditEvent(event, dayCount, date, eventIndex);
 
@@ -33,10 +37,17 @@ export default class EventController {
     });
 
     this._eventEditComponent.setFavoritesBtnClickHandler(() => {
-
+      this._onDataChange(this, event, Object.assign({}, event, {
+        isFavorite: !event.isFavorite,
+      }));
     });
 
-    render(this._container, this._eventComponent);
+    if (oldEventEditComponent && oldEventComponent) {
+      replace(this._eventComponent, oldEventComponent);
+      replace(this._eventEditComponent, oldEventEditComponent);
+    } else {
+      render(this._container, this._eventComponent);
+    }
   }
 
   _replaceEventToEdit() {

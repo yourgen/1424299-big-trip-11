@@ -14,10 +14,10 @@ const renderHeader = (container, tripStart) => {
   render(container, new TripCost(tripStart));
 };
 
-const renderEventList = (eventlist, parent, dayCount = 0, date) => {
+const renderEventList = (eventlist, parent, dayCount = 0, date, onDataChange) => {
   const container = parent.querySelectorAll(`.trip-events__list`)[dayCount];
   eventlist.map((event, eventIndex) => {
-    const eventController = new EventController(container);
+    const eventController = new EventController(container, onDataChange);
     eventController.render(event, dayCount, date, eventIndex + 1);
   });
 };
@@ -52,6 +52,8 @@ export default class TripController {
     this._sortingComponent = new Sorting();
     this._tripDaysComponent = new TripDays();
     this._noPointsComponent = new NoPoints();
+
+    this._onDataChange = this._onDataChange.bind(this);
     this._onSortingTypeChange = this._onSortingTypeChange.bind(this);
     this._sortingComponent.setSortingTypeChangeHandler(this._onSortingTypeChange);
   }
@@ -70,12 +72,11 @@ export default class TripController {
 
     render(container, this._sortingComponent);
     render(container, this._tripDaysComponent);
-
     const tripDaysElement = this._tripDaysComponent.getElement();
 
     this._events.map((eventlist, dayCount) => {
       render(tripDaysElement, new TripPoint(dayCount + 1, this._tripStart));
-      renderEventList(eventlist, tripDaysElement, dayCount, this._tripStart);
+      renderEventList(eventlist, tripDaysElement, dayCount, this._tripStart, this._onDataChange);
     });
   }
 
@@ -87,12 +88,23 @@ export default class TripController {
     if (sortingType === SortingType.DEFAULT) {
       sortedEvents.map((eventlist, dayCount) => {
         render(tripDaysElement, new TripPoint(dayCount + 1, this._tripStart));
-        renderEventList(eventlist, tripDaysElement, dayCount, this._tripStart);
+        renderEventList(eventlist, tripDaysElement, dayCount, this._tripStart, this._onDataChange);
       });
     } else {
       const NO_DAYS = 0;
       render(tripDaysElement, new TripPoint(NO_DAYS, this._tripStart));
-      renderEventList(sortedEvents, tripDaysElement, NO_DAYS, this._tripStart);
+      renderEventList(sortedEvents, tripDaysElement, NO_DAYS, this._tripStart, this._onDataChange);
     }
+  }
+
+  _onDataChange(eventController, oldData, newData) {
+    this._events.forEach((eventlist, dayCount) => {
+      const index = eventlist.findIndex((it) => it === oldData);
+      if (index === -1) {
+        return;
+      }
+      eventlist = [].concat(this._events[dayCount].slice(0, index), newData, this._events[dayCount].slice(index + 1));
+      eventController.render(this._events[dayCount][index], dayCount, this._tripStart, index + 1);
+    });
   }
 }

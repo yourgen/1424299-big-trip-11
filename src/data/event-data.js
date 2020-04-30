@@ -3,7 +3,7 @@ import {getRandomNumber, arrPicker, castTimeFormat} from "../utils/common.js";
 const EVENT_COUNT = 20;
 const MAX_EVENT_PER_DAY = 4;
 const TRIP_DURATION = 5;
-const MAX_OFFER_COUNT = 5;
+const MAX_OFFER_COUNT = 3;
 
 const eventTypes = [
   [

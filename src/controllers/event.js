@@ -32,6 +32,10 @@ export default class EventController {
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
+    this._eventEditComponent.setFavoritesBtnClickHandler(() => {
+
+    });
+
     render(this._container, this._eventComponent);
   }
 

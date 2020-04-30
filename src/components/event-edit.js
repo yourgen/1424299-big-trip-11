@@ -244,4 +244,8 @@ export default class EditEvent extends AbstractComponent {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
   }
+  setFavoritesBtnClickHandler(handler) {
+    this.getElement().querySelector(`.event__favorite-checkbox`)
+      .addEventListener(`click`, handler);
+  }
 }

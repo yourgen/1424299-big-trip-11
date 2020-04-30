@@ -240,4 +240,8 @@ export default class EditEvent extends AbstractComponent {
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
   }
+  setCloseBtnClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
+  }
 }

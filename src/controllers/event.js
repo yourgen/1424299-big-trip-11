@@ -27,6 +27,11 @@ export default class EventController {
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
+    this._eventEditComponent.setCloseBtnClickHandler(() => {
+      this._replaceEditToEvent();
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+    });
+
     render(this._container, this._eventComponent);
   }
 

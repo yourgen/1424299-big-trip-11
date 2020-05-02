@@ -1,6 +1,6 @@
 import {eventTypes, tripDestinations} from '../data/event-data';
 import {castTimeFormat, getRandomNumber, getEventTitle} from "../utils/common";
-import AbstractComponent from "./abstract-component.js";
+import AbstractSmartComponent from "./abstract-smart-component";
 
 
 const getEditEventTemplate = (event, dayCount, date, eventIndex) => {
@@ -57,7 +57,11 @@ const getEditEventTemplate = (event, dayCount, date, eventIndex) => {
 
   const getEditEventOffersMarkUp = (avaliableOffer, offerNumber) => {
     const activeOffersCheck = () => {
-      return Math.random() > 0.5 ? `checked` : ``;
+      const activeOffers = [];
+      event.offers.forEach((offer) => {
+        activeOffers.push(offer.name);
+      });
+      return activeOffers.indexOf(avaliableOffer) !== -1 ? `checked` : ``;
     };
 
     return (
@@ -186,7 +190,14 @@ const getEditEventTemplate = (event, dayCount, date, eventIndex) => {
           <button class="event__reset-btn" type="reset">Cancel</button>
         ` : `
           <button class="event__reset-btn" type="reset">Delete</button>
-          <input id="event-favorite-${eventIndex}" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" checked="">
+          <input 
+            id="event-favorite-${eventIndex}"
+            class="event__favorite-checkbox
+            visually-hidden"
+            type="checkbox"
+            name="event-favorite"
+            ${event.isFavorite ? `checked` : ``}
+          >
           <label class="event__favorite-btn" for="event-favorite-${eventIndex}">
             <span class="visually-hidden">Add to favorite</span>
             <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -225,27 +236,76 @@ const getEditEventTemplate = (event, dayCount, date, eventIndex) => {
   );
 };
 
-export default class EditEvent extends AbstractComponent {
+export default class EditEvent extends AbstractSmartComponent {
   constructor(event, dayCount, date, eventIndex) {
     super();
     this._event = event;
     this._dayCount = dayCount;
     this._date = date;
     this._eventIndex = eventIndex;
+
+    this._submitHandler = null;
+    this._closeBtnClickHandler = null;
+    this._favoritesBtnClickHandler = null;
+
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
     return getEditEventTemplate(this._event, this._dayCount, this._date, this._eventIndex);
   }
+
+  recoverListeners() {
+    this.setSubmitHandler(this._submitHandler);
+    this.setCloseBtnClickHandler(this._closeBtnClickHandler);
+    this.setFavoritesBtnClickHandler(this._favoritesBtnClickHandler);
+    this._subscribeOnEvents();
+  }
+
+  rerender() {
+    super.rerender();
+  }
+
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
+    this._submitHandler = handler;
   }
   setCloseBtnClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
+    this._closeBtnClickHandler = handler;
   }
   setFavoritesBtnClickHandler(handler) {
     this.getElement().querySelector(`.event__favorite-checkbox`)
       .addEventListener(`click`, handler);
+    this._favoritesBtnClickHandler = handler;
+  }
+
+  _subscribeOnEvents() {
+    const element = this.getElement();
+
+    const eventTypeBtns = element.querySelectorAll(`.event__type-input`);
+    eventTypeBtns.forEach((btn) => {
+      btn.addEventListener(`click`, (evt) => {
+        this._event.type = evt.target.value.charAt(0).toUpperCase() + evt.target.value.slice(1);
+
+        this.rerender();
+      });
+    });
+
+    element.querySelector(`.event__input--destination`)
+      .addEventListener(`change`, (evt) => {
+        this._event.destination = evt.target.value;
+        this._event.description = `Description changed`;
+
+        this.rerender();
+      });
+
+    element.querySelector(`.event__input--price`)
+      .addEventListener(`change`, (evt) => {
+        this._event.price = evt.target.value;
+
+        this.rerender();
+      });
   }
 }

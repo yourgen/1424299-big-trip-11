@@ -2,10 +2,17 @@ import Event from '../components/event';
 import EditEvent from '../components/event-edit';
 import {render, replace} from "../utils/render.js";
 
+const Mode = {
+  DEFAULT: `default`,
+  EDIT: `edit`,
+};
+
 export default class EventController {
-  constructor(container, onDataChange) {
+  constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this._onDataChange = onDataChange;
+    this._onViewChange = onViewChange;
+    this._mode = Mode.DEFAULT;
 
     this._eventComponent = null;
     this._eventEditComponent = null;
@@ -50,12 +57,23 @@ export default class EventController {
     }
   }
 
+  setDefaultView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceEditToEvent();
+    }
+  }
+
   _replaceEventToEdit() {
+    this._onViewChange();
     replace(this._eventEditComponent, this._eventComponent);
+    this._mode = Mode.EDIT;
   }
 
   _replaceEditToEvent() {
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._eventEditComponent.reset();
     replace(this._eventComponent, this._eventEditComponent);
+    this._mode = Mode.DEFAULT;
   }
 
   _onEscKeyDown(evt) {

@@ -14,11 +14,13 @@ const renderHeader = (container, tripStart) => {
   render(container, new TripCost(tripStart));
 };
 
-const renderEventList = (eventlist, parent, dayCount = 0, date, onDataChange) => {
+const renderEventList = (eventlist, parent, dayCount = 0, date, onDataChange, onViewChange) => {
   const container = parent.querySelectorAll(`.trip-events__list`)[dayCount];
-  eventlist.map((event, eventIndex) => {
-    const eventController = new EventController(container, onDataChange);
+  return eventlist.map((event, eventIndex) => {
+    const eventController = new EventController(container, onDataChange, onViewChange);
     eventController.render(event, dayCount, date, eventIndex + 1);
+
+    return eventController;
   });
 };
 
@@ -48,6 +50,7 @@ export default class TripController {
     this._container = container;
 
     this._events = [];
+    this._activeEventControllers = [];
     this._tripStart = null;
     this._sortingComponent = new Sorting();
     this._tripDaysComponent = new TripDays();
@@ -55,6 +58,8 @@ export default class TripController {
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortingTypeChange = this._onSortingTypeChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
+
     this._sortingComponent.setSortingTypeChangeHandler(this._onSortingTypeChange);
   }
 
@@ -74,10 +79,13 @@ export default class TripController {
     render(container, this._tripDaysComponent);
     const tripDaysElement = this._tripDaysComponent.getElement();
 
-    this._events.map((eventlist, dayCount) => {
+    const activeEventControllers = this._events.map((eventlist, dayCount) => {
       render(tripDaysElement, new TripPoint(dayCount + 1, this._tripStart));
-      renderEventList(eventlist, tripDaysElement, dayCount, this._tripStart, this._onDataChange);
+
+      const eventControllerDayList = renderEventList(eventlist, tripDaysElement, dayCount, this._tripStart, this._onDataChange, this._onViewChange);
+      return eventControllerDayList;
     });
+    this._activeEventControllers = activeEventControllers;
   }
 
   _onSortingTypeChange(sortingType) {
@@ -86,14 +94,19 @@ export default class TripController {
     tripDaysElement.innerHTML = ``;
 
     if (sortingType === SortingType.DEFAULT) {
-      sortedEvents.map((eventlist, dayCount) => {
+      const activeEventControllers = sortedEvents.map((eventlist, dayCount) => {
         render(tripDaysElement, new TripPoint(dayCount + 1, this._tripStart));
-        renderEventList(eventlist, tripDaysElement, dayCount, this._tripStart, this._onDataChange);
+
+        const eventControllerDayList = renderEventList(eventlist, tripDaysElement, dayCount, this._tripStart, this._onDataChange, this._onViewChange);
+        return eventControllerDayList;
       });
+
+      this._activeEventControllers = activeEventControllers;
     } else {
       const NO_DAYS = 0;
       render(tripDaysElement, new TripPoint(NO_DAYS, this._tripStart));
-      renderEventList(sortedEvents, tripDaysElement, NO_DAYS, this._tripStart, this._onDataChange);
+      const activeEventControllers = renderEventList(sortedEvents, tripDaysElement, NO_DAYS, this._tripStart, this._onDataChange, this._onViewChange);
+      this._activeEventControllers = activeEventControllers;
     }
   }
 
@@ -105,6 +118,16 @@ export default class TripController {
       }
       eventlist = [].concat(this._events[dayCount].slice(0, index), newData, this._events[dayCount].slice(index + 1));
       eventController.render(this._events[dayCount][index], dayCount, this._tripStart, index + 1);
+    });
+  }
+
+  _onViewChange() {
+    this._activeEventControllers.forEach((item) => {
+      if (Array.isArray(item)) {
+        item.forEach((controller) => controller.setDefaultView());
+      } else {
+        item.setDefaultView();
+      }
     });
   }
 }

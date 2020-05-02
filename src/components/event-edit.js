@@ -266,6 +266,10 @@ export default class EditEvent extends AbstractSmartComponent {
     super.rerender();
   }
 
+  reset() {
+    this.rerender();
+  }
+
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
     this._submitHandler = handler;

@@ -57,7 +57,7 @@ const getEditEventTemplate = (event, dayCount, date, eventIndex) => {
   };
 
   const getEditEventOffersMarkUp = (avaliableOffer, offerNumber) => {
-    const activeOffersCheck = () => {
+    const checkActiveOffers = () => {
       const activeOffers = [];
       event.offers.forEach((offer) => {
         activeOffers.push(offer.name);
@@ -65,13 +65,19 @@ const getEditEventTemplate = (event, dayCount, date, eventIndex) => {
       return activeOffers.indexOf(avaliableOffer) !== -1 ? `checked` : ``;
     };
 
+    const getOfferPrice = () => {
+      const DEFAULT_OFFER_PRICE = 10;
+
+      return DEFAULT_OFFER_PRICE;
+    };
+
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerNumber}" type="checkbox" name="event-offer" ${activeOffersCheck()}>
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerNumber}" type="checkbox" name="event-offer" ${checkActiveOffers()}>
         <label class="event__offer-label" for="event-offer-${offerNumber}">
           <span class="event__offer-title">${avaliableOffer}</span>
           &plus;
-          &euro;&nbsp;<span class="event__offer-price">${getRandomNumber(0, 100)}</span>
+          &euro;&nbsp;<span class="event__offer-price">${getOfferPrice()}</span>
         </label>
       </div>`
     );

@@ -31,7 +31,7 @@ const renderTripEvents = (container, eventData, date, onDataChange, onViewChange
   return activeEventControllers;
 };
 
-const renderEventList = (eventlist, parent, dayCount = 0, date, onDataChange, onViewChange) => {
+const renderEventList = (eventlist, parent, dayCount, date, onDataChange, onViewChange) => {
   const container = parent.querySelectorAll(`.trip-events__list`)[dayCount];
   return eventlist.map((event, eventIndex) => {
     const eventController = new EventController(container, onDataChange, onViewChange);
@@ -122,7 +122,7 @@ export default class TripController {
         return;
       }
       eventlist = [].concat(eventlist.slice(0, index), newData, eventlist.slice(index + 1));
-      eventController.render(eventlist[index], dayCount, this._tripStart, index + 1);
+      eventController.render(newData, dayCount, this._tripStart, index + 1);
     });
   }
 

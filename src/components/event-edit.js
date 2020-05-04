@@ -1,7 +1,10 @@
 import {eventTypes, tripDestinations} from '../data/event-data';
-import {castTimeFormat, getRandomNumber, getEventTitle} from "../utils/common";
+import {castTimeFormat, getEventTitle} from "../utils/common";
 import AbstractSmartComponent from "./abstract-smart-component";
 
+import flatpickr from "flatpickr";
+
+import "flatpickr/dist/flatpickr.min.css";
 
 const getEditEventTemplate = (event, dayCount, date, eventIndex) => {
   const transferTypes = [];
@@ -254,8 +257,10 @@ export default class EditEvent extends AbstractSmartComponent {
     this._submitHandler = null;
     this._closeBtnClickHandler = null;
     this._favoritesBtnClickHandler = null;
+    this._flatpickr = null;
 
     this._subscribeOnEvents();
+    this._applyFlatpickr();
   }
 
   getTemplate() {
@@ -271,6 +276,7 @@ export default class EditEvent extends AbstractSmartComponent {
 
   rerender() {
     super.rerender();
+    this._applyFlatpickr();
   }
 
   reset() {
@@ -290,6 +296,19 @@ export default class EditEvent extends AbstractSmartComponent {
     this.getElement().querySelector(`.event__favorite-checkbox`)
       .addEventListener(`change`, handler);
     this._favoritesBtnClickHandler = handler;
+  }
+  _applyFlatpickr() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    const dateStartElement = this.getElement().querySelector(`.event__input--time`);
+    this._flatpickr = flatpickr(dateStartElement, {
+      altInput: true,
+      allowInput: true,
+      defaultDate: this._date,
+    });
   }
 
   _subscribeOnEvents() {

@@ -147,7 +147,7 @@ const getEditEventTemplate = (event, dayCount, date, eventIndex) => {
             type="text" 
             name="event-destination" 
             value="${event.destination || ``}" 
-            list="destination-list-1"
+            list="destination-list-${eventIndex}"
           >
           <datalist id="destination-list-${eventIndex}">
             ${formDestinationList()}
@@ -301,7 +301,7 @@ export default class EditEvent extends AbstractSmartComponent {
     element.querySelector(`.event__input--destination`)
       .addEventListener(`change`, (evt) => {
         this._event.destination = evt.target.value;
-        this._event.description = `Description changed`;
+        this._event.description = `Description changed to ${this._event.destination}`;
 
         this.rerender();
       });

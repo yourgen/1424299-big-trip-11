@@ -1,12 +1,12 @@
 import {eventTypes, tripDestinations} from '../data/event-data';
-import {castTimeFormat, getEventTitle} from "../utils/common";
+import {formatEditEventDateTime, getEventTitle} from "../utils/common";
 import AbstractSmartComponent from "./abstract-smart-component";
 
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
 
-const getEditEventTemplate = (event, dayCount, date, eventIndex) => {
+const getEditEventTemplate = (event, eventIndex) => {
   const transferTypes = [];
   const activityTypes = [];
 
@@ -117,10 +117,6 @@ const getEditEventTemplate = (event, dayCount, date, eventIndex) => {
     return photoList;
   };
 
-  const day = date.getDate() || ``;
-  const monthNum = castTimeFormat(date.getMonth()) || ``;
-  const year = date.getFullYear() % 100 || ``;
-
   const isNewEvent = false;
 
   return (
@@ -172,7 +168,7 @@ const getEditEventTemplate = (event, dayCount, date, eventIndex) => {
             id="event-start-time-${eventIndex}" 
             type="text" 
             name="event-start-time" 
-            value="${day + dayCount}/${monthNum}/${year} ${event.start || ``}"
+            value="${formatEditEventDateTime(event.start) || ``}"
           >
           &mdash;
           <label class="visually-hidden" for="event-end-time-${eventIndex}">
@@ -183,7 +179,7 @@ const getEditEventTemplate = (event, dayCount, date, eventIndex) => {
             id="event-end-time-${eventIndex}" 
             type="text" 
             name="event-end-time" 
-            value="${day + dayCount}/${monthNum}/${year} ${event.end || ``}"
+            value="${formatEditEventDateTime(event.end) || ``}"
           >
         </div>
 
@@ -247,11 +243,9 @@ const getEditEventTemplate = (event, dayCount, date, eventIndex) => {
 };
 
 export default class EditEvent extends AbstractSmartComponent {
-  constructor(event, dayCount, date, eventIndex) {
+  constructor(event, eventIndex) {
     super();
     this._event = event;
-    this._dayCount = dayCount;
-    this._date = date;
     this._eventIndex = eventIndex;
 
     this._submitHandler = null;
@@ -264,7 +258,7 @@ export default class EditEvent extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return getEditEventTemplate(this._event, this._dayCount, this._date, this._eventIndex);
+    return getEditEventTemplate(this._event, this._eventIndex);
   }
 
   recoverListeners() {
@@ -306,8 +300,13 @@ export default class EditEvent extends AbstractSmartComponent {
     const dateStartElement = this.getElement().querySelector(`.event__input--time`);
     this._flatpickr = flatpickr(dateStartElement, {
       altInput: true,
+      altFormat: `j F H:i`,
+      dateFormat: `Y-m-d`,
       allowInput: true,
-      defaultDate: this._date,
+      defaultDate: this._event.start || `today`,
+      enableTime: true,
+      // eslint-disable-next-line camelcase
+      time_24hr: true
     });
   }
 

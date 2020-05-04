@@ -1,4 +1,4 @@
-import {getEventTitle, castDurationFormat, formatTime, formatDateTime} from "../utils/common";
+import {getEventTitle, castDurationFormat, formatTime, formatEventDateTime} from "../utils/common";
 import AbstractComponent from "./abstract-component.js";
 
 
@@ -30,11 +30,11 @@ const getEventTemplate = (event) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${formatDateTime(event.start)}">
+            <time class="event__start-time" datetime="${formatEventDateTime(event.start)}">
               ${formatTime(event.start)}
             </time>
             &mdash;
-            <time class="event__end-time" datetime="${formatDateTime(event.end)}">
+            <time class="event__end-time" datetime="${formatEventDateTime(event.end)}">
               ${formatTime(event.end)}
             </time>
           </p>

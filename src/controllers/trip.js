@@ -18,24 +18,24 @@ const renderTripEvents = (container, eventData, date, onDataChange, onViewChange
   if (isSorted) {
     const NO_DAYS = 0;
     render(container, new TripDay(NO_DAYS, date));
-    const activeEventControllers = renderEventList(eventData, container, NO_DAYS, date, onDataChange, onViewChange);
+    const activeEventControllers = renderEventList(eventData, container, NO_DAYS, onDataChange, onViewChange);
     return activeEventControllers;
   }
 
   const activeEventControllers = eventData.map((eventlist, dayCount) => {
     render(container, new TripDay(dayCount + 1, date));
 
-    const eventControllerDayList = renderEventList(eventlist, container, dayCount, date, onDataChange, onViewChange);
+    const eventControllerDayList = renderEventList(eventlist, container, dayCount, onDataChange, onViewChange);
     return eventControllerDayList;
   });
   return activeEventControllers;
 };
 
-const renderEventList = (eventlist, parent, dayCount, date, onDataChange, onViewChange) => {
+const renderEventList = (eventlist, parent, dayCount, onDataChange, onViewChange) => {
   const container = parent.querySelectorAll(`.trip-events__list`)[dayCount];
   return eventlist.map((event, eventIndex) => {
     const eventController = new EventController(container, onDataChange, onViewChange);
-    eventController.render(event, dayCount, date, eventIndex + 1);
+    eventController.render(event, eventIndex + 1);
 
     return eventController;
   });

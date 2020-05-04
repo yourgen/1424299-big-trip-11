@@ -4,8 +4,12 @@ export const formatTime = (date) => {
   return moment(date).format(`HH:mm`);
 };
 
-export const formatDateTime = (date) => {
+export const formatEventDateTime = (date) => {
   return moment(date).format(`YYYY-MM-DD[T]HH:mm`);
+};
+
+export const formatEditEventDateTime = (date) => {
+  return moment(date).format(`DD/MM/YYYY HH:mm`);
 };
 
 export const formatTripDayDateTime = (date) => {

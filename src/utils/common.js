@@ -8,8 +8,16 @@ export const formatDateTime = (date) => {
   return moment(date).format(`YYYY-MM-DD[T]HH:mm`);
 };
 
+export const formatTripDayDateTime = (date) => {
+  return moment(date).format(`YYYY-MM-DD`);
+};
+
 export const formatRouteInfoDate = (date) => {
-  return moment(date).format(`DD MMM`);
+  return moment(date).format(`D MMM`);
+};
+
+export const formatTripDayDate = (date) => {
+  return moment(date).format(`MMM D`);
 };
 
 export const castTimeFormat = (value) => {

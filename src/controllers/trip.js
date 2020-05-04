@@ -2,7 +2,7 @@ import RouteInfo from '../components/route-info';
 import TripCost from '../components/trip-cost';
 import Sorting, {SortingType} from '../components/sorting';
 import TripDays from '../components/trip-days';
-import TripPoint from '../components/trip-point';
+import TripDay from '../components/trip-day';
 import NoPoints from "../components/no-points";
 
 import EventController from "./event";
@@ -17,13 +17,13 @@ const renderHeader = (container, tripStart) => {
 const renderTripEvents = (container, eventData, date, onDataChange, onViewChange, isSorted) => {
   if (isSorted) {
     const NO_DAYS = 0;
-    render(container, new TripPoint(NO_DAYS, date));
+    render(container, new TripDay(NO_DAYS, date));
     const activeEventControllers = renderEventList(eventData, container, NO_DAYS, date, onDataChange, onViewChange);
     return activeEventControllers;
   }
 
   const activeEventControllers = eventData.map((eventlist, dayCount) => {
-    render(container, new TripPoint(dayCount + 1, date));
+    render(container, new TripDay(dayCount + 1, date));
 
     const eventControllerDayList = renderEventList(eventlist, container, dayCount, date, onDataChange, onViewChange);
     return eventControllerDayList;

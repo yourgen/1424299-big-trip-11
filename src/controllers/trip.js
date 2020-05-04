@@ -121,7 +121,6 @@ export default class TripController {
       if (index === -1) {
         return;
       }
-      eventlist = [].concat(eventlist.slice(0, index), newData, eventlist.slice(index + 1));
       eventController.render(newData, dayCount, this._tripStart, index + 1);
     });
   }

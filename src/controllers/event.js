@@ -24,7 +24,7 @@ export default class EventController {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
 
-    this._eventComponent = new Event(event, dayCount, date);
+    this._eventComponent = new Event(event);
     this._eventEditComponent = new EditEvent(event, dayCount, date, eventIndex);
 
     this._eventComponent.setEditBtnClickHandler(() => {

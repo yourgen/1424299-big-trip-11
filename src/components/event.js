@@ -1,8 +1,8 @@
-import {castTimeFormat, getEventTitle, castDurationFormat} from "../utils/common";
+import {getEventTitle, castDurationFormat, formatTime, formatDateTime} from "../utils/common";
 import AbstractComponent from "./abstract-component.js";
 
 
-const getEventTemplate = (event, dayCount, date) => {
+const getEventTemplate = (event) => {
   const getOfferMarkup = (offer) => {
     return (
       `<li class="event__offer">
@@ -20,10 +20,6 @@ const getEventTemplate = (event, dayCount, date) => {
     return offerList;
   };
 
-  const day = date.getDate();
-  const monthNum = castTimeFormat(date.getMonth());
-  const year = date.getFullYear();
-
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -34,9 +30,13 @@ const getEventTemplate = (event, dayCount, date) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${year}-${monthNum}-${day + dayCount}T${event.start}">${event.start}</time>
+            <time class="event__start-time" datetime="${formatDateTime(event.start)}">
+              ${formatTime(event.start)}
+            </time>
             &mdash;
-            <time class="event__end-time" datetime="${year}-${monthNum}-${day + dayCount}T${event.end}">${event.end}</time>
+            <time class="event__end-time" datetime="${formatDateTime(event.end)}">
+              ${formatTime(event.end)}
+            </time>
           </p>
           <p class="event__duration">${castDurationFormat(event.duration)}</p>
         </div>
@@ -59,15 +59,13 @@ const getEventTemplate = (event, dayCount, date) => {
 };
 
 export default class Event extends AbstractComponent {
-  constructor(event, dayCount, date) {
+  constructor(event) {
     super();
     this._event = event;
-    this._dayCount = dayCount;
-    this._date = date;
   }
 
   getTemplate() {
-    return getEventTemplate(this._event, this._dayCount, this._date);
+    return getEventTemplate(this._event);
   }
   setEditBtnClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)

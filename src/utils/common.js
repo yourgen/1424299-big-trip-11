@@ -1,5 +1,14 @@
 import moment from "moment";
 
+export const formatTime = (date) => {
+  return moment(date).format(`HH:mm`);
+};
+
+export const formatDateTime = (date) => {
+  return moment(date).format(`YYYY-MM-DD[T]HH:mm`);
+};
+
+
 export const castTimeFormat = (value) => {
   return value < 10 ? `0${value}` : `${value}`;
 };

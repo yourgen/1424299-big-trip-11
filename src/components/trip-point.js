@@ -14,7 +14,7 @@ const getTripPointTemplate = (dayCount, date) => {
       <div class="day__info">
       ${dayCount ? `
         <span class="day__counter">${dayCount}</span>
-        <time class="day__date" datetime="${year}-${monthNum}-${day - 1 + dayCount}">${monthText.toUpperCase()} ${day + dayCount}</time>
+        <time class="day__date" datetime="${year}-${monthNum}-${day - 1 + dayCount}">${monthText.toUpperCase()} ${day - 1 + dayCount}</time>
       ` : ``}
       </div>
 

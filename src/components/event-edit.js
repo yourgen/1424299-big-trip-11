@@ -8,19 +8,20 @@ const getEditEventTemplate = (event, dayCount, date, eventIndex) => {
   const activityTypes = [];
 
   const getEventTypeMarkup = (eventType, i) => {
+    const lowerCaseEventType = eventType.toLowerCase();
     return (
       `<div class="event__type-item">
         <input 
-          id="event-type-${eventType.toLowerCase()}-${i}" 
+          id="event-type-${lowerCaseEventType}-${i}" 
           class="event__type-input  visually-hidden" 
           type="radio" 
           name="event-type" 
-          value="${eventType.toLowerCase()}"
-          ${eventType.toLowerCase() === event.type.toLowerCase() ? `checked` : ``}
+          value="${lowerCaseEventType}"
+          ${lowerCaseEventType === event.type.toLowerCase() ? `checked` : ``}
         >
         <label 
-          class="event__type-label  event__type-label--${eventType.toLowerCase()}" 
-          for="event-type-${eventType.toLowerCase()}-${i}"
+          class="event__type-label  event__type-label--${lowerCaseEventType}" 
+          for="event-type-${lowerCaseEventType}-${i}"
         >
         ${eventType}
         </label>
@@ -281,7 +282,7 @@ export default class EditEvent extends AbstractSmartComponent {
   }
   setFavoritesBtnClickHandler(handler) {
     this.getElement().querySelector(`.event__favorite-checkbox`)
-      .addEventListener(`click`, handler);
+      .addEventListener(`change`, handler);
     this._favoritesBtnClickHandler = handler;
   }
 

@@ -14,6 +14,23 @@ const renderHeader = (container, tripStart) => {
   render(container, new TripCost(tripStart));
 };
 
+const renderTripEvents = (container, eventData, date, onDataChange, onViewChange, isSorted) => {
+  if (isSorted) {
+    const NO_DAYS = 0;
+    render(container, new TripPoint(NO_DAYS, date));
+    const activeEventControllers = renderEventList(eventData, container, NO_DAYS, date, onDataChange, onViewChange);
+    return activeEventControllers;
+  }
+
+  const activeEventControllers = eventData.map((eventlist, dayCount) => {
+    render(container, new TripPoint(dayCount + 1, date));
+
+    const eventControllerDayList = renderEventList(eventlist, container, dayCount, date, onDataChange, onViewChange);
+    return eventControllerDayList;
+  });
+  return activeEventControllers;
+};
+
 const renderEventList = (eventlist, parent, dayCount = 0, date, onDataChange, onViewChange) => {
   const container = parent.querySelectorAll(`.trip-events__list`)[dayCount];
   return eventlist.map((event, eventIndex) => {
@@ -79,12 +96,7 @@ export default class TripController {
     render(container, this._tripDaysComponent);
     const tripDaysElement = this._tripDaysComponent.getElement();
 
-    const activeEventControllers = this._events.map((eventlist, dayCount) => {
-      render(tripDaysElement, new TripPoint(dayCount + 1, this._tripStart));
-
-      const eventControllerDayList = renderEventList(eventlist, tripDaysElement, dayCount, this._tripStart, this._onDataChange, this._onViewChange);
-      return eventControllerDayList;
-    });
+    const activeEventControllers = renderTripEvents(tripDaysElement, this._events, this._tripStart, this._onDataChange, this._onViewChange);
     this._activeEventControllers = activeEventControllers;
   }
 
@@ -94,18 +106,11 @@ export default class TripController {
     tripDaysElement.innerHTML = ``;
 
     if (sortingType === SortingType.DEFAULT) {
-      const activeEventControllers = sortedEvents.map((eventlist, dayCount) => {
-        render(tripDaysElement, new TripPoint(dayCount + 1, this._tripStart));
-
-        const eventControllerDayList = renderEventList(eventlist, tripDaysElement, dayCount, this._tripStart, this._onDataChange, this._onViewChange);
-        return eventControllerDayList;
-      });
-
+      const activeEventControllers = renderTripEvents(tripDaysElement, sortedEvents, this._tripStart, this._onDataChange, this._onViewChange);
       this._activeEventControllers = activeEventControllers;
     } else {
-      const NO_DAYS = 0;
-      render(tripDaysElement, new TripPoint(NO_DAYS, this._tripStart));
-      const activeEventControllers = renderEventList(sortedEvents, tripDaysElement, NO_DAYS, this._tripStart, this._onDataChange, this._onViewChange);
+      const isSorted = true;
+      const activeEventControllers = renderTripEvents(tripDaysElement, sortedEvents, this._tripStart, this._onDataChange, this._onViewChange, isSorted);
       this._activeEventControllers = activeEventControllers;
     }
   }

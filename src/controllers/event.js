@@ -20,12 +20,12 @@ export default class EventController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(event, dayCount, date, eventIndex) {
+  render(event, eventIndex) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
 
-    this._eventComponent = new Event(event, dayCount, date);
-    this._eventEditComponent = new EditEvent(event, dayCount, date, eventIndex);
+    this._eventComponent = new Event(event);
+    this._eventEditComponent = new EditEvent(event, eventIndex);
 
     this._eventComponent.setEditBtnClickHandler(() => {
       this._replaceEventToEdit();

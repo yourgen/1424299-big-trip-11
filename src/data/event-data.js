@@ -1,4 +1,5 @@
-import {getRandomNumber, arrPicker, castTimeFormat} from "../utils/common.js";
+import {getRandomNumber, arrPicker} from "../utils/common.js";
+import moment from "moment";
 
 const EVENT_COUNT = 20;
 const MAX_EVENT_PER_DAY = 4;
@@ -68,31 +69,13 @@ const generateEvent = () => {
       });
   };
 
-  const startTime = getRandomNumber(0, 1440);
-  const durationTime = getRandomNumber(10, 12000);
-  const endTime = startTime + durationTime;
-
-  const generateStartTime = () => {
-    const startHours = castTimeFormat(Math.trunc(startTime / 60) % 24);
-    const startMinutes = castTimeFormat(startTime % 60);
-    return `${startHours}:${startMinutes}`;
-  };
-
-  const generateEndTime = () => {
-    const endHours = castTimeFormat(Math.trunc(endTime / 60) % 24);
-    const endMinutes = castTimeFormat(endTime % 60);
-    return `${endHours}:${endMinutes}`;
-  };
-
   return {
     type: getEventType.name,
     destination: arrPicker(destinations),
     offers: generateOffers(getRandomNumber(0, MAX_OFFER_COUNT + 1), getEventType),
     description: generateDescription(descrSentenceCount),
     photos: generatePhotos(photosCount),
-    start: generateStartTime(),
-    duration: durationTime,
-    end: generateEndTime(),
+    duration: getRandomNumber(10, 1200),
     price: getRandomNumber(0, 1000),
     isFavorite: Math.random() > 0.5
   };
@@ -121,6 +104,13 @@ tripPoints.forEach((event, i) => {
   const end = start + getRandomEventCount;
   tripPoints[i] = tripEvents.slice(start, end);
   start = end;
+});
+
+tripPoints.forEach((eventlist, dayCount) => {
+  eventlist.map((event) => {
+    event.start = moment().add({days: dayCount, minutes: getRandomNumber(0, 600)});
+    event.end = moment(event.start).add(event.duration, `m`);
+  });
 });
 
 const visitedCities = new Set();

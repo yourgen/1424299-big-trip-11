@@ -108,7 +108,7 @@ tripPoints.forEach((event, i) => {
 
 tripPoints.forEach((eventlist, dayCount) => {
   eventlist.map((event) => {
-    event.start = moment().add(dayCount, `d`);
+    event.start = moment().add({days: dayCount, minutes: getRandomNumber(0, 600)});
     event.end = moment(event.start).add(event.duration, `m`);
   });
 });

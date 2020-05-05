@@ -251,7 +251,8 @@ export default class EditEvent extends AbstractSmartComponent {
     this._submitHandler = null;
     this._closeBtnClickHandler = null;
     this._favoritesBtnClickHandler = null;
-    this._flatpickr = null;
+    this._flatpickrStart = null;
+    this._flatpickrEnd = null;
 
     this._subscribeOnEvents();
     this._applyFlatpickr();
@@ -292,19 +293,30 @@ export default class EditEvent extends AbstractSmartComponent {
     this._favoritesBtnClickHandler = handler;
   }
   _applyFlatpickr() {
-    if (this._flatpickr) {
-      this._flatpickr.destroy();
-      this._flatpickr = null;
+    if (this._flatpickrStart) {
+      this._flatpickrStart.destroy();
+      this._flatpickrStart = null;
+    }
+    if (this._flatpickrEnd) {
+      this._flatpickrEnd.destroy();
+      this._flatpickrEnd = null;
     }
 
-    const dateStartElement = this.getElement().querySelector(`.event__input--time`);
-    this._flatpickr = flatpickr(dateStartElement, {
-      altInput: true,
-      altFormat: `j F H:i`,
-      dateFormat: `Y-m-d`,
+    const dateStartElement = this.getElement().querySelector(`input[name='event-start-time']`);
+    this._flatpickrStart = flatpickr(dateStartElement, {
+      dateFormat: `d/m/Y H:i`,
       allowInput: true,
-      defaultDate: this._event.start || `today`,
       enableTime: true,
+      minDate: formatEditEventDateTime(this._event.start),
+      // eslint-disable-next-line camelcase
+      time_24hr: true
+    });
+    const dateEndElement = this.getElement().querySelector(`input[name='event-end-time']`);
+    this._flatpickrEnd = flatpickr(dateEndElement, {
+      dateFormat: `d/m/Y H:i`,
+      allowInput: true,
+      enableTime: true,
+      minDate: formatEditEventDateTime(this._event.start),
       // eslint-disable-next-line camelcase
       time_24hr: true
     });

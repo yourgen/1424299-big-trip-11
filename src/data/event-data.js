@@ -70,6 +70,7 @@ const generateEvent = () => {
   };
 
   return {
+    id: String(Math.random()),
     type: getEventType.name,
     destination: arrPicker(destinations),
     offers: generateOffers(getRandomNumber(0, MAX_OFFER_COUNT + 1), getEventType),

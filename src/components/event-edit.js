@@ -6,8 +6,8 @@ import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
 
-const getEditEventTemplate = (event, eventIndex) => {
-  const {type, destination, photos, description, start, end, price, offers, isFavorite} = event;
+const getEditEventTemplate = (event) => {
+  const {id, type, destination, photos, description, start, end, price, offers, isFavorite} = event;
 
   const transferTypes = [];
   const activityTypes = [];
@@ -125,11 +125,11 @@ const getEditEventTemplate = (event, eventIndex) => {
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
-          <label class="event__type  event__type-btn" for="event-type-toggle-${eventIndex}">
+          <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase() || `flight`}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${eventIndex}" type="checkbox">
+          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
@@ -145,40 +145,40 @@ const getEditEventTemplate = (event, eventIndex) => {
         </div>
 
         <div class="event__field-group  event__field-group--destination">
-          <label class="event__label  event__type-output" for="event-destination-${eventIndex}">
+          <label class="event__label  event__type-output" for="event-destination-${id}">
             ${getEventTitle(event)}
           </label>
           <input 
             class="event__input  event__input--destination" 
-            id="event-destination-${eventIndex}" 
+            id="event-destination-${id}" 
             type="text" 
             name="event-destination" 
             value="${destination || ``}" 
-            list="destination-list-${eventIndex}"
+            list="destination-list-${id}"
           >
-          <datalist id="destination-list-${eventIndex}">
+          <datalist id="destination-list-${id}">
             ${formDestinationList()}
           </datalist>
         </div>
 
         <div class="event__field-group  event__field-group--time">
-          <label class="visually-hidden" for="event-start-time-${eventIndex}">
+          <label class="visually-hidden" for="event-start-time-${id}">
             From
           </label>
           <input 
             class="event__input  event__input--time" 
-            id="event-start-time-${eventIndex}" 
+            id="event-start-time-${id}" 
             type="text" 
             name="event-start-time" 
             value="${formatEditEventDateTime(start) || ``}"
           >
           &mdash;
-          <label class="visually-hidden" for="event-end-time-${eventIndex}">
+          <label class="visually-hidden" for="event-end-time-${id}">
             To
           </label>
           <input 
             class="event__input  event__input--time" 
-            id="event-end-time-${eventIndex}" 
+            id="event-end-time-${id}" 
             type="text" 
             name="event-end-time" 
             value="${formatEditEventDateTime(end) || ``}"
@@ -186,11 +186,11 @@ const getEditEventTemplate = (event, eventIndex) => {
         </div>
 
         <div class="event__field-group  event__field-group--price">
-          <label class="event__label" for="event-price-${eventIndex}">
+          <label class="event__label" for="event-price-${id}">
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-${eventIndex}" type="text" name="event-price" value="${price || ``}">
+          <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price || ``}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -199,14 +199,14 @@ const getEditEventTemplate = (event, eventIndex) => {
         ` : `
           <button class="event__reset-btn" type="reset">Delete</button>
           <input 
-            id="event-favorite-${eventIndex}"
+            id="event-favorite-${id}"
             class="event__favorite-checkbox
             visually-hidden"
             type="checkbox"
             name="event-favorite"
             ${isFavorite ? `checked` : ``}
           >
-          <label class="event__favorite-btn" for="event-favorite-${eventIndex}">
+          <label class="event__favorite-btn" for="event-favorite-${id}">
             <span class="visually-hidden">Add to favorite</span>
             <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
               <path
@@ -245,10 +245,9 @@ const getEditEventTemplate = (event, eventIndex) => {
 };
 
 export default class EditEvent extends AbstractSmartComponent {
-  constructor(event, eventIndex) {
+  constructor(event) {
     super();
     this._event = event;
-    this._eventIndex = eventIndex;
 
     this._submitHandler = null;
     this._closeBtnClickHandler = null;
@@ -261,7 +260,7 @@ export default class EditEvent extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return getEditEventTemplate(this._event, this._eventIndex);
+    return getEditEventTemplate(this._event);
   }
 
   recoverListeners() {

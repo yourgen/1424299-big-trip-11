@@ -33,9 +33,9 @@ const renderTripEvents = (container, eventData, date, onDataChange, onViewChange
 
 const renderEventList = (eventlist, parent, dayCount, onDataChange, onViewChange) => {
   const container = parent.querySelectorAll(`.trip-events__list`)[dayCount];
-  return eventlist.map((event, eventIndex) => {
+  return eventlist.map((event) => {
     const eventController = new EventController(container, onDataChange, onViewChange);
-    eventController.render(event, eventIndex + 1);
+    eventController.render(event);
 
     return eventController;
   });

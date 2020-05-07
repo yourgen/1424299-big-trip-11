@@ -19,11 +19,9 @@ export default class FilterController {
 
   render() {
     const container = this._container;
-    const allEvents = this._eventsModel.getTasks();
     const filters = Object.values(FilterType).map((filterType) => {
       return {
         name: filterType,
-        count: getEventsByFilter(allEvents, filterType).length,
         checked: filterType === this._activeFilterType,
       };
     });
@@ -40,7 +38,6 @@ export default class FilterController {
   }
 
   _onFilterChange(filterType) {
-    this._eventsModel.setFilter(filterType);
     this._activeFilterType = filterType;
   }
 

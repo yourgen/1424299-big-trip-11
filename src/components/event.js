@@ -1,5 +1,5 @@
 import {getEventTitle, formatEventDuration, formatEventTime, formatEventDateTime} from "../utils/common";
-import AbstractComponent from "./abstract-component.js";
+import AbstractComponent from "./abstract-component";
 
 
 const getEventTemplate = (event) => {

@@ -1,10 +1,10 @@
-import {tripPoints} from "../data/event-data";
+import {tripEvents} from "../data/event-data";
 import AbstractComponent from "./abstract-component.js";
 
 const getTripCostTemplate = () => {
   const countTripCost = () => {
     const tripCost = [];
-    tripPoints.forEach((eventlist) => {
+    tripEvents.forEach((eventlist) => {
       eventlist.forEach((event) => {
         tripCost.push(event.price);
       });

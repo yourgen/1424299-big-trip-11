@@ -7,6 +7,8 @@ import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 
 const getEditEventTemplate = (event, eventIndex) => {
+  const {type, destination, photos, description, start, end, price, offers, isFavorite} = event;
+
   const transferTypes = [];
   const activityTypes = [];
 
@@ -20,7 +22,7 @@ const getEditEventTemplate = (event, eventIndex) => {
           type="radio" 
           name="event-type" 
           value="${lowerCaseEventType}"
-          ${lowerCaseEventType === event.type.toLowerCase() ? `checked` : ``}
+          ${lowerCaseEventType === type.toLowerCase() ? `checked` : ``}
         >
         <label 
           class="event__type-label  event__type-label--${lowerCaseEventType}" 
@@ -43,29 +45,29 @@ const getEditEventTemplate = (event, eventIndex) => {
     return subtypesList;
   };
 
-  const getDestinationListMarkup = (destination) => {
+  const getDestinationListMarkup = (destinationListItem) => {
     return (
-      `<option value="${destination}"></option>`
+      `<option value="${destinationListItem}"></option>`
     );
   };
 
   const formDestinationList = () => {
     const destinationList = [];
-    for (let destination of tripDestinations) {
+    for (let destinationListItem of tripDestinations) {
       destinationList
-        .push(getDestinationListMarkup(destination))
+        .push(getDestinationListMarkup(destinationListItem))
       ;
     }
     return destinationList.join(`\n`);
   };
 
-  const getEditEventOffersMarkUp = (avaliableOffer, offerNumber) => {
+  const getEditEventOffersMarkUp = (avaliableOfferName, avaliableOfferIndex) => {
     const checkActiveOffers = () => {
       const activeOffers = [];
-      event.offers.forEach((offer) => {
+      offers.forEach((offer) => {
         activeOffers.push(offer.name);
       });
-      return activeOffers.indexOf(avaliableOffer) !== -1 ? `checked` : ``;
+      return activeOffers.indexOf(avaliableOfferName) !== -1 ? `checked` : ``;
     };
 
     const getOfferPrice = () => {
@@ -76,9 +78,9 @@ const getEditEventTemplate = (event, eventIndex) => {
 
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerNumber}" type="checkbox" name="event-offer" ${checkActiveOffers()}>
-        <label class="event__offer-label" for="event-offer-${offerNumber}">
-          <span class="event__offer-title">${avaliableOffer}</span>
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${avaliableOfferIndex}" type="checkbox" name="event-offer" ${checkActiveOffers()}>
+        <label class="event__offer-label" for="event-offer-${avaliableOfferIndex}">
+          <span class="event__offer-title">${avaliableOfferName}</span>
           &plus;
           &euro;&nbsp;<span class="event__offer-price">${getOfferPrice()}</span>
         </label>
@@ -89,7 +91,7 @@ const getEditEventTemplate = (event, eventIndex) => {
   const avaliableOffers = [];
   eventTypes.forEach((item) => {
     item.forEach((eventType) => {
-      if (eventType.name === event.type) {
+      if (eventType.name === type) {
         avaliableOffers.push(...eventType.offers);
       }
     });
@@ -97,7 +99,7 @@ const getEditEventTemplate = (event, eventIndex) => {
 
   const formOfferList = () => {
     const offerList = avaliableOffers
-      .map((avaliableOffer, offerNumber) => getEditEventOffersMarkUp(avaliableOffer, offerNumber))
+      .map((avaliableOfferName, avaliableOfferNumber) => getEditEventOffersMarkUp(avaliableOfferName, avaliableOfferNumber))
       .join(`\n`);
 
     return offerList;
@@ -110,7 +112,7 @@ const getEditEventTemplate = (event, eventIndex) => {
   };
 
   const formPhotosList = () => {
-    const photoList = event.photos
+    const photoList = photos
       .map((photoLink) => getEditEventPhotoMarkUp(photoLink))
       .join(`\n`);
 
@@ -125,7 +127,7 @@ const getEditEventTemplate = (event, eventIndex) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-${eventIndex}">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${event.type.toLowerCase() || `flight`}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase() || `flight`}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${eventIndex}" type="checkbox">
 
@@ -151,7 +153,7 @@ const getEditEventTemplate = (event, eventIndex) => {
             id="event-destination-${eventIndex}" 
             type="text" 
             name="event-destination" 
-            value="${event.destination || ``}" 
+            value="${destination || ``}" 
             list="destination-list-${eventIndex}"
           >
           <datalist id="destination-list-${eventIndex}">
@@ -168,7 +170,7 @@ const getEditEventTemplate = (event, eventIndex) => {
             id="event-start-time-${eventIndex}" 
             type="text" 
             name="event-start-time" 
-            value="${formatEditEventDateTime(event.start) || ``}"
+            value="${formatEditEventDateTime(start) || ``}"
           >
           &mdash;
           <label class="visually-hidden" for="event-end-time-${eventIndex}">
@@ -179,7 +181,7 @@ const getEditEventTemplate = (event, eventIndex) => {
             id="event-end-time-${eventIndex}" 
             type="text" 
             name="event-end-time" 
-            value="${formatEditEventDateTime(event.end) || ``}"
+            value="${formatEditEventDateTime(end) || ``}"
           >
         </div>
 
@@ -188,7 +190,7 @@ const getEditEventTemplate = (event, eventIndex) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-${eventIndex}" type="text" name="event-price" value="${event.price || ``}">
+          <input class="event__input  event__input--price" id="event-price-${eventIndex}" type="text" name="event-price" value="${price || ``}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -202,7 +204,7 @@ const getEditEventTemplate = (event, eventIndex) => {
             visually-hidden"
             type="checkbox"
             name="event-favorite"
-            ${event.isFavorite ? `checked` : ``}
+            ${isFavorite ? `checked` : ``}
           >
           <label class="event__favorite-btn" for="event-favorite-${eventIndex}">
             <span class="visually-hidden">Add to favorite</span>
@@ -228,7 +230,7 @@ const getEditEventTemplate = (event, eventIndex) => {
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">
-            ${event.description || ``}
+            ${description || ``}
           </p>
 
           <div class="event__photos-container">

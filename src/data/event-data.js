@@ -75,7 +75,6 @@ const generateEvent = () => {
     offers: generateOffers(getRandomNumber(0, MAX_OFFER_COUNT + 1), getEventType),
     description: generateDescription(descrSentenceCount),
     photos: generatePhotos(photosCount),
-    duration: getRandomNumber(10, 1200),
     price: getRandomNumber(0, 1000),
     isFavorite: Math.random() > 0.5
   };
@@ -106,10 +105,11 @@ tripPoints.forEach((event, i) => {
   start = end;
 });
 
+const generateDuration = getRandomNumber(10, 1200);
 tripPoints.forEach((eventlist, dayCount) => {
   eventlist.map((event) => {
     event.start = moment().add({days: dayCount, minutes: getRandomNumber(0, 600)});
-    event.end = moment(event.start).add(event.duration, `m`);
+    event.end = moment(event.start).add(generateDuration, `m`);
   });
 });
 

@@ -28,17 +28,16 @@ export const castTimeFormat = (value) => {
   return value < 10 ? `0${value}` : `${value}`;
 };
 
-export const castDurationFormat = (durationTime) => {
-  const durationMinutes = castTimeFormat(durationTime % 60);
-  const durationHours = castTimeFormat(Math.trunc(durationTime / 60) % 24);
-  const durationDays = castTimeFormat(Math.trunc(durationTime / 1440));
-  if (durationTime > 1440) {
-    return `${durationDays}D ${durationHours}H ${durationMinutes}M`;
-  } else if (durationTime > 60) {
-    return `${durationHours}H ${durationMinutes}M`;
-  } else {
-    return `${durationMinutes}M`;
+export const castDurationFormat = (start, end) => {
+  const duration = moment.duration(end.diff(start));
+  const durationInMs = duration.as(`milliseconds`);
+
+  if (durationInMs > 86400000) {
+    return moment(durationInMs).format(`DD[D] HH[H] mm[M]`);
+  } else if (durationInMs > 3600000) {
+    return moment(durationInMs).format(`HH[H] mm[M]`);
   }
+  return moment(durationInMs).format(`mm[M]`);
 };
 
 export const getRandomNumber = (min, max) => {

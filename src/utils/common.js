@@ -1,6 +1,6 @@
 import moment from "moment";
 
-export const formatTime = (date) => {
+export const formatEventTime = (date) => {
   return moment(date).format(`HH:mm`);
 };
 
@@ -24,7 +24,7 @@ export const formatTripDayDate = (date) => {
   return moment(date).format(`MMM D`);
 };
 
-export const castDurationFormat = (start, end) => {
+export const formatEventDuration = (start, end) => {
   const duration = moment.duration(end.diff(start));
   const durationInMs = duration.as(`milliseconds`);
 

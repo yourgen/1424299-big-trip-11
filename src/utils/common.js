@@ -25,15 +25,14 @@ export const formatTripDayDate = (date) => {
 };
 
 export const formatEventDuration = (start, end) => {
-  const duration = moment.duration(end.diff(start));
-  const durationInMs = duration.as(`milliseconds`);
+  const duration = moment.duration(end.diff(start)).as(`milliseconds`);
 
-  if (durationInMs > 86400000) {
-    return moment(durationInMs).format(`DD[D] HH[H] mm[M]`);
-  } else if (durationInMs > 3600000) {
-    return moment(durationInMs).format(`HH[H] mm[M]`);
+  if (duration > 86400000) {
+    return moment(duration).format(`DD[D] HH[H] mm[M]`);
+  } else if (duration > 3600000) {
+    return moment(duration).format(`HH[H] mm[M]`);
   }
-  return moment(durationInMs).format(`mm[M]`);
+  return moment(duration).format(`mm[M]`);
 };
 
 export const getRandomNumber = (min, max) => {

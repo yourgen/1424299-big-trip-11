@@ -1,10 +1,10 @@
-import {tripPoints, tripDestinations} from "../data/event-data";
+import {tripEvents, tripDestinations} from "../data/event-data";
 import {formatRouteInfoDate} from "../utils/common";
 import AbstractComponent from "./abstract-component.js";
 import moment from "moment";
 
 const getRouteInfoTemplate = (tripStart) => {
-  const lastTripDay = moment(tripStart).add(tripPoints.length - 1, `d`);
+  const lastTripDay = moment(tripStart).add(tripEvents.length - 1, `d`);
 
   const MAX_VISIBLE_DESTINATION_COUNT = 3;
   const MIN_VISIBLE_DESTINATION_COUNT = 1;

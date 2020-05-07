@@ -88,26 +88,24 @@ const generateEvents = (count) => {
 };
 
 const events = generateEvents(EVENT_COUNT);
-const newEventData = events[0];
-const tripEvents = events.slice(1);
 
 const generateTrip = (duration) => {
   return new Array(duration)
     .fill(``);
 };
 
-const tripPoints = generateTrip(TRIP_DURATION);
+const tripEvents = generateTrip(TRIP_DURATION);
 
 let start = 0;
-tripPoints.forEach((event, i) => {
+tripEvents.forEach((event, i) => {
   const getRandomEventCount = getRandomNumber(1, MAX_EVENT_PER_DAY + 1);
   const end = start + getRandomEventCount;
-  tripPoints[i] = tripEvents.slice(start, end);
+  tripEvents[i] = events.slice(start, end);
   start = end;
 });
 
 const generateDuration = getRandomNumber(10, 1200);
-tripPoints.forEach((eventlist, dayCount) => {
+tripEvents.forEach((eventlist, dayCount) => {
   eventlist.map((event) => {
     event.start = moment().add({days: dayCount, minutes: getRandomNumber(0, 600)});
     event.end = moment(event.start).add(generateDuration, `m`);
@@ -115,11 +113,11 @@ tripPoints.forEach((eventlist, dayCount) => {
 });
 
 const visitedCities = new Set();
-tripPoints.forEach((eventlist) => {
+tripEvents.forEach((eventlist) => {
   eventlist.forEach((event) => {
     visitedCities.add(event.destination);
   });
 });
 const tripDestinations = Array.from(visitedCities);
 
-export {tripPoints, newEventData, eventTypes, tripDestinations};
+export {tripEvents, eventTypes, tripDestinations};

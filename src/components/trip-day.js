@@ -3,8 +3,8 @@ import AbstractComponent from "./abstract-component";
 import moment from "moment";
 
 const getTripDayTemplate = (dayCount) => {
-  //TODO дата начала
-  const currentDate = moment().add(dayCount - 1, `d`);
+  const firstTripDay = new Date();// TODO дата начала
+  const currentDate = moment(firstTripDay).add(dayCount - 1, `d`);
   return (
     `<li class="trip-days__item  day">
       <div class="day__info">

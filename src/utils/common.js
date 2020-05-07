@@ -24,10 +24,6 @@ export const formatTripDayDate = (date) => {
   return moment(date).format(`MMM D`);
 };
 
-export const castTimeFormat = (value) => {
-  return value < 10 ? `0${value}` : `${value}`;
-};
-
 export const castDurationFormat = (start, end) => {
   const duration = moment.duration(end.diff(start));
   const durationInMs = duration.as(`milliseconds`);

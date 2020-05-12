@@ -1,7 +1,6 @@
 import Filter from "../components/filter";
 import {FilterType} from "../data/const";
 import {render, replace} from "../utils/render";
-import {getEventsByFilter} from "../utils/filter";
 
 export default class FilterController {
   constructor(container, eventsModel) {

@@ -47,8 +47,10 @@ export default class TripController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortingTypeChange = this._onSortingTypeChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
 
     this._sortingComponent.setSortingTypeChangeHandler(this._onSortingTypeChange);
+    this._eventsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   render(headerContainer) {
@@ -110,6 +112,26 @@ export default class TripController {
     });
   }
 
+  _removeEvents() {
+    const tripDaysElement = this._tripDaysComponent.getElement();
+    tripDaysElement.innerHTML = ``; //TODO вынести контейнеры дней (TripDay) в контролеры (?)
+    this._activeEventControllers.forEach((item) => {
+      if (Array.isArray(item)) {
+        item.forEach((controller) => controller.destroy());
+      } else {
+        item.destroy();
+      }
+    });
+    this._activeEventControllers = [];
+  }
+
+  _updateEvents() {
+    this._removeEvents();
+    const tripDaysElement = this._tripDaysComponent.getElement();
+    this._activeEventControllers = this._renderTripEvents(tripDaysElement, this._eventsModel.getEvents());
+
+  }
+
   _onDataChange(eventController, oldData, newData) {
     const isSuccess = this._eventsModel.updateEvent(oldData.id, newData);
 
@@ -127,4 +149,9 @@ export default class TripController {
       }
     });
   }
+
+  _onFilterChange() {
+    this._updateEvents();
+  }
+
 }

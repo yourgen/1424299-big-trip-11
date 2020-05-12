@@ -104,9 +104,10 @@ tripEvents.forEach((event, i) => {
   start = end;
 });
 
-const generateDuration = getRandomNumber(10, 1200);
+
 tripEvents.forEach((eventlist, dayCount) => {
   eventlist.map((event) => {
+    const generateDuration = getRandomNumber(10, 1200);
     event.start = moment().add({days: dayCount, minutes: getRandomNumber(0, 600)});
     event.end = moment(event.start).add(generateDuration, `m`);
   });

@@ -1,32 +1,39 @@
-import {isOneDay} from "./common";
 import {FilterType} from "../data/const";
+import moment from "moment";
+
 
 export const getPastEvents = (events, date) => {
+  console.log(events);
   if (Array.isArray(events)) {
-    return events.forEach((eventlist) => eventlist.filter((event) => {
-      return event.end < date && !isOneDay(date, event.end);
-    }));
+    events.map((eventlist) => {
+      eventlist.filter((event) => {
+        return date.diff(event.end) > 0;
+      });
+    });
+    console.log(events);
+    return events;
   }
 
-  return events.filter((event) => {
-    return event.end < date && !isOneDay(date, event.end);
-  });
+  events.filter((event) => event.end < date);
+  console.log(events);
+  return events;
 };
 
 export const getFutureEvents = (events, date) => {
+  console.log(events);
   if (Array.isArray(events)) {
-    return events.forEach((eventlist) => eventlist.filter((event) => {
-      return event.start >= date;
-    }));
+    events.map((eventlist) => eventlist.filter((event) => event.start >= date));
+    console.log(events);
+    return events;
   }
 
-  return events.filter((event) => {
-    return event.start >= date;
-  });
+  events.filter((event) => event.start >= date);
+  console.log(events);
+  return events;
 };
 
 export const getEventsByFilter = (events, filterType) => {
-  const nowDate = new Date();
+  const nowDate = moment();
 
   switch (filterType) {
     case FilterType.EVERYTHING:

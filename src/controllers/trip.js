@@ -8,6 +8,7 @@ import NoPoints from "../components/no-points";
 import EventController from "./event";
 
 import {render} from "../utils/render.js";
+import moment from "moment";
 
 const renderHeader = (container) => {
   render(container, new RouteInfo());
@@ -21,7 +22,7 @@ const getSortedEvents = (events, sortingType) => {
   });
   switch (sortingType) {
     case SortingType.DURATION:
-      sortedEvents.sort((a, b) => b.duration - a.duration);
+      sortedEvents.sort((a, b) => moment.duration(b.end.diff(b.start)) - moment.duration(a.end.diff(a.start)));
       break;
     case SortingType.PRICE:
       sortedEvents.sort((a, b) => b.price - a.price);

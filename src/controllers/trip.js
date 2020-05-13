@@ -69,28 +69,28 @@ export default class TripController {
 
     render(container, this._sortingComponent);
     render(container, this._tripDaysComponent);
-    const tripDaysElement = this._tripDaysComponent.getElement();
 
-    const activeEventControllers = this._renderTripEvents(tripDaysElement, events);
+    const activeEventControllers = this._renderTripEvents(events);
     this._activeEventControllers = activeEventControllers;
   }
 
   _onSortingTypeChange(sortingType) {
     const sortedEvents = getSortedEvents(this._eventsModel.getEvents(), sortingType);
-    const tripDaysElement = this._tripDaysComponent.getElement();
-    tripDaysElement.innerHTML = ``;
+
+    this._removeDayCount();
 
     if (sortingType === SortingType.DEFAULT) {
-      const activeEventControllers = this._renderTripEvents(tripDaysElement, sortedEvents);
+      const activeEventControllers = this._renderTripEvents(sortedEvents);
       this._activeEventControllers = activeEventControllers;
     } else {
       const isSorted = true;
-      const activeEventControllers = this._renderTripEvents(tripDaysElement, sortedEvents, isSorted);
+      const activeEventControllers = this._renderTripEvents(sortedEvents, isSorted);
       this._activeEventControllers = activeEventControllers;
     }
   }
 
-  _renderTripEvents(container, events, isSorted) {
+  _renderTripEvents(events, isSorted) {
+    const container = this._tripDaysComponent.getElement();
     if (isSorted) {
       const NO_DAYS = 0;
       render(container, new TripDay(NO_DAYS));
@@ -116,8 +116,6 @@ export default class TripController {
   }
 
   _removeEvents() {
-    const tripDaysElement = this._tripDaysComponent.getElement();
-    tripDaysElement.innerHTML = ``; //TODO вынести контейнеры дней (TripDay) в контролеры (?)
     this._activeEventControllers.forEach((item) => {
       if (Array.isArray(item)) {
         item.forEach((controller) => controller.destroy());
@@ -128,10 +126,14 @@ export default class TripController {
     this._activeEventControllers = [];
   }
 
+  _removeDayCount() {
+    this._tripDaysComponent.getElement().innerHTML = ``;
+  }
+
   _updateEvents() {
+    this._removeDayCount();
     this._removeEvents();
-    const tripDaysElement = this._tripDaysComponent.getElement();
-    this._activeEventControllers = this._renderTripEvents(tripDaysElement, this._eventsModel.getEvents());
+    this._activeEventControllers = this._renderTripEvents(this._eventsModel.getEvents());
   }
 
   _onDataChange(eventController, oldData, newData) {

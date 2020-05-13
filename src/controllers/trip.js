@@ -132,7 +132,6 @@ export default class TripController {
     this._removeEvents();
     const tripDaysElement = this._tripDaysComponent.getElement();
     this._activeEventControllers = this._renderTripEvents(tripDaysElement, this._eventsModel.getEvents());
-
   }
 
   _onDataChange(eventController, oldData, newData) {
@@ -155,6 +154,8 @@ export default class TripController {
 
   _onFilterChange() {
     this._updateEvents();
+    this._sortingComponent.reset();
+    this._sortingComponent.setSortingTypeChangeHandler(this._onSortingTypeChange);
   }
 
 }

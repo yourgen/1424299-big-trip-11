@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract-component.js";
+import AbstractComponent from "./abstract-component";
 
 export const SortingType = {
   DURATION: `duration`,
@@ -76,6 +76,19 @@ export default class Sorting extends AbstractComponent {
 
   getSortingType() {
     return this._currentSortingType;
+  }
+
+  reset() {
+    const oldElement = this.getElement();
+    const parent = oldElement.parentElement;
+
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, oldElement);
+
+    this._currentSortingType = SortingType.DEFAULT;
   }
 
   setSortingTypeChangeHandler(handler) {

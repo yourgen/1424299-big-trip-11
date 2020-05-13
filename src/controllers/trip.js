@@ -5,7 +5,7 @@ import TripDays from '../components/trip-days';
 import TripDay from '../components/trip-day';
 import NoPoints from "../components/no-points";
 
-import EventController from "./event";
+import EventController, {Mode as EventControllerMode, EmptyEvent} from "./event";
 
 import {render} from "../utils/render.js";
 import moment from "moment";
@@ -91,6 +91,7 @@ export default class TripController {
 
   _renderTripEvents(events, isSorted) {
     const container = this._tripDaysComponent.getElement();
+
     if (isSorted) {
       const NO_DAYS = 0;
       render(container, new TripDay(NO_DAYS));
@@ -137,10 +138,27 @@ export default class TripController {
   }
 
   _onDataChange(eventController, oldData, newData) {
-    const isSuccess = this._eventsModel.updateEvent(oldData.id, newData);
+    if (oldData === EmptyEvent) {
+      this._creatingEvent = null;
 
-    if (isSuccess) {
-      eventController.render(newData);
+      if (newData === null) {
+        eventController.destroy();
+        this._updateEvents();
+      } else {
+        this._eventsModel.addEvent(newData);
+        eventController.render(newData, EventControllerMode.DEFAULT);
+        this._activeEventControllers = [].concat(eventController, this._activeEventControllers); //TODO добавление в структуру данных
+      }
+
+    } else if (newData === null) {
+      this._eventsModel.removeEvent(oldData.id);
+      this._updateEvents();
+    } else {
+      const isSuccess = this._eventsModel.updateEvent(oldData.id, newData);
+
+      if (isSuccess) {
+        eventController.render(newData, EventControllerMode.DEFAULT);
+      }
     }
   }
 

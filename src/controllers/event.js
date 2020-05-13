@@ -2,10 +2,12 @@ import Event from '../components/event';
 import EditEvent from '../components/event-edit';
 import {render, replace, remove} from "../utils/render.js";
 
-const Mode = {
+export const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
 };
+
+export const EmptyEvent = {};
 
 export default class EventController {
   constructor(container, onDataChange, onViewChange) {

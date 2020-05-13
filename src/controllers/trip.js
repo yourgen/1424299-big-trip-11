@@ -75,9 +75,9 @@ export default class TripController {
   }
 
   _onSortingTypeChange(sortingType) {
-    const sortedEvents = getSortedEvents(this._eventsModel.getEvents(), sortingType);
+    this._resetContainer();
 
-    this._removeDayCount();
+    const sortedEvents = getSortedEvents(this._eventsModel.getEvents(), sortingType);
 
     if (sortingType === SortingType.DEFAULT) {
       const activeEventControllers = this._renderTripEvents(sortedEvents);
@@ -126,12 +126,12 @@ export default class TripController {
     this._activeEventControllers = [];
   }
 
-  _removeDayCount() {
+  _resetContainer() {
     this._tripDaysComponent.getElement().innerHTML = ``;
   }
 
   _updateEvents() {
-    this._removeDayCount();
+    this._resetContainer();
     this._removeEvents();
     this._activeEventControllers = this._renderTripEvents(this._eventsModel.getEvents());
   }

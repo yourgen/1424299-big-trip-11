@@ -1,39 +1,35 @@
 import {FilterType} from "../data/const";
-import moment from "moment";
-
 
 export const getPastEvents = (events, date) => {
-  console.log(events);
   if (Array.isArray(events)) {
-    events.map((eventlist) => {
-      eventlist.filter((event) => {
-        return date.diff(event.end) > 0;
-      });
+    const result = events.map((eventlist) => {
+      return eventlist.filter((event) => event.end < date);
     });
-    console.log(events);
-    return events;
+    return result;
   }
 
-  events.filter((event) => event.end < date);
-  console.log(events);
-  return events;
+  const result = events.filter((event) => {
+    return event.end < date;
+  });
+  return result;
 };
 
 export const getFutureEvents = (events, date) => {
-  console.log(events);
   if (Array.isArray(events)) {
-    events.map((eventlist) => eventlist.filter((event) => event.start >= date));
-    console.log(events);
-    return events;
+    const result = events.map((eventlist) => {
+      return eventlist.filter((event) => event.start >= date);
+    });
+    return result;
   }
 
-  events.filter((event) => event.start >= date);
-  console.log(events);
-  return events;
+  const result = events.filter((event) => {
+    return event.start >= date;
+  });
+  return result;
 };
 
 export const getEventsByFilter = (events, filterType) => {
-  const nowDate = moment();
+  const nowDate = new Date();
 
   switch (filterType) {
     case FilterType.EVERYTHING:

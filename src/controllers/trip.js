@@ -22,7 +22,9 @@ const getSortedEvents = (events, sortingType) => {
   });
   switch (sortingType) {
     case SortingType.DURATION:
-      sortedEvents.sort((a, b) => moment.duration(b.end.diff(b.start)) - moment.duration(a.end.diff(a.start)));
+      sortedEvents.sort((a, b) => {
+        return moment.duration(moment(b.end).diff(moment(b.start))) - moment.duration(moment(a.end).diff(moment(a.start)));
+      });
       break;
     case SortingType.PRICE:
       sortedEvents.sort((a, b) => b.price - a.price);

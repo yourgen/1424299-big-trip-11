@@ -1,5 +1,4 @@
 import {getRandomNumber, arrPicker} from "../utils/common.js";
-import moment from "moment";
 
 const EVENT_COUNT = 20;
 const MAX_EVENT_PER_DAY = 4;
@@ -77,7 +76,9 @@ const generateEvent = () => {
     description: generateDescription(descrSentenceCount),
     photos: generatePhotos(photosCount),
     price: getRandomNumber(0, 1000),
-    isFavorite: Math.random() > 0.5
+    isFavorite: Math.random() > 0.5,
+    start: new Date(),
+    end: new Date()
   };
 };
 
@@ -104,12 +105,21 @@ tripEvents.forEach((event, i) => {
   start = end;
 });
 
+const modifyEventStart = (eventStart, dayCount, startTime) => {
+  eventStart.setDate(eventStart.getDate() + dayCount);
+  eventStart.setTime(eventStart.getTime() + startTime);
+};
+
+const modifyEventEnd = (eventStart, eventEnd, duration) => {
+  eventEnd.setTime(eventStart.getTime() + duration);
+};
 
 tripEvents.forEach((eventlist, dayCount) => {
   eventlist.map((event) => {
-    const generateDuration = getRandomNumber(10, 1200);
-    event.start = moment().add({days: dayCount, minutes: getRandomNumber(0, 600)});
-    event.end = moment(event.start).add(generateDuration, `m`);
+    const generateDuration = getRandomNumber(10, 1200) * 60000;
+    const randomizeEventStartTime = getRandomNumber(0, 120) * 60000;
+    modifyEventStart(event.start, dayCount, randomizeEventStartTime);
+    modifyEventEnd(event.start, event.end, generateDuration);
   });
 });
 

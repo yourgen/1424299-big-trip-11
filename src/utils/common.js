@@ -25,8 +25,10 @@ export const formatTripDayDate = (date) => {
 };
 
 export const formatEventDuration = (start, end) => {
-  const duration = moment.duration(end.diff(start)).as(`milliseconds`);
+  const eventStart = moment(start);
+  const eventEnd = moment(end);
 
+  const duration = moment.duration(eventEnd.diff(eventStart)).as(`milliseconds`);
   if (duration > 86400000) {
     return moment(duration).format(`DD[D] HH[H] mm[M]`);
   } else if (duration > 3600000) {

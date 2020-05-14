@@ -70,8 +70,7 @@ export default class TripController {
     render(container, this._sortingComponent);
     render(container, this._tripDaysComponent);
 
-    const activeEventControllers = this._renderTripEvents(events);
-    this._activeEventControllers = activeEventControllers;
+    this._activeEventControllers = this._renderTripEvents(events);
   }
 
   _onSortingTypeChange(sortingType) {
@@ -80,12 +79,10 @@ export default class TripController {
     const sortedEvents = getSortedEvents(this._eventsModel.getEvents(), sortingType);
 
     if (sortingType === SortingType.DEFAULT) {
-      const activeEventControllers = this._renderTripEvents(sortedEvents);
-      this._activeEventControllers = activeEventControllers;
+      this._activeEventControllers = this._renderTripEvents(sortedEvents);
     } else {
       const isSorted = true;
-      const activeEventControllers = this._renderTripEvents(sortedEvents, isSorted);
-      this._activeEventControllers = activeEventControllers;
+      this._activeEventControllers = this._renderTripEvents(sortedEvents, isSorted);
     }
   }
 
@@ -111,7 +108,7 @@ export default class TripController {
     const container = parent.querySelectorAll(`.trip-events__list`)[dayCount];
     return eventlist.map((event) => {
       const eventController = new EventController(container, this._onDataChange, this._onViewChange);
-      eventController.render(event);
+      eventController.render(event, EventControllerMode.DEFAULT);
       return eventController;
     });
   }

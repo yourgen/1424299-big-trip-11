@@ -244,6 +244,21 @@ const getEditEventTemplate = (event) => {
   );
 };
 
+const parseFormData = (formData) => {
+  //TODO настроить получение всех ключей события
+  return {
+    destination: formData.get(`event-destination`), //!!
+    start: formData.get(`event-start-time`),
+    end: formData.get(`event-end-time`),
+    price: formData.get(`event-price`),
+    // type: null,
+    // offers: formData.getAll(`repeat`).reduce((acc, it) => {
+    //   acc[it] = true;
+    //   return acc;
+    // }, repeatingDays),
+  };
+};
+
 export default class EditEvent extends AbstractSmartComponent {
   constructor(event) {
     super();
@@ -251,6 +266,7 @@ export default class EditEvent extends AbstractSmartComponent {
 
     this._submitHandler = null;
     this._closeBtnClickHandler = null;
+    this._deleteBtnClickHandler = null;
     this._favoritesBtnClickHandler = null;
     this._flatpickrStart = null;
     this._flatpickrEnd = null;
@@ -266,8 +282,23 @@ export default class EditEvent extends AbstractSmartComponent {
   recoverListeners() {
     this.setSubmitHandler(this._submitHandler);
     this.setCloseBtnClickHandler(this._closeBtnClickHandler);
+    this.setDeleteBtnClickHandler(this._deleteBtnClickHandler);
     this.setFavoritesBtnClickHandler(this._favoritesBtnClickHandler);
     this._subscribeOnEvents();
+  }
+
+  removeElement() {
+    if (this._flatpickrStart) {
+      this._flatpickrStart.destroy();
+      this._flatpickrStart = null;
+    }
+
+    if (this._flatpickrEnd) {
+      this._flatpickrEnd.destroy();
+      this._flatpickrEnd = null;
+    }
+
+    super.removeElement();
   }
 
   rerender() {
@@ -279,6 +310,13 @@ export default class EditEvent extends AbstractSmartComponent {
     this.rerender();
   }
 
+  getData() {
+    const form = this.getElement();
+    const formData = new FormData(form);
+
+    return parseFormData(formData);
+  }
+
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
     this._submitHandler = handler;
@@ -287,6 +325,12 @@ export default class EditEvent extends AbstractSmartComponent {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
     this._closeBtnClickHandler = handler;
+  }
+  setDeleteBtnClickHandler(handler) {
+    this.getElement().querySelector(`.event__reset-btn`)
+      .addEventListener(`click`, handler);
+
+    this._deleteBtnClickHandler = handler;
   }
   setFavoritesBtnClickHandler(handler) {
     this.getElement().querySelector(`.event__favorite-checkbox`)

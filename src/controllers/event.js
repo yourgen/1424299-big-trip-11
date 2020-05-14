@@ -22,9 +22,10 @@ export default class EventController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(event) {
+  render(event, mode) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
+    this._mode = mode;
 
     this._eventComponent = new Event(event);
     this._eventEditComponent = new EditEvent(event);
@@ -36,14 +37,16 @@ export default class EventController {
 
     this._eventEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      this._replaceEditToEvent();
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
+      const data = this._eventEditComponent.getData();
+      this._onDataChange(this, event, data);
     });
 
     this._eventEditComponent.setCloseBtnClickHandler(() => {
       this._replaceEditToEvent();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
+
+    this._eventEditComponent.setDeleteBtnClickHandler(() => this._onDataChange(this, event, null));
 
     this._eventEditComponent.setFavoritesBtnClickHandler(() => {
       this._onDataChange(this, event, Object.assign({}, event, {
@@ -54,6 +57,7 @@ export default class EventController {
     if (oldEventEditComponent && oldEventComponent) {
       replace(this._eventComponent, oldEventComponent);
       replace(this._eventEditComponent, oldEventEditComponent);
+      this._replaceEditToEvent();
     } else {
       render(this._container, this._eventComponent);
     }
@@ -80,7 +84,9 @@ export default class EventController {
   _replaceEditToEvent() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._eventEditComponent.reset();
-    replace(this._eventComponent, this._eventEditComponent);
+    if (document.contains(this._eventEditComponent.getElement())) {
+      replace(this._eventComponent, this._eventEditComponent);
+    }
     this._mode = Mode.DEFAULT;
   }
 

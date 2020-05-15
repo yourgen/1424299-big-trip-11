@@ -1,10 +1,11 @@
-import {tripPoints, tripDestinations} from "../data/event-data";
+import {tripEvents, tripDestinations} from "../data/event-data";
 import {formatRouteInfoDate} from "../utils/common";
-import AbstractComponent from "./abstract-component.js";
+import AbstractComponent from "./abstract-component";
 import moment from "moment";
 
-const getRouteInfoTemplate = (tripStart) => {
-  const lastTripDay = moment(tripStart).add(tripPoints.length - 1, `d`);
+const getRouteInfoTemplate = () => {
+  const firstTripDay = new Date(); // TODO  дата начала
+  const lastTripDay = moment().add(tripEvents.length - 1, `d`);
 
   const MAX_VISIBLE_DESTINATION_COUNT = 3;
   const MIN_VISIBLE_DESTINATION_COUNT = 1;
@@ -27,19 +28,14 @@ const getRouteInfoTemplate = (tripStart) => {
         ${tripDestinations[0]} ${getMiddleDestination()} ${tripDestinations[tripDestinations.length - 1]}
       </h1>
       <p class="trip-info__dates">
-        ${formatRouteInfoDate(tripStart)} &mdash; ${formatRouteInfoDate(lastTripDay) || ``}
+        ${formatRouteInfoDate(firstTripDay)} &mdash; ${formatRouteInfoDate(lastTripDay) || ``}
       </p>
     </div>`
   );
 };
 
 export default class RouteInfo extends AbstractComponent {
-  constructor(tripStart) {
-    super();
-    this._tripStart = tripStart;
-  }
-
   getTemplate() {
-    return getRouteInfoTemplate(this._tripStart);
+    return getRouteInfoTemplate();
   }
 }

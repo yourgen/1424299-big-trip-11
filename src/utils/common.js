@@ -1,6 +1,6 @@
 import moment from "moment";
 
-export const formatTime = (date) => {
+export const formatEventTime = (date) => {
   return moment(date).format(`HH:mm`);
 };
 
@@ -24,21 +24,17 @@ export const formatTripDayDate = (date) => {
   return moment(date).format(`MMM D`);
 };
 
-export const castTimeFormat = (value) => {
-  return value < 10 ? `0${value}` : `${value}`;
-};
+export const formatEventDuration = (start, end) => {
+  const eventStart = moment(start);
+  const eventEnd = moment(end);
 
-export const castDurationFormat = (durationTime) => {
-  const durationMinutes = castTimeFormat(durationTime % 60);
-  const durationHours = castTimeFormat(Math.trunc(durationTime / 60) % 24);
-  const durationDays = castTimeFormat(Math.trunc(durationTime / 1440));
-  if (durationTime > 1440) {
-    return `${durationDays}D ${durationHours}H ${durationMinutes}M`;
-  } else if (durationTime > 60) {
-    return `${durationHours}H ${durationMinutes}M`;
-  } else {
-    return `${durationMinutes}M`;
+  const duration = moment.duration(eventEnd.diff(eventStart)).as(`milliseconds`);
+  if (duration > 86400000) {
+    return moment(duration).format(`DD[D] HH[H] mm[M]`);
+  } else if (duration > 3600000) {
+    return moment(duration).format(`HH[H] mm[M]`);
   }
+  return moment(duration).format(`mm[M]`);
 };
 
 export const getRandomNumber = (min, max) => {

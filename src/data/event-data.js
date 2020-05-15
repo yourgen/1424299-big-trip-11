@@ -1,5 +1,4 @@
 import {getRandomNumber, arrPicker} from "../utils/common.js";
-import moment from "moment";
 
 const EVENT_COUNT = 20;
 const MAX_EVENT_PER_DAY = 4;
@@ -70,14 +69,16 @@ const generateEvent = () => {
   };
 
   return {
+    id: String(Math.random()),
     type: getEventType.name,
     destination: arrPicker(destinations),
     offers: generateOffers(getRandomNumber(0, MAX_OFFER_COUNT + 1), getEventType),
     description: generateDescription(descrSentenceCount),
     photos: generatePhotos(photosCount),
-    duration: getRandomNumber(10, 1200),
     price: getRandomNumber(0, 1000),
-    isFavorite: Math.random() > 0.5
+    isFavorite: Math.random() > 0.5,
+    start: new Date(),
+    end: new Date()
   };
 };
 
@@ -88,37 +89,46 @@ const generateEvents = (count) => {
 };
 
 const events = generateEvents(EVENT_COUNT);
-const newEventData = events[0];
-const tripEvents = events.slice(1);
 
 const generateTrip = (duration) => {
   return new Array(duration)
     .fill(``);
 };
 
-const tripPoints = generateTrip(TRIP_DURATION);
+const tripEvents = generateTrip(TRIP_DURATION);
 
 let start = 0;
-tripPoints.forEach((event, i) => {
+tripEvents.forEach((event, i) => {
   const getRandomEventCount = getRandomNumber(1, MAX_EVENT_PER_DAY + 1);
   const end = start + getRandomEventCount;
-  tripPoints[i] = tripEvents.slice(start, end);
+  tripEvents[i] = events.slice(start, end);
   start = end;
 });
 
-tripPoints.forEach((eventlist, dayCount) => {
+const modifyEventStart = (eventStart, dayCount, startTime) => {
+  eventStart.setDate(eventStart.getDate() + dayCount);
+  eventStart.setTime(eventStart.getTime() + startTime);
+};
+
+const modifyEventEnd = (eventStart, eventEnd, duration) => {
+  eventEnd.setTime(eventStart.getTime() + duration);
+};
+
+tripEvents.forEach((eventlist, dayCount) => {
   eventlist.map((event) => {
-    event.start = moment().add({days: dayCount, minutes: getRandomNumber(0, 600)});
-    event.end = moment(event.start).add(event.duration, `m`);
+    const generateDuration = getRandomNumber(10, 1200) * 60000;
+    const randomizeEventStartTime = getRandomNumber(0, 120) * 60000;
+    modifyEventStart(event.start, dayCount, randomizeEventStartTime);
+    modifyEventEnd(event.start, event.end, generateDuration);
   });
 });
 
 const visitedCities = new Set();
-tripPoints.forEach((eventlist) => {
+tripEvents.forEach((eventlist) => {
   eventlist.forEach((event) => {
     visitedCities.add(event.destination);
   });
 });
 const tripDestinations = Array.from(visitedCities);
 
-export {tripPoints, newEventData, eventTypes, tripDestinations};
+export {tripEvents, eventTypes, tripDestinations};

@@ -24,6 +24,8 @@ export default class EventsModel {
   }
 
   addEvent(event) {
+    // почему линтер ругается на параметр?
+    // eslint-disable-next-line no-unused-vars
     this._events.forEach((eventlist) => {
       eventlist = [].concat(event, eventlist);
       this._callHandlers(this._dataChangeHandlers);

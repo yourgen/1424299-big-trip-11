@@ -245,9 +245,9 @@ const getEditEventTemplate = (event) => {
 };
 
 const parseFormData = (formData) => {
-  //TODO настроить получение всех ключей события
+  // TODO настроить получение всех ключей события
   return {
-    destination: formData.get(`event-destination`), //!!
+    destination: formData.get(`event-destination`), // !!
     start: formData.get(`event-start-time`),
     end: formData.get(`event-end-time`),
     price: formData.get(`event-price`),

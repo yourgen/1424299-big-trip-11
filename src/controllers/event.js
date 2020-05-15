@@ -5,9 +5,14 @@ import {render, replace, remove} from "../utils/render.js";
 export const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
+  ADDING: `adding`
 };
 
-export const EmptyEvent = {};
+export const EmptyEvent = {
+  type: `flight`,
+  photos: [],
+  offers: []
+};
 
 export default class EventController {
   constructor(container, onDataChange, onViewChange) {
@@ -54,12 +59,24 @@ export default class EventController {
       }));
     });
 
-    if (oldEventEditComponent && oldEventComponent) {
-      replace(this._eventComponent, oldEventComponent);
-      replace(this._eventEditComponent, oldEventEditComponent);
-      this._replaceEditToEvent();
-    } else {
-      render(this._container, this._eventComponent);
+    switch (mode) {
+      case Mode.DEFAULT:
+        if (oldEventEditComponent && oldEventComponent) {
+          replace(this._eventComponent, oldEventComponent);
+          replace(this._eventEditComponent, oldEventEditComponent);
+          this._replaceEditToEvent();
+        } else {
+          render(this._container, this._eventComponent);
+        }
+        break;
+      case Mode.ADDING:
+        if (oldEventEditComponent && oldEventComponent) {
+          remove(oldEventComponent);
+          remove(oldEventEditComponent);
+        }
+        document.addEventListener(`keydown`, this._onEscKeyDown);
+        render(this._container, this._eventEditComponent);
+        break;
     }
   }
 
@@ -94,6 +111,9 @@ export default class EventController {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
+      if (this._mode === Mode.ADDING) {
+        this._onDataChange(this, EmptyEvent, null);
+      }
       this._replaceEditToEvent();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }

@@ -26,3 +26,9 @@ filterController.render();
 
 const tripController = new TripController(mainElem, eventsModel);
 tripController.render(tripInfoComponent);
+
+const addNewEventBtn = document.querySelector(`.trip-main__event-add-btn`);
+
+addNewEventBtn.addEventListener(`click`, () => {
+  tripController.createEvent();
+});

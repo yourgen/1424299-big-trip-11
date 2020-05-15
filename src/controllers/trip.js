@@ -7,7 +7,7 @@ import NoPoints from "../components/no-points";
 
 import EventController, {Mode as EventControllerMode, EmptyEvent} from "./event";
 
-import {render} from "../utils/render.js";
+import {render, ElementPosition} from "../utils/render.js";
 import moment from "moment";
 
 const renderHeader = (container) => {
@@ -46,6 +46,7 @@ export default class TripController {
     this._sortingComponent = new Sorting();
     this._tripDaysComponent = new TripDays();
     this._noPointsComponent = new NoPoints();
+    this._creatingEvent = null;
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortingTypeChange = this._onSortingTypeChange.bind(this);
@@ -71,6 +72,19 @@ export default class TripController {
     render(container, this._tripDaysComponent);
 
     this._activeEventControllers = this._renderTripEvents(events);
+  }
+
+  createEvent() {
+    if (this._creatingEvent) {
+      return;
+    }
+
+    const tripDaysElement = this._tripDaysComponent.getElement();
+    const emptyDayContainer = new TripDay(0);
+    render(tripDaysElement, emptyDayContainer, ElementPosition.AFTERBEGIN);
+    const container = tripDaysElement.querySelector(`.trip-events__list`);
+    this._creatingEvent = new EventController(container, this._onDataChange, this._onViewChange);
+    this._creatingEvent.render(EmptyEvent, EventControllerMode.ADDING);
   }
 
   _onSortingTypeChange(sortingType) {

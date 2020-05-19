@@ -1,4 +1,5 @@
 import moment from "moment";
+import 'moment-duration-format';
 
 export const formatEventTime = (date) => {
   return moment(date).format(`HH:mm`);
@@ -28,13 +29,9 @@ export const formatEventDuration = (start, end) => {
   const eventStart = moment(start);
   const eventEnd = moment(end);
 
-  const duration = moment.duration(eventEnd.diff(eventStart)).as(`milliseconds`);
-  if (duration > 86400000) {
-    return moment(duration).format(`DD[D] HH[H] mm[M]`);
-  } else if (duration > 3600000) {
-    return moment(duration).format(`HH[H] mm[M]`);
-  }
-  return moment(duration).format(`mm[M]`);
+  const duration = moment.duration(eventEnd.diff(eventStart), `milliseconds`);
+
+  return duration.format(`DD[D] HH[H] mm[M]`);
 };
 
 export const getRandomNumber = (min, max) => {

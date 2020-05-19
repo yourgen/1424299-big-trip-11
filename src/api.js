@@ -15,6 +15,7 @@ export default class API {
       .then((response) => response.json())
       .then(Event.parseEvents);
   }
+
   getDestinations() {
     const headers = new Headers();
     headers.append(`Authorization`, this._authorization);
@@ -23,6 +24,7 @@ export default class API {
       .then((response) => response.json())
       .then(Destination.parseDestinations);
   }
+
   getOffers() {
     const headers = new Headers();
     headers.append(`Authorization`, this._authorization);

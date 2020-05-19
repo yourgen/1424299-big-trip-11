@@ -3,7 +3,7 @@ import TripCost from '../components/trip-cost';
 import Sorting, {SortingType} from '../components/sorting';
 import TripDays from '../components/trip-days';
 import TripDay from '../components/trip-day';
-import NoPoints from "../components/no-points";
+import NoEvents from "../components/no-events";
 
 import EventController, {Mode as EventControllerMode, EmptyEvent} from "./event";
 
@@ -45,7 +45,7 @@ export default class TripController {
     this._activeEventControllers = [];
     this._sortingComponent = new Sorting();
     this._tripDaysComponent = new TripDays();
-    this._noPointsComponent = new NoPoints();
+    this._noEventsComponent = new NoEvents();
     this._creatingEvent = null;
 
     this._onDataChange = this._onDataChange.bind(this);
@@ -62,7 +62,7 @@ export default class TripController {
     const events = this._eventsModel.getEvents();
 
     if (events.length === 0) {
-      render(container, this._noPointsComponent);
+      render(container, this._noEventsComponent);
       return;
     }
 

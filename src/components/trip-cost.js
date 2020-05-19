@@ -1,10 +1,9 @@
-import {tripEvents} from "../data/event-data";
-import AbstractComponent from "./abstract-component.js";
+import AbstractComponent from './abstract-component';
 
-const getTripCostTemplate = () => {
+const getTripCostTemplate = (events) => {
   const countTripCost = () => {
     const tripCost = [];
-    tripEvents.forEach((eventlist) => {
+    events.forEach((eventlist) => {
       eventlist.forEach((event) => {
         tripCost.push(event.price);
       });
@@ -14,13 +13,18 @@ const getTripCostTemplate = () => {
 
   return (
     `<p class="trip-info__cost">
-      Total: &euro;&nbsp;<span class="trip-info__cost-value">${countTripCost()}</span>
+      Total: &euro; <span class="trip-info__cost-value">${countTripCost()}</span>
     </p>`
   );
 };
 
 export default class TripCost extends AbstractComponent {
+  constructor(events) {
+    super();
+    this._events = events;
+  }
+
   getTemplate() {
-    return getTripCostTemplate();
+    return getTripCostTemplate(this._events);
   }
 }

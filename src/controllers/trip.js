@@ -10,9 +10,9 @@ import EventController, {Mode as EventControllerMode, EmptyEvent} from "./event"
 import {render, ElementPosition} from "../utils/render.js";
 import moment from "moment";
 
-const renderHeader = (container) => {
-  render(container, new RouteInfo());
-  render(container, new TripCost());
+const renderHeader = (container, events) => {
+  render(container, new RouteInfo(events));
+  render(container, new TripCost(events));
 };
 
 const getSortedEvents = (events, sortingType = SortingType.DEFAULT) => {
@@ -48,8 +48,9 @@ const getSortedEvents = (events, sortingType = SortingType.DEFAULT) => {
 };
 
 export default class TripController {
-  constructor(container, eventsModel) {
+  constructor(container, headerContainer, eventsModel) {
     this._container = container;
+    this._headerContainer = headerContainer.getElement();
     this._eventsModel = eventsModel;
 
     this._activeEventControllers = [];
@@ -67,7 +68,7 @@ export default class TripController {
     this._eventsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
-  render(headerContainer) {
+  render() {
     const container = this._container;
     const events = this._eventsModel.getEvents();
     if (events.length === 0) {
@@ -75,13 +76,16 @@ export default class TripController {
       return;
     }
 
-    renderHeader(headerContainer.getElement());
 
     render(container, this._sortingComponent);
     render(container, this._tripDaysComponent);
     const eventsByDay = getSortedEvents(events);
 
     this._activeEventControllers = this._renderTripEvents(eventsByDay);
+
+    render(this._headerContainer, new RouteInfo(eventsByDay));
+    render(this._headerContainer, new TripCost(eventsByDay));
+
   }
 
   createEvent() {

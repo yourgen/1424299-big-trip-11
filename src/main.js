@@ -22,13 +22,14 @@ const tripControlsHeaderElem = tripControlsElem.querySelectorAll(`h2`)[1];
 const mainElem = document.querySelector(`.trip-events`);
 
 const tripInfoComponent = new TripInfo();
+
 render(headerElem, tripInfoComponent, ElementPosition.AFTERBEGIN);
 render(tripControlsHeaderElem, new Menu(), ElementPosition.BEFOREBEGIN);
 
 const filterController = new FilterController(tripControlsElem, eventsModel);
 filterController.render();
 
-const tripController = new TripController(mainElem, eventsModel);
+const tripController = new TripController(mainElem, tripInfoComponent, eventsModel);
 
 const addNewEventBtn = document.querySelector(`.trip-main__event-add-btn`);
 
@@ -39,5 +40,5 @@ addNewEventBtn.addEventListener(`click`, () => {
 api.getEvents()
   .then((events) => {
     eventsModel.setEvents(events);
-    tripController.render(tripInfoComponent);
+    tripController.render();
   });

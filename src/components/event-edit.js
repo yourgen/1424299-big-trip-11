@@ -108,15 +108,14 @@ const getEditEventTemplate = (event, destinationList, offerList) => {
     return offerList;
   };
 
-  const getEditEventPhotoMarkUp = (photoLink) => {
-    return (
-      `<img class="event__photo" src="${photoLink}" alt="Event photo">`
-    );
-  };
-
+  console.log(destination);
   const formPhotosList = () => {
     const photoList = destination.pictures
-      .map((photoLink) => getEditEventPhotoMarkUp(photoLink))
+      .map((picture) => {
+        return (
+          `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`
+        );
+      })
       .join(`\n`);
 
     return photoList;
@@ -130,7 +129,7 @@ const getEditEventTemplate = (event, destinationList, offerList) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase() || `flight`}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${type || `flight`}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
@@ -156,7 +155,7 @@ const getEditEventTemplate = (event, destinationList, offerList) => {
             id="event-destination-${id}" 
             type="text" 
             name="event-destination" 
-            value="${destination || ``}" 
+            value="${destination.name || ``}" 
             list="destination-list-${id}"
           >
           <datalist id="destination-list-${id}">

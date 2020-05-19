@@ -1,4 +1,3 @@
-import {tripEvents} from './data/event-data';
 import API from './api';
 
 import TripInfo from './components/trip-info';
@@ -14,7 +13,6 @@ import {render, ElementPosition} from './utils/render';
 const api = new API();
 
 const eventsModel = new EventsModel();
-eventsModel.setEvents(tripEvents);
 
 const headerElem = document.querySelector(`.trip-main`);
 const tripControlsElem = headerElem.querySelector(`.trip-main__trip-controls`);

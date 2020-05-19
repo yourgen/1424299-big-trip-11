@@ -10,7 +10,9 @@ import EventsModel from './models/events';
 
 import {render, ElementPosition} from './utils/render';
 
-const api = new API();
+const AUTHORIZATION = `Basic diuy32brbd1iubwdsb1wd=`;
+
+const api = new API(AUTHORIZATION);
 
 const eventsModel = new EventsModel();
 
@@ -20,6 +22,7 @@ const tripControlsHeaderElem = tripControlsElem.querySelectorAll(`h2`)[1];
 const mainElem = document.querySelector(`.trip-events`);
 
 const tripInfoComponent = new TripInfo();
+console.log(tripInfoComponent);
 render(headerElem, tripInfoComponent, ElementPosition.AFTERBEGIN);
 render(tripControlsHeaderElem, new Menu(), ElementPosition.BEFOREBEGIN);
 

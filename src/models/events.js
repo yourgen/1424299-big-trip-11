@@ -24,40 +24,36 @@ export default class EventsModel {
   }
 
   addEvent(event) {
-    // почему линтер ругается на параметр?
-    // eslint-disable-next-line no-unused-vars
-    this._events.forEach((eventlist) => {
-      eventlist = [].concat(event, eventlist);
-      this._callHandlers(this._dataChangeHandlers);
-    });
+    this._events = [].concat(event, this._events);
+    this._callHandlers(this._dataChangeHandlers);
   }
 
   updateEvent(id, event) {
-    this._events.forEach((eventlist) => {
-      const index = eventlist.findIndex((it) => it.id === id);
-      if (index === -1) {
-        return false;
-      }
-      eventlist = [].concat(eventlist.slice(0, index), event, eventlist.slice(index + 1));
+    const index = this._events.findIndex((it) => it.id === id);
 
-      this._callHandlers(this._dataChangeHandlers);
+    if (index === -1) {
+      return false;
+    }
 
-      return true;
-    });
+    this._events = [].concat(this._events.slice(0, index), event, this._events.slice(index + 1));
+
+    this._callHandlers(this._dataChangeHandlers);
+
+    return true;
   }
 
   removeEvent(id) {
-    this._events.forEach((eventlist) => {
-      const index = eventlist.findIndex((it) => it.id === id);
-      if (index === -1) {
-        return false;
-      }
-      eventlist = [].concat(eventlist.slice(0, index), eventlist.slice(index + 1));
+    const index = this._events.findIndex((it) => it.id === id);
 
-      this._callHandlers(this._dataChangeHandlers);
+    if (index === -1) {
+      return false;
+    }
 
-      return true;
-    });
+    this._events = [].concat(this._events.slice(0, index), this._events.slice(index + 1));
+
+    this._callHandlers(this._dataChangeHandlers);
+
+    return true;
   }
 
   setFilter(filterType) {

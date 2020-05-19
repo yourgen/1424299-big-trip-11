@@ -15,11 +15,8 @@ const renderHeader = (container) => {
   render(container, new TripCost());
 };
 
-const getSortedEvents = (events, sortingType) => {
-  let sortedEvents = [];
-  events.forEach((eventlist) => {
-    sortedEvents.push(...eventlist);
-  });
+const getSortedEvents = (events, sortingType = SortingType.DEFAULT) => {
+  let sortedEvents = events;
   switch (sortingType) {
     case SortingType.DURATION:
       sortedEvents.sort((a, b) => {
@@ -30,10 +27,23 @@ const getSortedEvents = (events, sortingType) => {
       sortedEvents.sort((a, b) => b.price - a.price);
       break;
     case SortingType.DEFAULT:
-      sortedEvents = events;
+      sortedEvents.sort((a, b) => a.start - b.start);
+
+      const tripDays = new Set();
+      sortedEvents.map((event) => {
+        tripDays.add(event.start.getDate());
+      });
+
+      const eventsByDay = Array.from(tripDays);
+      eventsByDay.map((day, i) => {
+        const firstIndex = sortedEvents.map((event) => event.start.getDate()).indexOf(day);
+        const lastIndex = sortedEvents.map((event) => event.start.getDate()).lastIndexOf(day);
+        eventsByDay[i] = sortedEvents.slice(firstIndex, lastIndex + 1);
+      });
+
+      sortedEvents = eventsByDay;
       break;
   }
-
   return sortedEvents;
 };
 
@@ -60,7 +70,6 @@ export default class TripController {
   render(headerContainer) {
     const container = this._container;
     const events = this._eventsModel.getEvents();
-
     if (events.length === 0) {
       render(container, this._noEventsComponent);
       return;
@@ -70,8 +79,9 @@ export default class TripController {
 
     render(container, this._sortingComponent);
     render(container, this._tripDaysComponent);
+    const eventsByDay = getSortedEvents(events);
 
-    this._activeEventControllers = this._renderTripEvents(events);
+    this._activeEventControllers = this._renderTripEvents(eventsByDay);
   }
 
   createEvent() {

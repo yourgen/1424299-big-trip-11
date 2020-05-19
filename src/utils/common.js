@@ -45,20 +45,24 @@ export const arrPicker = (arr) => {
   return arr[getRandomNumber(0, arr.length)];
 };
 
+const capitalize = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 export const getEventTitle = (event) => {
   switch (event.type) {
-    case `Check-in`:
-    case `Sightseeing`:
-    case `Restaurant`:
-      return `${event.type} in`;
-    case `Bus`:
-    case `Train`:
-    case `Taxi`:
-    case `Ship`:
-    case `Transport`:
-    case `Drive`:
-    case `Flight`:
-      return `${event.type} to`;
+    case `check-in`:
+    case `sightseeing`:
+    case `restaurant`:
+      return `${capitalize(event.type)} in`;
+    case `bus`:
+    case `train`:
+    case `taxi`:
+    case `ship`:
+    case `transport`:
+    case `drive`:
+    case `flight`:
+      return `${capitalize(event.type)} to`;
     default:
       return ``;
   }

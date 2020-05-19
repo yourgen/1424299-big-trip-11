@@ -7,7 +7,7 @@ import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 
 const getEditEventTemplate = (event) => {
-  const {id, type, destination, photos, description, start, end, price, offers, isFavorite} = event;
+  const {id, type, destination, start, end, price, offers, isFavorite} = event;
 
   const transferTypes = [];
   const activityTypes = [];
@@ -112,7 +112,7 @@ const getEditEventTemplate = (event) => {
   };
 
   const formPhotosList = () => {
-    const photoList = photos
+    const photoList = destination.pictures
       .map((photoLink) => getEditEventPhotoMarkUp(photoLink))
       .join(`\n`);
 
@@ -230,7 +230,7 @@ const getEditEventTemplate = (event) => {
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">
-            ${description || ``}
+            ${destination.description || ``}
           </p>
 
           <div class="event__photos-container">

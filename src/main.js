@@ -37,8 +37,11 @@ addNewEventBtn.addEventListener(`click`, () => {
   tripController.createEvent();
 });
 
-api.getEvents()
-  .then((events) => {
+Promise.all([api.getEvents(), api.getDestinations(), api.getOffers()])
+  .then(([events, destinations, offers]) => {
     eventsModel.setEvents(events);
+    eventsModel.setDestinations(destinations);
+    eventsModel.setOffers(offers);
     tripController.render();
   });
+

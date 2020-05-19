@@ -6,8 +6,11 @@ import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
 
-const getEditEventTemplate = (event) => {
+const getEditEventTemplate = (event, destinationList, offerList) => {
   const {id, type, destination, start, end, price, offers, isFavorite} = event;
+
+  console.log(destinationList);
+  console.log(offerList);
 
   const transferTypes = [];
   const activityTypes = [];
@@ -260,9 +263,11 @@ const parseFormData = (formData) => {
 };
 
 export default class EditEvent extends AbstractSmartComponent {
-  constructor(event) {
+  constructor(event, destinationList, offerList) {
     super();
     this._event = event;
+    this._destinationList = destinationList;
+    this._offerList = offerList;
 
     this._submitHandler = null;
     this._closeBtnClickHandler = null;
@@ -276,7 +281,7 @@ export default class EditEvent extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return getEditEventTemplate(this._event);
+    return getEditEventTemplate(this._event, this._destinationList, this._offerList);
   }
 
   recoverListeners() {

@@ -10,11 +10,6 @@ import EventController, {Mode as EventControllerMode, EmptyEvent} from "./event"
 import {render, ElementPosition} from "../utils/render.js";
 import moment from "moment";
 
-const renderHeader = (container, events) => {
-  render(container, new RouteInfo(events));
-  render(container, new TripCost(events));
-};
-
 const getSortedEvents = (events, sortingType = SortingType.DEFAULT) => {
   let sortedEvents = events;
   switch (sortingType) {
@@ -71,6 +66,9 @@ export default class TripController {
   render() {
     const container = this._container;
     const events = this._eventsModel.getEvents();
+    const destinationList = this._eventsModel.getDestinations();
+    const offerList = this._eventsModel.getOffers();
+
     if (events.length === 0) {
       render(container, this._noEventsComponent);
       return;
@@ -81,7 +79,7 @@ export default class TripController {
     render(container, this._tripDaysComponent);
     const eventsByDay = getSortedEvents(events);
 
-    this._activeEventControllers = this._renderTripEvents(eventsByDay);
+    this._activeEventControllers = this._renderTripEvents(eventsByDay, destinationList, offerList);
 
     render(this._headerContainer, new RouteInfo(eventsByDay));
     render(this._headerContainer, new TripCost(eventsByDay));
@@ -93,12 +91,15 @@ export default class TripController {
       return;
     }
 
+    const destinationList = this._eventsModel.getDestinations();
+    const offerList = this._eventsModel.getOffers();
+
     const tripDaysElement = this._tripDaysComponent.getElement();
     const emptyDayContainer = new TripDay(0);
     render(tripDaysElement, emptyDayContainer, ElementPosition.AFTERBEGIN);
     const container = tripDaysElement.querySelector(`.trip-events__list`);
     this._creatingEvent = new EventController(container, this._onDataChange, this._onViewChange);
-    this._creatingEvent.render(EmptyEvent, EventControllerMode.ADDING);
+    this._creatingEvent.render(EmptyEvent, destinationList, offerList, EventControllerMode.ADDING);
   }
 
   _onSortingTypeChange(sortingType) {
@@ -114,30 +115,30 @@ export default class TripController {
     }
   }
 
-  _renderTripEvents(events, isSorted) {
+  _renderTripEvents(events, destinationList, offerList, isSorted) {
     const container = this._tripDaysComponent.getElement();
 
     if (isSorted) {
       const NO_DAYS = 0;
       render(container, new TripDay(NO_DAYS));
-      const activeEventControllers = this._renderEventList(events, container, NO_DAYS);
+      const activeEventControllers = this._renderEventList(events, destinationList, offerList, container, NO_DAYS);
       return activeEventControllers;
     }
 
     const activeEventControllers = events.map((eventlist, dayCount) => {
       const eventListDate = eventlist[0].start;
       render(container, new TripDay(dayCount + 1, eventListDate));
-      const eventControllerDayList = this._renderEventList(eventlist, container, dayCount);
+      const eventControllerDayList = this._renderEventList(eventlist, destinationList, offerList, container, dayCount);
       return eventControllerDayList;
     });
     return activeEventControllers;
   }
 
-  _renderEventList(eventlist, parent, dayCount) {
+  _renderEventList(eventlist, destinationList, offerList, parent, dayCount) {
     const container = parent.querySelectorAll(`.trip-events__list`)[dayCount];
     return eventlist.map((event) => {
       const eventController = new EventController(container, this._onDataChange, this._onViewChange);
-      eventController.render(event, EventControllerMode.DEFAULT);
+      eventController.render(event, destinationList, offerList, EventControllerMode.DEFAULT);
       return eventController;
     });
   }

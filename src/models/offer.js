@@ -1,7 +1,7 @@
 export default class Offer {
   constructor(data) {
-    this.offers = data[`offers`];
-    this.type = data[`type`];
+    this.avaliableOffers = data[`offers`];
+    this.offersType = data[`type`];
   }
   static parseOffer(data) {
     return new Offer(data);

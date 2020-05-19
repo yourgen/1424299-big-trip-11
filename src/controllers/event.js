@@ -1,6 +1,6 @@
 import Event from '../components/event';
 import EditEvent from '../components/event-edit';
-import {render, replace, remove} from "../utils/render.js";
+import {render, replace, remove} from '../utils/render';
 
 export const Mode = {
   DEFAULT: `default`,
@@ -27,13 +27,13 @@ export default class EventController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(event, mode) {
+  render(event, destinationList, offerList, mode) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
     this._mode = mode;
 
     this._eventComponent = new Event(event);
-    this._eventEditComponent = new EditEvent(event);
+    this._eventEditComponent = new EditEvent(event, destinationList, offerList);
 
     this._eventComponent.setEditBtnClickHandler(() => {
       this._replaceEventToEdit();

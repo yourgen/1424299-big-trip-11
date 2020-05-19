@@ -9,9 +9,6 @@ import "flatpickr/dist/flatpickr.min.css";
 const getEditEventTemplate = (event, destinationList, offerList) => {
   const {id, type, destination, start, end, price, offers, isFavorite} = event;
 
-  console.log(destinationList);
-  console.log(offerList);
-
   const transferTypes = [];
   const activityTypes = [];
 
@@ -48,20 +45,15 @@ const getEditEventTemplate = (event, destinationList, offerList) => {
     return subtypesList;
   };
 
-  const getDestinationListMarkup = (destinationListItem) => {
-    return (
-      `<option value="${destinationListItem}"></option>`
-    );
-  };
-
   const formDestinationList = () => {
-    const destinationList = [];
-    for (let destinationListItem of tripDestinations) {
-      destinationList
-        .push(getDestinationListMarkup(destinationListItem))
-      ;
-    }
-    return destinationList.join(`\n`);
+    const avaliableDestinationList = destinationList
+      .map((avaliableDestination) => {
+        return (
+          `<option value="${avaliableDestination.name}"></option>`
+        );
+      })
+      .join(`\n`);
+    return avaliableDestinationList;
   };
 
   const getEditEventOffersMarkUp = (avaliableOfferName, avaliableOfferIndex) => {
@@ -108,8 +100,8 @@ const getEditEventTemplate = (event, destinationList, offerList) => {
     return offerList;
   };
 
-  console.log(destination);
   const formPhotosList = () => {
+    console.log(destination);
     const photoList = destination.pictures
       .map((picture) => {
         return (

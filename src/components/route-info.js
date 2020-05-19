@@ -5,13 +5,13 @@ const getRouteInfoTemplate = (events) => {
   const firstTripDay = events[0][0].start;
   const lastTripDay = events[events.length - 1].slice(-1)[0].end;
 
-  const visitedCities = new Set();
+  const uniqueDestinations = new Set();
   events.forEach((eventlist) => {
     eventlist.forEach((event) => {
-      visitedCities.add(event.destination.name);
+      uniqueDestinations.add(event.destination.name);
     });
   });
-  const tripDestinations = Array.from(visitedCities);
+  const tripDestinations = Array.from(uniqueDestinations);
 
   const MAX_VISIBLE_DESTINATION_COUNT = 3;
   const MIN_VISIBLE_DESTINATION_COUNT = 1;

@@ -121,7 +121,8 @@ export default class TripController {
     }
 
     const activeEventControllers = events.map((eventlist, dayCount) => {
-      render(container, new TripDay(dayCount + 1));
+      const eventListDate = eventlist[0].start;
+      render(container, new TripDay(dayCount + 1, eventListDate));
       const eventControllerDayList = this._renderEventList(eventlist, container, dayCount);
       return eventControllerDayList;
     });

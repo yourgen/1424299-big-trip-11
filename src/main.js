@@ -22,7 +22,6 @@ const tripControlsHeaderElem = tripControlsElem.querySelectorAll(`h2`)[1];
 const mainElem = document.querySelector(`.trip-events`);
 
 const tripInfoComponent = new TripInfo();
-console.log(tripInfoComponent);
 render(headerElem, tripInfoComponent, ElementPosition.AFTERBEGIN);
 render(tripControlsHeaderElem, new Menu(), ElementPosition.BEFOREBEGIN);
 

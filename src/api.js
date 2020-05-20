@@ -2,6 +2,14 @@ import Event from './models/event';
 import Destination from './models/destination';
 import Offer from './models/offer';
 
+const checkStatus = (response) => {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  } else {
+    throw new Error(`${response.status}: ${response.statusText}`);
+  }
+};
+
 export default class API {
   constructor(authorization, url) {
     this._authorization = authorization;
@@ -13,6 +21,7 @@ export default class API {
     headers.append(`Authorization`, this._authorization);
 
     return fetch(`${this._url}points`, {headers})
+      .then(checkStatus)
       .then((response) => response.json())
       .then(Event.parseEvents);
   }
@@ -22,6 +31,7 @@ export default class API {
     headers.append(`Authorization`, this._authorization);
 
     return fetch(`${this._url}destinations`, {headers})
+      .then(checkStatus)
       .then((response) => response.json())
       .then(Destination.parseDestinations);
   }
@@ -31,6 +41,7 @@ export default class API {
     headers.append(`Authorization`, this._authorization);
 
     return fetch(`${this._url}offers`, {headers})
+      .then(checkStatus)
       .then((response) => response.json())
       .then(Offer.parseOffers);
   }
@@ -44,6 +55,7 @@ export default class API {
       body: JSON.stringify(data),
       headers,
     })
+      .then(checkStatus)
       .then((response) => response.json())
       .then(Event.parseEvents);
   }

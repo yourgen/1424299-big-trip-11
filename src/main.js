@@ -11,9 +11,9 @@ import EventsModel from './models/events';
 import {render, ElementPosition} from './utils/render';
 
 const AUTHORIZATION = `Basic diuy32brbd1iubwdsb1wd=`;
-const URL = `https://11.ecmascript.pages.academy/big-trip/`;
+const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
-const api = new API(AUTHORIZATION, URL);
+const api = new API(AUTHORIZATION, END_POINT);
 
 const eventsModel = new EventsModel();
 

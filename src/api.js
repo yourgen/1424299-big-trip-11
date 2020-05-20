@@ -2,6 +2,13 @@ import Event from './models/event';
 import Destination from './models/destination';
 import Offer from './models/offer';
 
+const Method = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
+};
+
 const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
     return response;
@@ -11,53 +18,47 @@ const checkStatus = (response) => {
 };
 
 export default class API {
-  constructor(authorization, url) {
+  constructor(authorization, endPoint) {
     this._authorization = authorization;
-    this._url = url;
+    this._endPoint = endPoint;
   }
 
   getEvents() {
-    const headers = new Headers();
-    headers.append(`Authorization`, this._authorization);
-
-    return fetch(`${this._url}points`, {headers})
-      .then(checkStatus)
+    return this._load({url: `points`})
       .then((response) => response.json())
       .then(Event.parseEvents);
   }
 
   getDestinations() {
-    const headers = new Headers();
-    headers.append(`Authorization`, this._authorization);
-
-    return fetch(`${this._url}destinations`, {headers})
-      .then(checkStatus)
+    return this._load({url: `destinations`})
       .then((response) => response.json())
       .then(Destination.parseDestinations);
   }
 
   getOffers() {
-    const headers = new Headers();
-    headers.append(`Authorization`, this._authorization);
-
-    return fetch(`${this._url}offers`, {headers})
-      .then(checkStatus)
+    return this._load({url: `offers`})
       .then((response) => response.json())
       .then(Offer.parseOffers);
   }
 
   updateEvent(id, data) {
-    const headers = new Headers();
-    headers.append(`Authorization`, this._authorization);
-    headers.append(`Content-Type`, `application/json`);
-
-    return fetch(`${this._url}points/${id}`, {
-      method: `PUT`,
-      body: JSON.stringify(data),
-      headers,
+    return this._load({
+      url: `tasks/${id}`,
+      method: Method.PUT,
+      body: JSON.stringify(data.toRAW()),
+      headers: new Headers({"Content-Type": `application/json`})
     })
-      .then(checkStatus)
       .then((response) => response.json())
       .then(Event.parseEvent);
+  }
+
+  _load({url, method = Method.GET, body = null, headers = new Headers()}) {
+    headers.append(`Authorization`, this._authorization);
+
+    return fetch(`${this._endPoint}/${url}`, {method, body, headers})
+      .then(checkStatus)
+      .catch((err) => {
+        throw err;
+      });
   }
 }

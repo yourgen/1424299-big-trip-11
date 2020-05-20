@@ -66,8 +66,6 @@ export default class TripController {
   render() {
     const container = this._container;
     const events = this._eventsModel.getEvents();
-    const destinationList = this._eventsModel.getDestinations();
-    const offerList = this._eventsModel.getOffers();
 
     if (events.length === 0) {
       render(container, this._noEventsComponent);
@@ -79,7 +77,7 @@ export default class TripController {
     render(container, this._tripDaysComponent);
     const eventsByDay = getSortedEvents(events);
 
-    this._activeEventControllers = this._renderTripEvents(eventsByDay, destinationList, offerList);
+    this._activeEventControllers = this._renderTripEvents(eventsByDay);
 
     render(this._headerContainer, new RouteInfo(eventsByDay));
     render(this._headerContainer, new TripCost(eventsByDay));
@@ -115,26 +113,29 @@ export default class TripController {
     }
   }
 
-  _renderTripEvents(events, destinationList, offerList, isSorted) {
+  _renderTripEvents(events, isSorted) {
     const container = this._tripDaysComponent.getElement();
 
     if (isSorted) {
       const NO_DAYS = 0;
       render(container, new TripDay(NO_DAYS));
-      const activeEventControllers = this._renderEventList(events, destinationList, offerList, container, NO_DAYS);
+      const activeEventControllers = this._renderEventList(events, container, NO_DAYS);
       return activeEventControllers;
     }
 
     const activeEventControllers = events.map((eventlist, dayCount) => {
       const eventListDate = eventlist[0].start;
       render(container, new TripDay(dayCount + 1, eventListDate));
-      const eventControllerDayList = this._renderEventList(eventlist, destinationList, offerList, container, dayCount);
+      const eventControllerDayList = this._renderEventList(eventlist, container, dayCount);
       return eventControllerDayList;
     });
     return activeEventControllers;
   }
 
-  _renderEventList(eventlist, destinationList, offerList, parent, dayCount) {
+  _renderEventList(eventlist, parent, dayCount) {
+    const destinationList = this._eventsModel.getDestinations();
+    const offerList = this._eventsModel.getOffers();
+
     const container = parent.querySelectorAll(`.trip-events__list`)[dayCount];
     return eventlist.map((event) => {
       const eventController = new EventController(container, this._onDataChange, this._onViewChange);
@@ -161,7 +162,7 @@ export default class TripController {
   _updateEvents() {
     this._resetContainer();
     this._removeEvents();
-    this._activeEventControllers = this._renderTripEvents(this._eventsModel.getEvents());
+    this._activeEventControllers = this._renderTripEvents(getSortedEvents(this._eventsModel.getEvents()));
   }
 
   _onDataChange(eventController, oldData, newData) {

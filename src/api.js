@@ -3,15 +3,16 @@ import Destination from './models/destination';
 import Offer from './models/offer';
 
 export default class API {
-  constructor(authorization) {
+  constructor(authorization, url) {
     this._authorization = authorization;
+    this._url = url;
   }
 
   getEvents() {
     const headers = new Headers();
     headers.append(`Authorization`, this._authorization);
 
-    return fetch(`https://11.ecmascript.pages.academy/big-trip/points`, {headers})
+    return fetch(`${this._url}points`, {headers})
       .then((response) => response.json())
       .then(Event.parseEvents);
   }
@@ -20,7 +21,7 @@ export default class API {
     const headers = new Headers();
     headers.append(`Authorization`, this._authorization);
 
-    return fetch(`https://11.ecmascript.pages.academy/big-trip/destinations`, {headers})
+    return fetch(`${this._url}destinations`, {headers})
       .then((response) => response.json())
       .then(Destination.parseDestinations);
   }
@@ -29,8 +30,21 @@ export default class API {
     const headers = new Headers();
     headers.append(`Authorization`, this._authorization);
 
-    return fetch(`https://11.ecmascript.pages.academy/big-trip/offers`, {headers})
+    return fetch(`${this._url}offers`, {headers})
       .then((response) => response.json())
       .then(Offer.parseOffers);
+  }
+
+  updateEvent(id, data) {
+    const headers = new Headers();
+    headers.append(`Authorization`, this._authorization);
+
+    return fetch(`${this._url}points/${id}`, {
+      method: `PUT`,
+      body: JSON.stringify(data),
+      headers,
+    })
+      .then((response) => response.json())
+      .then(Event.parseEvents);
   }
 }

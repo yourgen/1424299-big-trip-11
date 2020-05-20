@@ -11,8 +11,9 @@ import EventsModel from './models/events';
 import {render, ElementPosition} from './utils/render';
 
 const AUTHORIZATION = `Basic diuy32brbd1iubwdsb1wd=`;
+const URL = `https://11.ecmascript.pages.academy/big-trip/`;
 
-const api = new API(AUTHORIZATION);
+const api = new API(AUTHORIZATION, URL);
 
 const eventsModel = new EventsModel();
 
@@ -29,7 +30,7 @@ render(tripControlsHeaderElem, new Menu(), ElementPosition.BEFOREBEGIN);
 const filterController = new FilterController(tripControlsElem, eventsModel);
 filterController.render();
 
-const tripController = new TripController(mainElem, tripInfoComponent, eventsModel);
+const tripController = new TripController(mainElem, tripInfoComponent, eventsModel, api);
 
 const addNewEventBtn = document.querySelector(`.trip-main__event-add-btn`);
 

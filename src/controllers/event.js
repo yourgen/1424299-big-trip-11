@@ -1,5 +1,8 @@
 import Event from '../components/event';
 import EditEvent from '../components/event-edit';
+
+import EventModel from '../models/event';
+
 import {render, replace, remove} from '../utils/render';
 
 export const Mode = {
@@ -21,6 +24,31 @@ export const EmptyEvent = {
   isFavorite: false,
   offers: [],
   type: `flight`
+};
+
+const parseFormData = (formData, event, destinationList, offerList) => {
+
+    // //////////////////////////////////// //
+   // TODO доделать получение данных формы //
+  // //////////////////////////////////// //
+
+  const start = formData.get(`event-start-time`);
+  const end = formData.get(`event-end-time`);
+
+  return new EventModel({
+    "base_price": formData.get(`event-price`),
+    "date_from": start ? new Date(start) : ``,
+    "date_to": end ? new Date(end) : ``,
+    "destination": {
+      "description": ``,
+      "name": ``,
+      "pictures": []
+    },
+    "id": event.id,
+    "is_favorite": formData.get(`event-favorite`),
+    "offers": formData.getAll(`event-offer`),
+    "type": formData.get(`event-type`)
+  });
 };
 
 export default class EventController {
@@ -51,8 +79,10 @@ export default class EventController {
 
     this._eventEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      const data = this._eventEditComponent.getData();
+      const formData = this._eventEditComponent.getData();
+      const data = parseFormData(formData, event.id, destinationList, offerList);
       this._onDataChange(this, event, data);
+
     });
 
     this._eventEditComponent.setCloseBtnClickHandler(() => {
@@ -63,9 +93,9 @@ export default class EventController {
     this._eventEditComponent.setDeleteBtnClickHandler(() => this._onDataChange(this, event, null));
 
     this._eventEditComponent.setFavoritesBtnClickHandler(() => {
-      this._onDataChange(this, event, Object.assign({}, event, {
-        isFavorite: !event.isFavorite,
-      }));
+      const newEvent = EventModel.clone(event);
+      newEvent.isFavorite = !newEvent.isFavorite;
+      this._onDataChange(this, event, newEvent);
     });
 
     switch (mode) {

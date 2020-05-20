@@ -231,21 +231,6 @@ const getEditEventTemplate = (event, destinationList, offerList) => {
   );
 };
 
-const parseFormData = (formData) => {
-  // TODO настроить получение всех ключей события
-  return {
-    destination: formData.get(`event-destination`), // !!
-    start: formData.get(`event-start-time`),
-    end: formData.get(`event-end-time`),
-    price: formData.get(`event-price`),
-    // type: null,
-    // offers: formData.getAll(`repeat`).reduce((acc, it) => {
-    //   acc[it] = true;
-    //   return acc;
-    // }, repeatingDays),
-  };
-};
-
 export default class EditEvent extends AbstractSmartComponent {
   constructor(event, destinationList, offerList) {
     super();
@@ -300,10 +285,7 @@ export default class EditEvent extends AbstractSmartComponent {
   }
 
   getData() {
-    const form = this.getElement();
-    const formData = new FormData(form);
-
-    return parseFormData(formData);
+    return new FormData(this.getElement());
   }
 
   setSubmitHandler(handler) {

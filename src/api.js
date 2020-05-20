@@ -49,6 +49,7 @@ export default class API {
   updateEvent(id, data) {
     const headers = new Headers();
     headers.append(`Authorization`, this._authorization);
+    headers.append(`Content-Type`, `application/json`);
 
     return fetch(`${this._url}points/${id}`, {
       method: `PUT`,
@@ -57,6 +58,6 @@ export default class API {
     })
       .then(checkStatus)
       .then((response) => response.json())
-      .then(Event.parseEvents);
+      .then(Event.parseEvent);
   }
 }

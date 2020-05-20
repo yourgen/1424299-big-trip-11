@@ -9,9 +9,18 @@ export const Mode = {
 };
 
 export const EmptyEvent = {
-  type: `flight`,
-  photos: [],
-  offers: []
+  price: ``,
+  start: new Date(),
+  end: new Date(),
+  destination: {
+    description: ``,
+    name: ``,
+    pictures: []
+  }, // TODO
+  id: 0,
+  isFavorite: false,
+  offers: [],
+  type: `flight`
 };
 
 export default class EventController {

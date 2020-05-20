@@ -175,7 +175,7 @@ export default class TripController {
       } else {
         this._eventsModel.addEvent(newData);
         eventController.render(newData, EventControllerMode.DEFAULT);
-        this._activeEventControllers = [].concat(eventController, this._activeEventControllers); // TODO добавление в структуру данных
+        this._activeEventControllers = [].concat(eventController, this._activeEventControllers);
       }
 
     } else if (newData === null) {

@@ -373,6 +373,7 @@ export default class EditEvent extends AbstractSmartComponent {
         this._destinationList.map((destination) => {
           if (destination.name === this._event.destination.name) {
             this._event.destination.description = destination.description;
+            this._event.destination.pictures = destination.pictures;
           }
         });
 

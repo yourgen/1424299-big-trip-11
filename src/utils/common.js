@@ -42,7 +42,7 @@ export const arrPicker = (arr) => {
   return arr[getRandomNumber(0, arr.length)];
 };
 
-const capitalize = (string) => {
+export const capitalize = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 

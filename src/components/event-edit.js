@@ -367,11 +367,14 @@ export default class EditEvent extends AbstractSmartComponent {
         this.rerender();
       });
     });
-
     element.querySelector(`.event__input--destination`)
       .addEventListener(`change`, (evt) => {
-        this._event.destination = evt.target.value;
-        this._event.description = `Description changed to ${this._event.destination}`;
+        this._event.destination.name = evt.target.value;
+        this._destinationList.map((destination) => {
+          if (destination.name === this._event.destination.name) {
+            this._event.destination.description = destination.description;
+          }
+        });
 
         this.rerender();
       });

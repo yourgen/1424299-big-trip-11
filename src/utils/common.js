@@ -34,14 +34,6 @@ export const formatEventDuration = (start, end) => {
   return duration.format(`DD[D] HH[H] mm[M]`);
 };
 
-export const getRandomNumber = (min, max) => {
-  return min + Math.floor(Math.random() * (max - min));
-};
-
-export const arrPicker = (arr) => {
-  return arr[getRandomNumber(0, arr.length)];
-};
-
 export const capitalize = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };

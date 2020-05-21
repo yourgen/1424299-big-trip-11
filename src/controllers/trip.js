@@ -50,6 +50,7 @@ export default class TripController {
     this._api = api;
 
     this._activeEventControllers = [];
+
     this._sortingComponent = new Sorting();
     this._tripDaysComponent = new TripDays();
     this._noEventsComponent = new NoEvents();
@@ -76,6 +77,7 @@ export default class TripController {
 
     render(container, this._sortingComponent);
     render(container, this._tripDaysComponent);
+
     const eventsByDay = getSortedEvents(events);
 
     this._activeEventControllers = this._renderTripEvents(eventsByDay);
@@ -97,6 +99,7 @@ export default class TripController {
     const emptyDayContainer = new TripDay(0);
     render(tripDaysElement, emptyDayContainer, ElementPosition.AFTERBEGIN);
     const container = tripDaysElement.querySelector(`.trip-events__list`);
+
     this._creatingEvent = new EventController(container, this._onDataChange, this._onViewChange);
     this._creatingEvent.render(EmptyEvent, destinationList, offerList, EventControllerMode.ADDING);
   }
@@ -146,13 +149,7 @@ export default class TripController {
   }
 
   _removeEvents() {
-    this._activeEventControllers.forEach((item) => {
-      if (Array.isArray(item)) {
-        item.forEach((controller) => controller.destroy());
-      } else {
-        item.destroy();
-      }
-    });
+    this._activeEventControllers.forEach((controller) => controller.destroy());
     this._activeEventControllers = [];
   }
 
@@ -174,11 +171,14 @@ export default class TripController {
         eventController.destroy();
         this._updateEvents();
       } else {
-        this._eventsModel.addEvent(newData);
-        eventController.render(newData, EventControllerMode.DEFAULT);
-        this._activeEventControllers = [].concat(eventController, this._activeEventControllers);
-      }
+        this._api.createEvent(newData)
+          .then((eventModel) => {
+            this._eventsModel.addEvent(eventModel);
+            eventController.render(eventModel, EventControllerMode.DEFAULT);
 
+            this._activeEventControllers = [].concat(eventController, this._activeEventControllers);
+          });
+      }
     } else if (newData === null) {
       this._eventsModel.removeEvent(oldData.id);
       this._updateEvents();
@@ -210,5 +210,4 @@ export default class TripController {
     this._sortingComponent.reset();
     this._sortingComponent.setSortingTypeChangeHandler(this._onSortingTypeChange);
   }
-
 }

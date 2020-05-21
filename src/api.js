@@ -1,6 +1,6 @@
-import Event from './models/event';
-import Destination from './models/destination';
-import Offer from './models/offer';
+import EventModel from './models/event';
+import DestinationModel from './models/destination';
+import OfferModel from './models/offer';
 
 const Method = {
   GET: `GET`,
@@ -26,19 +26,30 @@ export default class API {
   getEvents() {
     return this._load({url: `points`})
       .then((response) => response.json())
-      .then(Event.parseEvents);
+      .then(EventModel.parseEvents);
   }
 
   getDestinations() {
     return this._load({url: `destinations`})
       .then((response) => response.json())
-      .then(Destination.parseDestinations);
+      .then(DestinationModel.parseDestinations);
   }
 
   getOffers() {
     return this._load({url: `offers`})
       .then((response) => response.json())
-      .then(Offer.parseOffers);
+      .then(OfferModel.parseOffers);
+  }
+
+  createEvent(event) {
+    return this._load({
+      url: `points`,
+      method: Method.POST,
+      body: JSON.stringify(event.toRAW()),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then((response) => response.json())
+      .then(EventModel.parseEvent);
   }
 
   updateEvent(id, data) {
@@ -49,7 +60,7 @@ export default class API {
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json())
-      .then(Event.parseEvent);
+      .then(EventModel.parseEvent);
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {

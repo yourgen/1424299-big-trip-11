@@ -1,12 +1,12 @@
-export default class Offer {
+export default class OfferModel {
   constructor(data) {
     this.avaliableOffers = data[`offers`];
     this.offersType = data[`type`];
   }
   static parseOffer(data) {
-    return new Offer(data);
+    return new OfferModel(data);
   }
   static parseOffers(data) {
-    return data.map(Offer.parseOffer);
+    return data.map(OfferModel.parseOffer);
   }
 }

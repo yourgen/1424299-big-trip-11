@@ -1,20 +1,20 @@
 export default class EventModel {
   constructor(data) {
     this.price = data[`base_price`];
-    this.start = new Date(data[`date_from`]);
-    this.end = new Date(data[`date_to`]);
-    this.destination = data[`destination`]; // TODO
+    this.start = data[`date_from`] ? new Date(data[`date_from`]) : null;
+    this.end = data[`date_to`] ? new Date(data[`date_to`]) : null;
+    this.destination = data[`destination`];
     this.id = data[`id`];
     this.isFavorite = data[`is_favorite`];
-    this.offers = data[`offers`];
+    this.offers = data[`offers`] || [];
     this.type = data[`type`];
   }
 
   toRAW() {
     return {
       "base_price": this.price,
-      "date_from": this.start.toISOString(),
-      "date_to": this.end.toISOString(),
+      "date_from": this.start ? this.start.toISOString() : null,
+      "date_to": this.end ? this.end.toISOString() : null,
       "destination": this.destination,
       "id": this.id,
       "is_favorite": this.isFavorite,

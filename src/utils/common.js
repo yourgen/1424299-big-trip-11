@@ -38,6 +38,12 @@ export const capitalize = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
+export const sortEventsByDate = (events) => {
+  return events
+    .slice()
+    .sort((a, b) => a.start - b.start);
+};
+
 export const getEventTitle = (event) => {
   switch (event.type) {
     case `check-in`:

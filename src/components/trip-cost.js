@@ -1,12 +1,13 @@
+import {sortEventsByDate} from '../utils/common';
 import AbstractComponent from './abstract-component';
 
 const getTripCostTemplate = (events) => {
+  const sortedEvents = sortEventsByDate(events);
+
   const countTripCost = () => {
     const tripCost = [];
-    events.forEach((eventlist) => {
-      eventlist.forEach((event) => {
-        tripCost.push(event.price);
-      });
+    sortedEvents.forEach((event) => {
+      tripCost.push(event.price);
     });
     return tripCost.reduce((acc, value) => acc + value);
   };

@@ -11,7 +11,7 @@ import {render, ElementPosition} from "../utils/render.js";
 import moment from "moment";
 
 const getSortedEvents = (events, sortingType = SortingType.DEFAULT) => {
-  let sortedEvents = events;
+  let sortedEvents = events.slice();
   switch (sortingType) {
     case SortingType.DURATION:
       sortedEvents.sort((a, b) => {
@@ -78,13 +78,9 @@ export default class TripController {
     render(container, this._sortingComponent);
     render(container, this._tripDaysComponent);
 
-    const eventsByDay = getSortedEvents(events);
-
-    this._activeEventControllers = this._renderTripEvents(eventsByDay);
-
-    render(this._headerContainer, new RouteInfo(eventsByDay));
-    render(this._headerContainer, new TripCost(eventsByDay));
-
+    this._renderTripEvents(getSortedEvents(events));
+    render(this._headerContainer, new RouteInfo(events));
+    render(this._headerContainer, new TripCost(events));
   }
 
   createEvent() {
@@ -102,38 +98,42 @@ export default class TripController {
 
     this._creatingEvent = new EventController(container, this._onDataChange, this._onViewChange);
     this._creatingEvent.render(EmptyEvent, destinationList, offerList, EventControllerMode.ADDING);
+    this._activeEventControllers = this._activeEventControllers.concat(this._creatingEvent);
   }
 
   _onSortingTypeChange(sortingType) {
     this._resetContainer();
+    this._removeEvents();
 
     const sortedEvents = getSortedEvents(this._eventsModel.getEvents(), sortingType);
-
     if (sortingType === SortingType.DEFAULT) {
-      this._activeEventControllers = this._renderTripEvents(sortedEvents);
+      this._renderTripEvents(sortedEvents);
     } else {
       const isSorted = true;
-      this._activeEventControllers = this._renderTripEvents(sortedEvents, isSorted);
+      this._renderTripEvents(sortedEvents, isSorted);
     }
   }
 
   _renderTripEvents(events, isSorted) {
     const container = this._tripDaysComponent.getElement();
-
     if (isSorted) {
       const NO_DAYS = 0;
       render(container, new TripDay(NO_DAYS));
       const activeEventControllers = this._renderEventList(events, container, NO_DAYS);
-      return activeEventControllers;
+      this._activeEventControllers = this._activeEventControllers.concat(activeEventControllers);
+    } else {
+      const activeEventControllers = events.map((eventlist, dayCount) => {
+        const eventListDate = eventlist[0].start;
+        render(container, new TripDay(dayCount + 1, eventListDate));
+        const eventControllerDayList = this._renderEventList(eventlist, container, dayCount);
+        return eventControllerDayList;
+      });
+      activeEventControllers.map((eventControllerDayList) => {
+        eventControllerDayList.map((eventController) => {
+          this._activeEventControllers = this._activeEventControllers.concat(eventController);
+        });
+      });
     }
-
-    const activeEventControllers = events.map((eventlist, dayCount) => {
-      const eventListDate = eventlist[0].start;
-      render(container, new TripDay(dayCount + 1, eventListDate));
-      const eventControllerDayList = this._renderEventList(eventlist, container, dayCount);
-      return eventControllerDayList;
-    });
-    return activeEventControllers;
   }
 
   _renderEventList(eventlist, parent, dayCount) {
@@ -160,7 +160,7 @@ export default class TripController {
   _updateEvents() {
     this._resetContainer();
     this._removeEvents();
-    this._activeEventControllers = this._renderTripEvents(getSortedEvents(this._eventsModel.getEvents()));
+    this._renderTripEvents(getSortedEvents(this._eventsModel.getEvents()));
   }
 
   _onDataChange(eventController, oldData, newData) {
@@ -180,8 +180,11 @@ export default class TripController {
           });
       }
     } else if (newData === null) {
-      this._eventsModel.removeEvent(oldData.id);
-      this._updateEvents();
+      this._api.deleteEvent(oldData.id)
+        .then(() => {
+          this._eventsModel.removeEvent(oldData.id);
+          this._updateEvents();
+        });
     } else {
       this._api.updateEvent(oldData.id, newData)
         .then((eventModel) => {
@@ -196,13 +199,7 @@ export default class TripController {
   }
 
   _onViewChange() {
-    this._activeEventControllers.forEach((item) => {
-      if (Array.isArray(item)) {
-        item.forEach((controller) => controller.setDefaultView());
-      } else {
-        item.setDefaultView();
-      }
-    });
+    this._activeEventControllers.forEach((controller) => controller.setDefaultView());
   }
 
   _onFilterChange() {

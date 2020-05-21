@@ -1,15 +1,15 @@
-import {formatRouteInfoDate} from '../utils/common';
+import {formatRouteInfoDate, sortEventsByDate} from '../utils/common';
 import AbstractComponent from './abstract-component';
 
 const getRouteInfoTemplate = (events) => {
-  const firstTripDay = events[0][0].start;
-  const lastTripDay = events[events.length - 1].slice(-1)[0].end;
+  const sortedEvents = sortEventsByDate(events);
+
+  const firstTripEvent = sortedEvents[0];
+  const lastTripEvent = sortedEvents[sortedEvents.length - 1];
 
   const uniqueDestinations = new Set();
-  events.forEach((eventlist) => {
-    eventlist.forEach((event) => {
-      uniqueDestinations.add(event.destination.name);
-    });
+  sortedEvents.forEach((event) => {
+    uniqueDestinations.add(event.destination.name);
   });
   const tripDestinations = Array.from(uniqueDestinations);
 
@@ -31,10 +31,10 @@ const getRouteInfoTemplate = (events) => {
   return (
     `<div class="trip-info__main">
       <h1 class="trip-info__title">
-        ${events[0][0].destination.name} ${getMiddleDestination()} ${events[events.length - 1].slice(-1)[0].destination.name}
+        ${firstTripEvent.destination.name} ${getMiddleDestination()} ${lastTripEvent.destination.name}
       </h1>
       <p class="trip-info__dates">
-        ${formatRouteInfoDate(firstTripDay)} &mdash; ${formatRouteInfoDate(lastTripDay) || ``}
+        ${formatRouteInfoDate(firstTripEvent.start)} &mdash; ${formatRouteInfoDate(lastTripEvent.end) || ``}
       </p>
     </div>`
   );

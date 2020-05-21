@@ -41,11 +41,11 @@ export default class API {
       .then(OfferModel.parseOffers);
   }
 
-  createEvent(event) {
+  createEvent(data) {
     return this._load({
       url: `points`,
       method: Method.POST,
-      body: JSON.stringify(event.toRAW()),
+      body: JSON.stringify(data.toRAW()),
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json())
@@ -54,13 +54,17 @@ export default class API {
 
   updateEvent(id, data) {
     return this._load({
-      url: `tasks/${id}`,
+      url: `points/${id}`,
       method: Method.PUT,
       body: JSON.stringify(data.toRAW()),
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json())
       .then(EventModel.parseEvent);
+  }
+
+  deleteEvent(id) {
+    return this._load({url: `points/${id}`, method: Method.DELETE});
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {

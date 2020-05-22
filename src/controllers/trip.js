@@ -5,7 +5,9 @@ import TripDays from '../components/trip-days';
 import TripDay from '../components/trip-day';
 import NoEvents from "../components/no-events";
 
-import EventController, {Mode as EventControllerMode, EmptyEvent} from "./event";
+import EventController from "./event";
+
+import {Mode as EventControllerMode, EmptyEvent} from '../data/const';
 
 import {render, ElementPosition} from "../utils/render.js";
 import moment from "moment";

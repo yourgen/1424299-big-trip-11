@@ -7,8 +7,7 @@ import {render, replace, remove} from '../utils/render';
 
 import {Mode, EmptyEvent} from '../data/const';
 
-
-const parseFormData = (formData, event, destinationList, offerList) => {
+const parseFormData = (formData, event, destinationList) => {
 
   const start = formData.get(`event-start-time`);
   const end = formData.get(`event-end-time`);

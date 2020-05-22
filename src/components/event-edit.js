@@ -11,6 +11,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
 
   const transferTypes = [];
   const activityTypes = [];
+
   offerList.map((offer) => {
     switch (offer.offersType) {
       case `check-in`:
@@ -65,13 +66,15 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
       .join(`\n`);
   };
 
-  let avaliableOffers = [];
-  offerList.map((offer) => {
-    if (offer.offersType === type) {
-      avaliableOffers = offer.avaliableOffers;
-    }
-  });
   const formOfferList = () => {
+    let avaliableOffers = [];
+
+    offerList.map((offer) => {
+      if (offer.offersType === type) {
+        avaliableOffers = offer.avaliableOffers;
+      }
+    });
+
     return avaliableOffers
       .map((avaliableOffer, i) => {
         const checkActiveOffers = () => {
@@ -106,7 +109,6 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
       .join(`\n`);
 
   };
-
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -181,6 +183,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+        
         ${mode === Mode.ADDING ? `
           <button class="event__reset-btn" type="reset">Cancel</button>
         ` : `
@@ -201,8 +204,8 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
               ></path>
             </svg>
           </label>
-          
         `}
+        
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>

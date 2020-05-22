@@ -1,13 +1,6 @@
 import {FilterType} from "../data/const";
 
 export const getPastEvents = (events, date) => {
-  if (Array.isArray(events)) {
-    const result = events.map((eventlist) => {
-      return eventlist.filter((event) => event.end < date);
-    });
-    return result;
-  }
-
   const result = events.filter((event) => {
     return event.end < date;
   });
@@ -15,13 +8,6 @@ export const getPastEvents = (events, date) => {
 };
 
 export const getFutureEvents = (events, date) => {
-  if (Array.isArray(events)) {
-    const result = events.map((eventlist) => {
-      return eventlist.filter((event) => event.start >= date);
-    });
-    return result;
-  }
-
   const result = events.filter((event) => {
     return event.start >= date;
   });

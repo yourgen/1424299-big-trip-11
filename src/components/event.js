@@ -1,22 +1,23 @@
 import {getEventTitle, formatEventDuration, formatEventTime, formatEventDateTime} from "../utils/common";
 import AbstractComponent from "./abstract-component";
 
+const MAX_OFFER_COUNT = 3;
 
 const getEventTemplate = (event) => {
   const {type, destination, start, end, price, offers} = event;
 
-  const getOfferMarkup = (offer) => {
-    return (
-      `<li class="event__offer">
-        <span class="event__offer-title">${offer.name}</span>
-        &plus;
-        &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
-      </li>`
-    );
-  };
   const formOfferList = () => {
     const offerList = offers
-      .map((offer) => getOfferMarkup(offer))
+      .slice(0, MAX_OFFER_COUNT)
+      .map((offer) => {
+        return (
+          `<li class="event__offer">
+            <span class="event__offer-title">${offer.title}</span>
+            &plus;
+            &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+          </li>`
+        );
+      })
       .join(`\n`);
 
     return offerList;
@@ -28,7 +29,7 @@ const getEventTemplate = (event) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${getEventTitle(event)} ${destination}</h3>
+        <h3 class="event__title">${getEventTitle(event)} ${destination.name}</h3>
 
         <div class="event__schedule">
           <p class="event__time">

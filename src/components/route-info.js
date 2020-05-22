@@ -1,11 +1,17 @@
-import {tripEvents, tripDestinations} from "../data/event-data";
-import {formatRouteInfoDate} from "../utils/common";
-import AbstractComponent from "./abstract-component";
-import moment from "moment";
+import {formatRouteInfoDate, sortEventsByDate} from '../utils/common';
+import AbstractComponent from './abstract-component';
 
-const getRouteInfoTemplate = () => {
-  const firstTripDay = new Date(); // TODO  дата начала
-  const lastTripDay = moment().add(tripEvents.length - 1, `d`);
+const getRouteInfoTemplate = (events) => {
+  const sortedEvents = sortEventsByDate(events);
+
+  const firstTripEvent = sortedEvents[0];
+  const lastTripEvent = sortedEvents[sortedEvents.length - 1];
+
+  const uniqueDestinations = new Set();
+  sortedEvents.forEach((event) => {
+    uniqueDestinations.add(event.destination.name);
+  });
+  const tripDestinations = Array.from(uniqueDestinations);
 
   const MAX_VISIBLE_DESTINATION_COUNT = 3;
   const MIN_VISIBLE_DESTINATION_COUNT = 1;
@@ -25,17 +31,22 @@ const getRouteInfoTemplate = () => {
   return (
     `<div class="trip-info__main">
       <h1 class="trip-info__title">
-        ${tripDestinations[0]} ${getMiddleDestination()} ${tripDestinations[tripDestinations.length - 1]}
+        ${firstTripEvent.destination.name} ${getMiddleDestination()} ${lastTripEvent.destination.name}
       </h1>
       <p class="trip-info__dates">
-        ${formatRouteInfoDate(firstTripDay)} &mdash; ${formatRouteInfoDate(lastTripDay) || ``}
+        ${formatRouteInfoDate(firstTripEvent.start)} &mdash; ${formatRouteInfoDate(lastTripEvent.end) || ``}
       </p>
     </div>`
   );
 };
 
 export default class RouteInfo extends AbstractComponent {
+  constructor(events) {
+    super();
+    this._events = events;
+  }
+
   getTemplate() {
-    return getRouteInfoTemplate();
+    return getRouteInfoTemplate(this._events);
   }
 }

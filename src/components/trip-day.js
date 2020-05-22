@@ -1,16 +1,13 @@
 import {formatTripDayDate, formatTripDayDateTime} from "../utils/common";
 import AbstractComponent from "./abstract-component";
-import moment from "moment";
 
-const getTripDayTemplate = (dayCount) => {
-  const firstTripDay = new Date();// TODO дата начала
-  const currentDate = moment(firstTripDay).add(dayCount - 1, `d`);
+const getTripDayTemplate = (dayCount, date) => {
   return (
     `<li class="trip-days__item  day">
       <div class="day__info">
       ${dayCount ? `
         <span class="day__counter">${dayCount}</span>
-        <time class="day__date" datetime="${formatTripDayDateTime(currentDate)}">${formatTripDayDate(currentDate)}</time>
+        <time class="day__date" datetime="${formatTripDayDateTime(date)}">${formatTripDayDate(date)}</time>
       ` : ``}
       </div>
 
@@ -22,12 +19,13 @@ const getTripDayTemplate = (dayCount) => {
 };
 
 export default class TripDay extends AbstractComponent {
-  constructor(dayCount) {
+  constructor(dayCount, date) {
     super();
     this._dayCount = dayCount;
+    this._date = date;
   }
 
   getTemplate() {
-    return getTripDayTemplate(this._dayCount);
+    return getTripDayTemplate(this._dayCount, this._date);
   }
 }

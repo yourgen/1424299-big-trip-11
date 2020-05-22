@@ -1,125 +1,114 @@
-import {eventTypes, tripDestinations} from '../data/event-data';
-import {formatEditEventDateTime, getEventTitle} from "../utils/common";
+import {formatEditEventDateTime, getEventTitle, capitalize} from "../utils/common";
 import AbstractSmartComponent from "./abstract-smart-component";
+import {Mode} from '../data/const';
 
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
 
-const getEditEventTemplate = (event) => {
-  const {id, type, destination, photos, description, start, end, price, offers, isFavorite} = event;
+const getEditEventTemplate = (event, mode, destinationList, offerList) => {
+  const {id, type, destination, start, end, price, offers, isFavorite} = event;
 
   const transferTypes = [];
   const activityTypes = [];
 
-  const getEventTypeMarkup = (eventType, i) => {
-    const lowerCaseEventType = eventType.toLowerCase();
-    return (
-      `<div class="event__type-item">
-        <input 
-          id="event-type-${lowerCaseEventType}-${i}" 
-          class="event__type-input  visually-hidden" 
-          type="radio" 
-          name="event-type" 
-          value="${lowerCaseEventType}"
-          ${lowerCaseEventType === type.toLowerCase() ? `checked` : ``}
-        >
-        <label 
-          class="event__type-label  event__type-label--${lowerCaseEventType}" 
-          for="event-type-${lowerCaseEventType}-${i}"
-        >
-        ${eventType}
-        </label>
-      </div>`
-    );
-  };
+  offerList.map((offer) => {
+    switch (offer.offersType) {
+      case `check-in`:
+      case `sightseeing`:
+      case `restaurant`:
+        activityTypes.push(offer.offersType);
+        break;
+      case `bus`:
+      case `train`:
+      case `taxi`:
+      case `ship`:
+      case `transport`:
+      case `drive`:
+      case `flight`:
+        transferTypes.push(offer.offersType);
+        break;
+    }
+  });
 
-  const formSubtypesList = (subtype, index) => {
-    eventTypes[index].forEach((item) => {
-      subtype.push(item.name);
-    });
-    const subtypesList = subtype
-      .map((eventType, i) => getEventTypeMarkup(eventType, i + 1))
+  const formSubtypesList = (subtype) => {
+    return subtype
+      .map((eventType) => {
+        return (
+          `<div class="event__type-item">
+            <input 
+              id="event-type-${eventType}-${id}" 
+              class="event__type-input  visually-hidden" 
+              type="radio" 
+              name="event-type" 
+              value="${eventType}"
+              ${eventType === type ? `checked` : ``}
+            >
+            <label 
+              class="event__type-label  event__type-label--${eventType}" 
+              for="event-type-${eventType}-${id}"
+            >
+            ${capitalize(eventType)}
+            </label>
+          </div>`
+        );
+      })
       .join(`\n`);
-
-    return subtypesList;
-  };
-
-  const getDestinationListMarkup = (destinationListItem) => {
-    return (
-      `<option value="${destinationListItem}"></option>`
-    );
   };
 
   const formDestinationList = () => {
-    const destinationList = [];
-    for (let destinationListItem of tripDestinations) {
-      destinationList
-        .push(getDestinationListMarkup(destinationListItem))
-      ;
-    }
-    return destinationList.join(`\n`);
+    return destinationList
+      .map((avaliableDestination) => {
+        return (
+          `<option value="${avaliableDestination.name}"></option>`
+        );
+      })
+      .join(`\n`);
   };
-
-  const getEditEventOffersMarkUp = (avaliableOfferName, avaliableOfferIndex) => {
-    const checkActiveOffers = () => {
-      const activeOffers = [];
-      offers.forEach((offer) => {
-        activeOffers.push(offer.name);
-      });
-      return activeOffers.indexOf(avaliableOfferName) !== -1 ? `checked` : ``;
-    };
-
-    const getOfferPrice = () => {
-      const DEFAULT_OFFER_PRICE = 10;
-
-      return DEFAULT_OFFER_PRICE;
-    };
-
-    return (
-      `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${avaliableOfferIndex}" type="checkbox" name="event-offer" ${checkActiveOffers()}>
-        <label class="event__offer-label" for="event-offer-${avaliableOfferIndex}">
-          <span class="event__offer-title">${avaliableOfferName}</span>
-          &plus;
-          &euro;&nbsp;<span class="event__offer-price">${getOfferPrice()}</span>
-        </label>
-      </div>`
-    );
-  };
-
-  const avaliableOffers = [];
-  eventTypes.forEach((item) => {
-    item.forEach((eventType) => {
-      if (eventType.name === type) {
-        avaliableOffers.push(...eventType.offers);
-      }
-    });
-  });
 
   const formOfferList = () => {
-    const offerList = avaliableOffers
-      .map((avaliableOfferName, avaliableOfferNumber) => getEditEventOffersMarkUp(avaliableOfferName, avaliableOfferNumber))
+    let avaliableOffers = [];
+
+    offerList.map((offer) => {
+      if (offer.offersType === type) {
+        avaliableOffers = offer.avaliableOffers;
+      }
+    });
+
+    return avaliableOffers
+      .map((avaliableOffer, i) => {
+        const checkActiveOffers = () => {
+          const activeOffers = [];
+          offers.forEach((offer) => {
+            activeOffers.push(offer.title);
+          });
+          return activeOffers.indexOf(avaliableOffer.title) !== -1 ? `checked` : ``;
+        };
+
+        return (
+          `<div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${i}" type="checkbox" name="event-offer" ${checkActiveOffers()}>
+            <label class="event__offer-label" for="event-offer-${i}">
+              <span class="event__offer-title">${avaliableOffer.title}</span>
+              &plus;
+              &euro; <span class="event__offer-price">${avaliableOffer.price}</span>
+            </label>
+          </div>`
+        );
+      })
+      .join(`\n`);
+  };
+
+  const formPicturesList = () => {
+    return destination.pictures
+      .map((picture) => {
+        return (
+          `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`
+        );
+      })
       .join(`\n`);
 
-    return offerList;
   };
-
-  const getEditEventPhotoMarkUp = (photoLink) => {
-    return (
-      `<img class="event__photo" src="${photoLink}" alt="Event photo">`
-    );
-  };
-
-  const formPhotosList = () => {
-    const photoList = photos
-      .map((photoLink) => getEditEventPhotoMarkUp(photoLink))
-      .join(`\n`);
-
-    return photoList;
-  };
-
-  const isNewEvent = false;
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -127,19 +116,19 @@ const getEditEventTemplate = (event) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase() || `flight`}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${type || `flight`}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Transfer</legend>
-              ${formSubtypesList(transferTypes, 0)}
+              ${formSubtypesList(transferTypes)}
             </fieldset>
 
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Activity</legend>
-              ${formSubtypesList(activityTypes, 1)}
+              ${formSubtypesList(activityTypes)}
             </fieldset>
           </div>
         </div>
@@ -153,7 +142,7 @@ const getEditEventTemplate = (event) => {
             id="event-destination-${id}" 
             type="text" 
             name="event-destination" 
-            value="${destination || ``}" 
+            value="${destination.name || ``}" 
             list="destination-list-${id}"
           >
           <datalist id="destination-list-${id}">
@@ -194,7 +183,8 @@ const getEditEventTemplate = (event) => {
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        ${isNewEvent ? `
+        
+        ${mode === Mode.ADDING ? `
           <button class="event__reset-btn" type="reset">Cancel</button>
         ` : `
           <button class="event__reset-btn" type="reset">Delete</button>
@@ -214,10 +204,11 @@ const getEditEventTemplate = (event) => {
               ></path>
             </svg>
           </label>
-          <button class="event__rollup-btn" type="button">
-            <span class="visually-hidden">Open event</span>
-          </button>
         `}
+        
+        <button class="event__rollup-btn" type="button">
+          <span class="visually-hidden">Open event</span>
+        </button>
       </header>
       <section class="event__details">
         <section class="event__section  event__section--offers">
@@ -230,12 +221,12 @@ const getEditEventTemplate = (event) => {
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">
-            ${description || ``}
+            ${destination.description || ``}
           </p>
 
           <div class="event__photos-container">
             <div class="event__photos-tape">
-              ${formPhotosList()}
+              ${formPicturesList()}
             </div>
           </div>
         </section>
@@ -244,25 +235,14 @@ const getEditEventTemplate = (event) => {
   );
 };
 
-const parseFormData = (formData) => {
-  // TODO настроить получение всех ключей события
-  return {
-    destination: formData.get(`event-destination`), // !!
-    start: formData.get(`event-start-time`),
-    end: formData.get(`event-end-time`),
-    price: formData.get(`event-price`),
-    // type: null,
-    // offers: formData.getAll(`repeat`).reduce((acc, it) => {
-    //   acc[it] = true;
-    //   return acc;
-    // }, repeatingDays),
-  };
-};
-
 export default class EditEvent extends AbstractSmartComponent {
-  constructor(event) {
+  constructor(event, mode, destinationList, offerList) {
     super();
+
     this._event = event;
+    this._mode = mode;
+    this._destinationList = destinationList;
+    this._offerList = offerList;
 
     this._submitHandler = null;
     this._closeBtnClickHandler = null;
@@ -276,7 +256,7 @@ export default class EditEvent extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return getEditEventTemplate(this._event);
+    return getEditEventTemplate(this._event, this._mode, this._destinationList, this._offerList);
   }
 
   recoverListeners() {
@@ -288,16 +268,7 @@ export default class EditEvent extends AbstractSmartComponent {
   }
 
   removeElement() {
-    if (this._flatpickrStart) {
-      this._flatpickrStart.destroy();
-      this._flatpickrStart = null;
-    }
-
-    if (this._flatpickrEnd) {
-      this._flatpickrEnd.destroy();
-      this._flatpickrEnd = null;
-    }
-
+    this.removeFlatpickr();
     super.removeElement();
   }
 
@@ -311,41 +282,34 @@ export default class EditEvent extends AbstractSmartComponent {
   }
 
   getData() {
-    const form = this.getElement();
-    const formData = new FormData(form);
-
-    return parseFormData(formData);
+    return new FormData(this.getElement());
   }
 
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
     this._submitHandler = handler;
   }
+
   setCloseBtnClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
     this._closeBtnClickHandler = handler;
   }
+
   setDeleteBtnClickHandler(handler) {
     this.getElement().querySelector(`.event__reset-btn`)
       .addEventListener(`click`, handler);
-
     this._deleteBtnClickHandler = handler;
   }
+
   setFavoritesBtnClickHandler(handler) {
     this.getElement().querySelector(`.event__favorite-checkbox`)
       .addEventListener(`change`, handler);
     this._favoritesBtnClickHandler = handler;
   }
+
   _applyFlatpickr() {
-    if (this._flatpickrStart) {
-      this._flatpickrStart.destroy();
-      this._flatpickrStart = null;
-    }
-    if (this._flatpickrEnd) {
-      this._flatpickrEnd.destroy();
-      this._flatpickrEnd = null;
-    }
+    this.removeFlatpickr();
 
     const dateStartElement = this.getElement().querySelector(`input[name='event-start-time']`);
     this._flatpickrStart = flatpickr(dateStartElement, {
@@ -353,8 +317,7 @@ export default class EditEvent extends AbstractSmartComponent {
       allowInput: true,
       enableTime: true,
       minDate: formatEditEventDateTime(this._event.start),
-      // eslint-disable-next-line camelcase
-      time_24hr: true
+      [`time_24hr`]: true
     });
     const dateEndElement = this.getElement().querySelector(`input[name='event-end-time']`);
     this._flatpickrEnd = flatpickr(dateEndElement, {
@@ -362,9 +325,20 @@ export default class EditEvent extends AbstractSmartComponent {
       allowInput: true,
       enableTime: true,
       minDate: formatEditEventDateTime(this._event.start),
-      // eslint-disable-next-line camelcase
-      time_24hr: true
+      [`time_24hr`]: true
     });
+  }
+
+  removeFlatpickr() {
+    if (this._flatpickrStart) {
+      this._flatpickrStart.destroy();
+      this._flatpickrStart = null;
+    }
+
+    if (this._flatpickrEnd) {
+      this._flatpickrEnd.destroy();
+      this._flatpickrEnd = null;
+    }
   }
 
   _subscribeOnEvents() {
@@ -373,16 +347,20 @@ export default class EditEvent extends AbstractSmartComponent {
     const eventTypeBtns = element.querySelectorAll(`.event__type-input`);
     eventTypeBtns.forEach((btn) => {
       btn.addEventListener(`click`, (evt) => {
-        this._event.type = evt.target.value.charAt(0).toUpperCase() + evt.target.value.slice(1);
+        this._event.type = evt.target.value;
 
         this.rerender();
       });
     });
-
     element.querySelector(`.event__input--destination`)
       .addEventListener(`change`, (evt) => {
-        this._event.destination = evt.target.value;
-        this._event.description = `Description changed to ${this._event.destination}`;
+        this._event.destination.name = evt.target.value;
+        this._destinationList.map((destination) => {
+          if (destination.name === this._event.destination.name) {
+            this._event.destination.description = destination.description;
+            this._event.destination.pictures = destination.pictures;
+          }
+        });
 
         this.rerender();
       });

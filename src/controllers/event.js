@@ -1,17 +1,34 @@
 import Event from '../components/event';
 import EditEvent from '../components/event-edit';
-import {render, replace, remove} from "../utils/render.js";
 
-export const Mode = {
-  DEFAULT: `default`,
-  EDIT: `edit`,
-  ADDING: `adding`
-};
+import EventModel from '../models/event';
 
-export const EmptyEvent = {
-  type: `flight`,
-  photos: [],
-  offers: []
+import {render, replace, remove} from '../utils/render';
+
+import {Mode, EmptyEvent} from '../data/const';
+
+const parseFormData = (formData, event, destinationList) => {
+
+  const start = formData.get(`event-start-time`);
+  const end = formData.get(`event-end-time`);
+  const destination = destinationList.find((item) => {
+    return formData.get(`event-destination`) === item.name;
+  });
+
+  return new EventModel({
+    "base_price": formData.get(`event-price`),
+    "date_from": start ? new Date(start) : ``,
+    "date_to": end ? new Date(end) : ``,
+    "destination": {
+      "description": destination.name,
+      "name": destination.description,
+      "pictures": destination.pictures
+    },
+    "id": event.id,
+    "is_favorite": formData.get(`event-favorite`),
+    "offers": formData.getAll(`event-offer`),
+    "type": formData.get(`event-type`)
+  });
 };
 
 export default class EventController {
@@ -27,13 +44,13 @@ export default class EventController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(event, mode) {
+  render(event, destinationList, offerList, mode) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
     this._mode = mode;
 
     this._eventComponent = new Event(event);
-    this._eventEditComponent = new EditEvent(event);
+    this._eventEditComponent = new EditEvent(event, mode, destinationList, offerList);
 
     this._eventComponent.setEditBtnClickHandler(() => {
       this._replaceEventToEdit();
@@ -42,8 +59,10 @@ export default class EventController {
 
     this._eventEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      const data = this._eventEditComponent.getData();
+      const formData = this._eventEditComponent.getData();
+      const data = parseFormData(formData, event, destinationList, offerList);
       this._onDataChange(this, event, data);
+
     });
 
     this._eventEditComponent.setCloseBtnClickHandler(() => {
@@ -53,11 +72,13 @@ export default class EventController {
 
     this._eventEditComponent.setDeleteBtnClickHandler(() => this._onDataChange(this, event, null));
 
-    this._eventEditComponent.setFavoritesBtnClickHandler(() => {
-      this._onDataChange(this, event, Object.assign({}, event, {
-        isFavorite: !event.isFavorite,
-      }));
-    });
+    if (mode === Mode.EDIT) {
+      this._eventEditComponent.setFavoritesBtnClickHandler(() => {
+        const newEvent = EventModel.clone(event);
+        newEvent.isFavorite = !newEvent.isFavorite;
+        this._onDataChange(this, event, newEvent);
+      });
+    }
 
     switch (mode) {
       case Mode.DEFAULT:

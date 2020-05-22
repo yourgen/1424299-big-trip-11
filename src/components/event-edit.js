@@ -3,14 +3,16 @@ import AbstractSmartComponent from "./abstract-smart-component";
 import {Mode} from '../data/const';
 
 import flatpickr from "flatpickr";
-
 import "flatpickr/dist/flatpickr.min.css";
+import {encode} from "he";
 
 const getEditEventTemplate = (event, mode, destinationList, offerList) => {
   const {id, type, destination, start, end, price, offers, isFavorite} = event;
 
   const transferTypes = [];
   const activityTypes = [];
+
+  const safeInputDestinationName = encode(destination.name);
 
   offerList.map((offer) => {
     switch (offer.offersType) {
@@ -142,7 +144,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
             id="event-destination-${id}" 
             type="text" 
             name="event-destination" 
-            value="${destination.name || ``}" 
+            value="${safeInputDestinationName || ``}" 
             list="destination-list-${id}"
           >
           <datalist id="destination-list-${id}">
@@ -179,7 +181,14 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price || ``}">
+          <input 
+            class="event__input  event__input--price" 
+            id="event-price-${id}" 
+            type="number" 
+            name="event-price"
+            style="-webkit-appearance: none; margin: 0; -moz-appearance: textfield;"
+            value="${price || ``}"
+          >
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -355,10 +364,12 @@ export default class EditEvent extends AbstractSmartComponent {
     element.querySelector(`.event__input--destination`)
       .addEventListener(`change`, (evt) => {
         this._event.destination.name = evt.target.value;
+        this._event.destination.description = `Choose destination from the suggested list`;
+        this._event.destination.pictures = [];
+
         this._destinationList.map((destination) => {
-          if (destination.name === this._event.destination.name) {
-            this._event.destination.description = destination.description;
-            this._event.destination.pictures = destination.pictures;
+          if (destination.name === evt.target.value) {
+            this._event.destination = destination;
           }
         });
 

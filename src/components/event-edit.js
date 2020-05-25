@@ -11,7 +11,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
 
   const safeInputDestinationName = encode(destination.name);
 
-  const formSubtypesList = (subtype) => {
+  const getSubtypesList = (subtype) => {
     return subtype
       .map((eventType) => {
         return (
@@ -36,7 +36,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
       .join(`\n`);
   };
 
-  const formDestinationList = () => {
+  const getDestinationList = () => {
     return destinationList
       .map((avaliableDestination) => {
         return (
@@ -46,7 +46,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
       .join(`\n`);
   };
 
-  const formOfferList = () => {
+  const getOfferList = () => {
     let avaliableOffers = [];
 
     offerList.map((offer) => {
@@ -79,7 +79,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
       .join(`\n`);
   };
 
-  const formPicturesList = () => {
+  const getPicturesList = () => {
     return destination.pictures
       .map((picture) => {
         return (
@@ -127,12 +127,12 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Transfer</legend>
-              ${formSubtypesList(TRANSFER_TYPES)}
+              ${getSubtypesList(TRANSFER_TYPES)}
             </fieldset>
 
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Activity</legend>
-              ${formSubtypesList(ACTIVITY_TYPES)}
+              ${getSubtypesList(ACTIVITY_TYPES)}
             </fieldset>
           </div>
         </div>
@@ -150,7 +150,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
             list="destination-list-${id}"
           >
           <datalist id="destination-list-${id}">
-            ${formDestinationList()}
+            ${getDestinationList()}
           </datalist>
         </div>
 
@@ -208,7 +208,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-            ${formOfferList()}
+            ${getOfferList()}
           </div>
         </section>
         <section class="event__section  event__section--destination">
@@ -219,7 +219,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
 
           <div class="event__photos-container">
             <div class="event__photos-tape">
-              ${formPicturesList()}
+              ${getPicturesList()}
             </div>
           </div>
         </section>

@@ -68,11 +68,13 @@ export default class TripController {
   }
 
   hide() {
-    this._container.hide();
+    this._sortingComponent.hide();
+    this._tripDaysComponent.hide();
   }
 
   show() {
-    this._container.show();
+    this._sortingComponent.show();
+    this._tripDaysComponent.show();
   }
 
   render() {

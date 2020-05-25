@@ -25,5 +25,10 @@ export const EmptyEvent = {
   type: `flight`
 };
 
+export const MenuItem = {
+  TABLE: `table`,
+  STATS: `stats`,
+};
+
 export const TRANSFER_TYPES = [`bus`, `train`, `taxi`, `ship`, `transport`, `drive`, `flight`];
 export const ACTIVITY_TYPES = [`check-in`, `sightseeing`, `restaurant`];

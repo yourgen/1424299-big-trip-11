@@ -10,12 +10,15 @@ import EventsModel from './models/events';
 
 import {render, ElementPosition} from './utils/render';
 
+import {MenuItem} from './data/const';
+
 const AUTHORIZATION = `Basic diuy32brbd1iubwdsb1wd=`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 const api = new API(AUTHORIZATION, END_POINT);
 
 const eventsModel = new EventsModel();
+const menuComponent = new Menu();
 
 const headerElem = document.querySelector(`.trip-main`);
 const tripControlsElem = headerElem.querySelector(`.trip-main__trip-controls`);
@@ -25,7 +28,7 @@ const mainElem = document.querySelector(`.trip-events`);
 const tripInfoComponent = new TripInfo();
 
 render(headerElem, tripInfoComponent, ElementPosition.AFTERBEGIN);
-render(tripControlsHeaderElem, new Menu(), ElementPosition.BEFOREBEGIN);
+render(tripControlsHeaderElem, menuComponent, ElementPosition.BEFOREBEGIN);
 
 const filterController = new FilterController(tripControlsElem, eventsModel);
 filterController.render();
@@ -33,9 +36,21 @@ filterController.render();
 const tripController = new TripController(mainElem, tripInfoComponent, eventsModel, api);
 
 const addNewEventBtn = document.querySelector(`.trip-main__event-add-btn`);
-
 addNewEventBtn.addEventListener(`click`, () => {
   tripController.createEvent();
+});
+
+menuComponent.setOnChange((menuItem) => {
+  switch (menuItem) {
+    case MenuItem.TABLE:
+      menuComponent.setActiveItem(MenuItem.TABLE);
+      tripController.show();
+      break;
+    case MenuItem.STATS:
+      menuComponent.setActiveItem(MenuItem.STATS);
+      tripController.hide();
+      break;
+  }
 });
 
 Promise.all([api.getEvents(), api.getDestinations(), api.getOffers()])

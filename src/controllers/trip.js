@@ -7,8 +7,7 @@ import NoEvents from '../components/no-events';
 
 import EventController from './event';
 
-
-import {Mode as EventControllerMode, EmptyEvent, SortingType} from '../data/const';
+import {Mode as EventControllerMode, EmptyEvent, SortingType, HIDDEN_CLASS} from '../data/const';
 
 import {render, ElementPosition} from '../utils/render';
 import {sortEventsByDuration} from '../utils/common';
@@ -44,7 +43,7 @@ const getSortedEvents = (events, sortingType = SortingType.DEFAULT) => {
 };
 
 export default class TripController {
-  constructor(container, headerContainer, eventsModel, api) {
+  constructor(container, headerContainer, addNewEventBtn, eventsModel, api) {
     this._container = container;
     this._headerContainer = headerContainer.getElement();
     this._eventsModel = eventsModel;
@@ -67,13 +66,11 @@ export default class TripController {
   }
 
   hide() {
-    this._sortingComponent.hide();
-    this._tripDaysComponent.hide();
+    this._container.classList.add(HIDDEN_CLASS);
   }
 
   show() {
-    this._sortingComponent.show();
-    this._tripDaysComponent.show();
+    this._container.classList.remove(HIDDEN_CLASS);
   }
 
   render() {

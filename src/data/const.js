@@ -4,6 +4,12 @@ export const FilterType = {
   PAST: `past`
 };
 
+export const SortingType = {
+  DURATION: `duration`,
+  PRICE: `price`,
+  DEFAULT: `default`,
+};
+
 export const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,

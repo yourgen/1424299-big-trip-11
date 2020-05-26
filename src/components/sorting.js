@@ -1,10 +1,5 @@
-import AbstractComponent from "./abstract-component";
-
-export const SortingType = {
-  DURATION: `duration`,
-  PRICE: `price`,
-  DEFAULT: `default`,
-};
+import AbstractComponent from './abstract-component';
+import {SortingType} from '../data/const';
 
 const getSortingTemplate = () => {
   return (

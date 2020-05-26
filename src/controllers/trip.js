@@ -1,17 +1,17 @@
 import RouteInfo from '../components/route-info';
 import TripCost from '../components/trip-cost';
-import Sorting, {SortingType} from '../components/sorting';
+import Sorting from '../components/sorting';
 import TripDays from '../components/trip-days';
 import TripDay from '../components/trip-day';
-import NoEvents from "../components/no-events";
+import NoEvents from '../components/no-events';
 
-import EventController from "./event";
+import EventController from './event';
 
+
+import {Mode as EventControllerMode, EmptyEvent, SortingType} from '../data/const';
+
+import {render, ElementPosition} from '../utils/render';
 import {sortEventsByDuration} from '../utils/common';
-
-import {Mode as EventControllerMode, EmptyEvent} from '../data/const';
-
-import {render, ElementPosition} from "../utils/render.js";
 
 const getSortedEvents = (events, sortingType = SortingType.DEFAULT) => {
   let sortedEvents = events.slice();

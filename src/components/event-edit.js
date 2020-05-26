@@ -296,8 +296,13 @@ export default class EditEvent extends AbstractSmartComponent {
   }
 
   setFavoritesBtnClickHandler(handler) {
-    this.getElement().querySelector(`.event__favorite-checkbox`)
-      .addEventListener(`change`, handler);
+    const favoritesBtn = this.getElement().querySelector(`.event__favorite-checkbox`);
+
+    if (!favoritesBtn) {
+      return;
+    }
+
+    favoritesBtn.addEventListener(`change`, handler);
     this._favoritesBtnClickHandler = handler;
   }
 

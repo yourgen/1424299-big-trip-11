@@ -41,7 +41,7 @@ const getEventTemplate = (event) => {
               ${formatEventTime(end)}
             </time>
           </p>
-          <p class="event__duration">${formatEventDuration(start, end)}</p>
+          <p class="event__duration">${formatEventDuration(event)}</p>
         </div>
 
         <p class="event__price">

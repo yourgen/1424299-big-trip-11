@@ -1,37 +1,17 @@
 import {formatEditEventDateTime, getEventTitle, capitalize} from "../utils/common";
 import AbstractSmartComponent from "./abstract-smart-component";
-import {Mode} from '../data/const';
+import {Mode, TRANSFER_TYPES, ACTIVITY_TYPES} from '../data/const';
 
 import flatpickr from "flatpickr";
-
 import "flatpickr/dist/flatpickr.min.css";
+import {encode} from "he";
 
 const getEditEventTemplate = (event, mode, destinationList, offerList) => {
   const {id, type, destination, start, end, price, offers, isFavorite} = event;
 
-  const transferTypes = [];
-  const activityTypes = [];
+  const safeInputDestinationName = encode(destination.name);
 
-  offerList.map((offer) => {
-    switch (offer.offersType) {
-      case `check-in`:
-      case `sightseeing`:
-      case `restaurant`:
-        activityTypes.push(offer.offersType);
-        break;
-      case `bus`:
-      case `train`:
-      case `taxi`:
-      case `ship`:
-      case `transport`:
-      case `drive`:
-      case `flight`:
-        transferTypes.push(offer.offersType);
-        break;
-    }
-  });
-
-  const formSubtypesList = (subtype) => {
+  const getSubtypesList = (subtype) => {
     return subtype
       .map((eventType) => {
         return (
@@ -56,7 +36,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
       .join(`\n`);
   };
 
-  const formDestinationList = () => {
+  const getDestinationList = () => {
     return destinationList
       .map((avaliableDestination) => {
         return (
@@ -66,7 +46,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
       .join(`\n`);
   };
 
-  const formOfferList = () => {
+  const getOfferList = () => {
     let avaliableOffers = [];
 
     offerList.map((offer) => {
@@ -99,7 +79,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
       .join(`\n`);
   };
 
-  const formPicturesList = () => {
+  const getPicturesList = () => {
     return destination.pictures
       .map((picture) => {
         return (
@@ -108,6 +88,30 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
       })
       .join(`\n`);
 
+  };
+
+  const getDateInput = (date) => {
+    let dateType;
+    switch (date) {
+      case start:
+        dateType = `start`;
+        break;
+      case end:
+        dateType = `end`;
+        break;
+    }
+    return (
+      `<label class="visually-hidden" for="event-${dateType}-time-${id}">
+      ${dateType === `start` ? `From` : `To`}
+      </label>
+      <input 
+        class="event__input  event__input--time" 
+        id="event-${dateType}-time-${id}" 
+        type="text" 
+        name="event-${dateType}-time" 
+        value="${formatEditEventDateTime(date) || ``}"
+      >`
+    );
   };
 
   return (
@@ -123,12 +127,12 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Transfer</legend>
-              ${formSubtypesList(transferTypes)}
+              ${getSubtypesList(TRANSFER_TYPES)}
             </fieldset>
 
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Activity</legend>
-              ${formSubtypesList(activityTypes)}
+              ${getSubtypesList(ACTIVITY_TYPES)}
             </fieldset>
           </div>
         </div>
@@ -142,36 +146,18 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
             id="event-destination-${id}" 
             type="text" 
             name="event-destination" 
-            value="${destination.name || ``}" 
+            value="${safeInputDestinationName || ``}" 
             list="destination-list-${id}"
           >
           <datalist id="destination-list-${id}">
-            ${formDestinationList()}
+            ${getDestinationList()}
           </datalist>
         </div>
 
         <div class="event__field-group  event__field-group--time">
-          <label class="visually-hidden" for="event-start-time-${id}">
-            From
-          </label>
-          <input 
-            class="event__input  event__input--time" 
-            id="event-start-time-${id}" 
-            type="text" 
-            name="event-start-time" 
-            value="${formatEditEventDateTime(start) || ``}"
-          >
+          ${getDateInput(start)}
           &mdash;
-          <label class="visually-hidden" for="event-end-time-${id}">
-            To
-          </label>
-          <input 
-            class="event__input  event__input--time" 
-            id="event-end-time-${id}" 
-            type="text" 
-            name="event-end-time" 
-            value="${formatEditEventDateTime(end) || ``}"
-          >
+          ${getDateInput(end)}
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -179,7 +165,14 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price || ``}">
+          <input 
+            class="event__input  event__input--price" 
+            id="event-price-${id}" 
+            type="number" 
+            name="event-price"
+            style="-webkit-appearance: none; margin: 0; -moz-appearance: textfield;"
+            value="${price || ``}"
+          >
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -215,7 +208,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-            ${formOfferList()}
+            ${getOfferList()}
           </div>
         </section>
         <section class="event__section  event__section--destination">
@@ -226,7 +219,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
 
           <div class="event__photos-container">
             <div class="event__photos-tape">
-              ${formPicturesList()}
+              ${getPicturesList()}
             </div>
           </div>
         </section>
@@ -355,10 +348,12 @@ export default class EditEvent extends AbstractSmartComponent {
     element.querySelector(`.event__input--destination`)
       .addEventListener(`change`, (evt) => {
         this._event.destination.name = evt.target.value;
+        this._event.destination.description = `Choose destination from the suggested list`;
+        this._event.destination.pictures = [];
+
         this._destinationList.map((destination) => {
-          if (destination.name === this._event.destination.name) {
-            this._event.destination.description = destination.description;
-            this._event.destination.pictures = destination.pictures;
+          if (destination.name === evt.target.value) {
+            this._event.destination = destination;
           }
         });
 

@@ -25,11 +25,15 @@ export const formatTripDayDate = (date) => {
   return moment(date).format(`MMM D`);
 };
 
-export const formatEventDuration = (start, end) => {
-  const eventStart = moment(start);
-  const eventEnd = moment(end);
+export const getTimeDifference = (event, output) => {
+  const eventStart = moment(event.start);
+  const eventEnd = moment(event.end);
 
-  const duration = moment.duration(eventEnd.diff(eventStart), `milliseconds`);
+  return eventEnd.diff(eventStart, output);
+};
+
+export const formatEventDuration = (event) => {
+  const duration = moment.duration(getTimeDifference(event, `milliseconds`));
 
   return duration.format(`DD[D] HH[H] mm[M]`);
 };

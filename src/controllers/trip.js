@@ -67,6 +67,16 @@ export default class TripController {
     this._eventsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
+  hide() {
+    this._sortingComponent.hide();
+    this._tripDaysComponent.hide();
+  }
+
+  show() {
+    this._sortingComponent.show();
+    this._tripDaysComponent.show();
+  }
+
   render() {
     const container = this._container;
     const events = this._eventsModel.getEvents();

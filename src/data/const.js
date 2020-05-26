@@ -18,8 +18,8 @@ export const Mode = {
 
 export const EmptyEvent = {
   price: ``,
-  start: new Date().toISOString(),
-  end: new Date().toISOString(),
+  start: new Date(),
+  end: new Date(),
   destination: {
     description: ``,
     name: ``,

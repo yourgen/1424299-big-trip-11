@@ -9,7 +9,7 @@ import EventController from './event';
 
 import {Mode as EventControllerMode, EmptyEvent, SortingType, HIDDEN_CLASS} from '../data/const';
 
-import {render, ElementPosition} from '../utils/render';
+import {render, remove, ElementPosition} from '../utils/render';
 import {sortEventsByDuration} from '../utils/common';
 
 const getSortedEvents = (events, sortingType = SortingType.DEFAULT) => {
@@ -46,6 +46,7 @@ export default class TripController {
   constructor(container, headerContainer, addNewEventBtn, eventsModel, api) {
     this._container = container;
     this._headerContainer = headerContainer.getElement();
+    this._addNewEventBtn = addNewEventBtn;
     this._eventsModel = eventsModel;
     this._api = api;
 
@@ -96,13 +97,20 @@ export default class TripController {
       return;
     }
 
+    const events = this._eventsModel.getEvents();
     const destinationList = this._eventsModel.getDestinations();
     const offerList = this._eventsModel.getOffers();
 
     const tripDaysElement = this._tripDaysComponent.getElement();
     const emptyDayContainer = new TripDay(0);
+
+    if (events.length === 0) {
+      remove(this._noEventsComponent);
+      render(this._container, this._tripDaysComponent);
+    }
+
     render(tripDaysElement, emptyDayContainer, ElementPosition.AFTERBEGIN);
-    const container = tripDaysElement.querySelector(`.trip-events__list`);
+    const container = emptyDayContainer.getElement().querySelector(`.trip-events__list`);
 
     this._creatingEvent = new EventController(container, this._onDataChange, this._onViewChange);
     this._creatingEvent.render(EmptyEvent, destinationList, offerList, EventControllerMode.ADDING);

@@ -7,18 +7,17 @@ import NoEvents from "../components/no-events";
 
 import EventController from "./event";
 
+import {sortEventsByDuration} from '../utils/common';
+
 import {Mode as EventControllerMode, EmptyEvent} from '../data/const';
 
 import {render, ElementPosition} from "../utils/render.js";
-import moment from "moment";
 
 const getSortedEvents = (events, sortingType = SortingType.DEFAULT) => {
   let sortedEvents = events.slice();
   switch (sortingType) {
     case SortingType.DURATION:
-      sortedEvents.sort((a, b) => {
-        return moment.duration(moment(b.end).diff(moment(b.start))) - moment.duration(moment(a.end).diff(moment(a.start)));
-      });
+      sortEventsByDuration(sortedEvents);
       break;
     case SortingType.PRICE:
       sortedEvents.sort((a, b) => b.price - a.price);

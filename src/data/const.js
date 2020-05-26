@@ -65,3 +65,9 @@ export const AUTHORIZATION = `Basic diuy32brbd1iubwdsb1wd=`;
 export const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 export const SHAKE_ANIMATION_TIMEOUT = 600;
+
+export const DefaultData = {
+  cancelBtnText: `Cancel`,
+  deleteBtnText: `Delete`,
+  saveBtnText: `Save`,
+};

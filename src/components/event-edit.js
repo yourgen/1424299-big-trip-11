@@ -1,15 +1,24 @@
-import {formatEditEventDateTime, getEventTitle, capitalize} from "../utils/common";
-import AbstractSmartComponent from "./abstract-smart-component";
-import {Mode, TRANSFER_TYPES, ACTIVITY_TYPES} from '../data/const';
+import AbstractSmartComponent from './abstract-smart-component';
+
+import {formatEditEventDateTime, getEventTitle, capitalize, getAvaliableOffers} from '../utils/common';
+import {Mode, TRANSFER_TYPES, ACTIVITY_TYPES, DefaultData} from '../data/const';
 
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import {encode} from "he";
 
-const getEditEventTemplate = (event, mode, destinationList, offerList) => {
+const getEditEventTemplate = (event, mode, options = {}) => {
   const {id, type, destination, start, end, price, offers, isFavorite} = event;
+  const {destinationList, offerList, externalData} = options;
+
+  const avaliableOffers = getAvaliableOffers(offerList, type);
 
   const safeInputDestinationName = encode(destination.name);
+
+  const saveBtnText = externalData.saveBtnText;
+  const resetBtnText = mode === Mode.ADDING ? externalData.cancelBtnText : externalData.deleteBtnText;
+
+  const favoritesBtn = mode === Mode.ADDING ? `` : getFavoritesBtnMarkUp();
 
   const getSubtypesList = (subtype) => {
     return subtype
@@ -47,14 +56,6 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
   };
 
   const getOfferList = () => {
-    let avaliableOffers = [];
-
-    offerList.map((offer) => {
-      if (offer.offersType === type) {
-        avaliableOffers = offer.avaliableOffers;
-      }
-    });
-
     return avaliableOffers
       .map((avaliableOffer, i) => {
         const checkActiveOffers = () => {
@@ -114,6 +115,27 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
     );
   };
 
+  const getFavoritesBtnMarkUp = () => {
+    return (
+      `<input 
+        id="event-favorite-${id}"
+        class="event__favorite-checkbox
+        visually-hidden"
+        type="checkbox"
+        name="event-favorite"
+        ${isFavorite ? `checked` : ``}
+      >
+      <label class="event__favorite-btn" for="event-favorite-${id}">
+        <span class="visually-hidden">Add to favorite</span>
+        <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+          <path
+            d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"
+          ></path>
+        </svg>
+      </label>`
+    );
+  };
+
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
@@ -146,7 +168,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
             id="event-destination-${id}" 
             type="text" 
             name="event-destination" 
-            value="${safeInputDestinationName || ``}" 
+            value="${safeInputDestinationName}" 
             list="destination-list-${id}"
           >
           <datalist id="destination-list-${id}">
@@ -175,54 +197,37 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
           >
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        
-        ${mode === Mode.ADDING ? `
-          <button class="event__reset-btn" type="reset">Cancel</button>
-        ` : `
-          <button class="event__reset-btn" type="reset">Delete</button>
-          <input 
-            id="event-favorite-${id}"
-            class="event__favorite-checkbox
-            visually-hidden"
-            type="checkbox"
-            name="event-favorite"
-            ${isFavorite ? `checked` : ``}
-          >
-          <label class="event__favorite-btn" for="event-favorite-${id}">
-            <span class="visually-hidden">Add to favorite</span>
-            <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
-              <path
-               d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"
-              ></path>
-            </svg>
-          </label>
-        `}
+        <button class="event__save-btn  btn  btn--blue" type="submit">${saveBtnText}</button>
+        <button class="event__reset-btn" type="reset">${resetBtnText}</button>
+
+        ${favoritesBtn}
         
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
       </header>
       <section class="event__details">
-        <section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-          <div class="event__available-offers">
-            ${getOfferList()}
-          </div>
-        </section>
-        <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">
-            ${destination.description || ``}
-          </p>
-
-          <div class="event__photos-container">
-            <div class="event__photos-tape">
-              ${getPicturesList()}
+        ${avaliableOffers.length !== 0 ? `
+          <section class="event__section  event__section--offers">
+            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+            <div class="event__available-offers">
+              ${getOfferList()}
             </div>
-          </div>
-        </section>
+          </section>
+        ` : ``}
+        ${destination.name ? `
+          <section class="event__section  event__section--destination">
+            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+            <p class="event__destination-description">
+              ${destination.description}
+            </p>
+            <div class="event__photos-container">
+              <div class="event__photos-tape">
+                ${getPicturesList()}
+              </div>
+            </div>
+          </section>
+        ` : ``}
       </section>
     </form>`
   );
@@ -236,6 +241,7 @@ export default class EditEvent extends AbstractSmartComponent {
     this._mode = mode;
     this._destinationList = destinationList;
     this._offerList = offerList;
+    this._externalData = DefaultData;
 
     this._submitHandler = null;
     this._closeBtnClickHandler = null;
@@ -249,7 +255,11 @@ export default class EditEvent extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return getEditEventTemplate(this._event, this._mode, this._destinationList, this._offerList);
+    return getEditEventTemplate(this._event, this._mode, {
+      destinationList: this._destinationList,
+      offerList: this._offerList,
+      externalData: this._externalData
+    });
   }
 
   recoverListeners() {

@@ -117,9 +117,11 @@ export default class EventController {
     const eventEditElement = this._eventEditComponent.getElement();
 
     eventEditElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    eventEditElement.style.border = `1px solid red`;
 
     setTimeout(() => {
       eventEditElement.style.animation = ``;
+      eventEditElement.style.border = ``;
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 

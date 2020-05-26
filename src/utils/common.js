@@ -72,3 +72,15 @@ export const getEventTitle = (event) => {
       return ``;
   }
 };
+
+export const getAvaliableOffers = (offerList, type) => {
+  let avaliableOffers = [];
+
+  offerList.map((offer) => {
+    if (offer.offersType === type) {
+      avaliableOffers = offer.avaliableOffers;
+    }
+  });
+  return avaliableOffers;
+};
+

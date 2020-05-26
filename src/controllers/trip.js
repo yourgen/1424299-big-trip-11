@@ -9,7 +9,7 @@ import EventController from './event';
 
 import {Mode as EventControllerMode, EmptyEvent, SortingType, HIDDEN_CLASS} from '../data/const';
 
-import {render, remove, ElementPosition} from '../utils/render';
+import {render, remove} from '../utils/render';
 import {sortEventsByDuration} from '../utils/common';
 
 const getSortedEvents = (events, sortingType = SortingType.DEFAULT) => {
@@ -102,17 +102,13 @@ export default class TripController {
     const offerList = this._eventsModel.getOffers();
 
     const tripDaysElement = this._tripDaysComponent.getElement();
-    const emptyDayContainer = new TripDay(0);
 
     if (events.length === 0) {
       remove(this._noEventsComponent);
       render(this._container, this._tripDaysComponent);
     }
 
-    render(tripDaysElement, emptyDayContainer, ElementPosition.AFTERBEGIN);
-    const container = emptyDayContainer.getElement().querySelector(`.trip-events__list`);
-
-    this._creatingEvent = new EventController(container, this._onDataChange, this._onViewChange);
+    this._creatingEvent = new EventController(tripDaysElement, this._onDataChange, this._onViewChange);
     this._creatingEvent.render(EmptyEvent, destinationList, offerList, EventControllerMode.ADDING);
     this._activeEventControllers = this._activeEventControllers.concat(this._creatingEvent);
   }
@@ -190,17 +186,20 @@ export default class TripController {
         this._api.createEvent(newData)
           .then((eventModel) => {
             this._eventsModel.addEvent(eventModel);
-            eventController.render(eventModel, EventControllerMode.DEFAULT);
-
-            this._activeEventControllers = [].concat(eventController, this._activeEventControllers);
-          });
+            this._updateEvents();
+          })
+          .catch(() => eventController.shake());
       }
     } else if (newData === null) {
       this._api.deleteEvent(oldData.id)
         .then(() => {
           this._eventsModel.removeEvent(oldData.id);
           this._updateEvents();
-        });
+          if (this._eventsModel.getEvents().length === 0) {
+            render(this._container, this._noEventsComponent);
+          }
+        })
+        .catch(() => eventController.shake());
     } else {
       this._api.updateEvent(oldData.id, newData)
         .then((eventModel) => {
@@ -210,7 +209,8 @@ export default class TripController {
             eventController.render(eventModel, EventControllerMode.DEFAULT);
             this._updateEvents();
           }
-        });
+        })
+        .catch(() => eventController.shake());
     }
   }
 

@@ -5,7 +5,7 @@ import EventModel from '../models/event';
 
 import {render, replace, remove} from '../utils/render';
 
-import {Mode, EmptyEvent} from '../data/const';
+import {Mode, EmptyEvent, SHAKE_ANIMATION_TIMEOUT} from '../data/const';
 
 const parseFormData = (formData, event, destinationList) => {
 
@@ -61,8 +61,8 @@ export default class EventController {
       evt.preventDefault();
       const formData = this._eventEditComponent.getData();
       const data = parseFormData(formData, event, destinationList, offerList);
+      this._eventEditComponent.removeFlatpickr();
       this._onDataChange(this, event, data);
-
     });
 
     this._eventEditComponent.setCloseBtnClickHandler(() => {
@@ -111,6 +111,16 @@ export default class EventController {
     remove(this._eventEditComponent);
     remove(this._eventComponent);
     document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }
+
+  shake() {
+    const eventEditElement = this._eventEditComponent.getElement();
+
+    eventEditElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      eventEditElement.style.animation = ``;
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   _replaceEventToEdit() {

@@ -61,6 +61,9 @@ export default class EventController {
       evt.preventDefault();
       const formData = this._eventEditComponent.getData();
       const data = parseFormData(formData, event, destinationList, offerList);
+      this._eventEditComponent.setData({
+        saveBtnText: `Saving...`
+      });
       this._eventEditComponent.removeFlatpickr();
       this._onDataChange(this, event, data);
     });
@@ -70,7 +73,12 @@ export default class EventController {
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    this._eventEditComponent.setDeleteBtnClickHandler(() => this._onDataChange(this, event, null));
+    this._eventEditComponent.setDeleteBtnClickHandler(() => {
+      this._eventEditComponent.setData({
+        deleteBtnText: `Deleting...`,
+      });
+      this._onDataChange(this, event, null);
+    });
 
     if (mode === Mode.EDIT) {
       this._eventEditComponent.setFavoritesBtnClickHandler(() => {
@@ -122,6 +130,10 @@ export default class EventController {
     setTimeout(() => {
       eventEditElement.style.animation = ``;
       eventEditElement.style.border = ``;
+      this._eventEditComponent.setData({
+        deleteBtnText: `Delete`,
+        saveBtnText: `Save`
+      });
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 

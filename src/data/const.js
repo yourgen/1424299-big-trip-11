@@ -69,5 +69,5 @@ export const SHAKE_ANIMATION_TIMEOUT = 600;
 export const DefaultData = {
   cancelBtnText: `Cancel`,
   deleteBtnText: `Delete`,
-  saveBtnText: `Save`,
+  saveBtnText: `Save`
 };

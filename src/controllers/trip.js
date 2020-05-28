@@ -113,6 +113,9 @@ export default class TripController {
     this._creatingEvent = new EventController(tripDaysElement, this._onDataChange, this._onViewChange);
     this._creatingEvent.render(EmptyEvent, destinationList, offerList, EventControllerMode.ADDING);
   }
+  resetSorting() {
+    this._sortingComponent.reset();
+  }
 
   _onSortingTypeChange(sortingType) {
     this._resetContainer();

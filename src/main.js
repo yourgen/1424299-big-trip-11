@@ -46,9 +46,9 @@ const switchToTable = () => {
 
 addNewEventBtn.addEventListener(`click`, () => {
   switchToTable();
-  tripController.createEvent();
   tripController.resetSorting();
   filterController.resetFilter();
+  tripController.createEvent();
 });
 
 menuComponent.setOnChange((menuItem) => {

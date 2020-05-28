@@ -176,7 +176,7 @@ export default class TripController {
   }
 
   _onDataChange(eventController, oldData, newData) {
-    if (oldData === EmptyEvent) {
+    if (oldData.id === EmptyEvent.id) {
       this._creatingEvent = null;
 
       if (newData === null) {

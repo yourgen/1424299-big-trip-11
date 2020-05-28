@@ -28,8 +28,8 @@ const parseFormData = (formData, event, destinationList, offerList) => {
     "date_from": start ? new Date(start) : ``,
     "date_to": end ? new Date(end) : ``,
     "destination": {
-      "description": destination.name,
-      "name": destination.description,
+      "description": destination.description,
+      "name": destination.name,
       "pictures": destination.pictures
     },
     "id": event.id,

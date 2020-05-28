@@ -18,8 +18,6 @@ const getEditEventTemplate = (event, mode, options = {}) => {
   const saveBtnText = externalData.saveBtnText;
   const resetBtnText = mode === Mode.ADDING ? externalData.cancelBtnText : externalData.deleteBtnText;
 
-  const favoritesBtn = mode === Mode.ADDING ? `` : getFavoritesBtnMarkUp();
-
   const getSubtypesList = (subtype) => {
     return subtype
       .map((eventType) => {
@@ -142,6 +140,7 @@ const getEditEventTemplate = (event, mode, options = {}) => {
       </label>`
     );
   };
+  const favoritesBtn = mode === Mode.ADDING ? `` : getFavoritesBtnMarkUp();
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">

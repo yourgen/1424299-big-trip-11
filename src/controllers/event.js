@@ -3,7 +3,7 @@ import EditEvent from '../components/event-edit';
 
 import EventModel from '../models/event';
 
-import {render, replace, remove} from '../utils/render';
+import {render, replace, remove, ElementPosition} from '../utils/render';
 
 import {Mode, EmptyEvent, SHAKE_ANIMATION_TIMEOUT} from '../data/const';
 import {getAvaliableOffers} from '../utils/common';
@@ -112,7 +112,7 @@ export default class EventController {
           remove(oldEventEditComponent);
         }
         document.addEventListener(`keydown`, this._onEscKeyDown);
-        render(this._container, this._eventEditComponent);
+        render(this._container, this._eventEditComponent, ElementPosition.AFTERBEGIN);
         break;
     }
   }

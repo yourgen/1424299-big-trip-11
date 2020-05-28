@@ -103,6 +103,8 @@ export default class TripController {
 
     const tripDaysElement = this._tripDaysComponent.getElement();
 
+    this._addNewEventBtn.setAttribute(`disabled`, `disabled`);
+
     if (events.length === 0) {
       remove(this._noEventsComponent);
       render(this._container, this._tripDaysComponent);
@@ -178,6 +180,7 @@ export default class TripController {
   _onDataChange(eventController, oldData, newData) {
     if (oldData.id === EmptyEvent.id) {
       this._creatingEvent = null;
+      this._addNewEventBtn.removeAttribute(`disabled`);
 
       if (newData === null) {
         eventController.destroy();
@@ -187,6 +190,7 @@ export default class TripController {
           .then((eventModel) => {
             this._eventsModel.addEvent(eventModel);
             this._updateEvents();
+            this._addNewEventBtn.removeAttribute(`disabled`);
           })
           .catch(() => eventController.shake());
       }

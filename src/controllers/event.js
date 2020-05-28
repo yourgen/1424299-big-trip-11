@@ -6,13 +6,21 @@ import EventModel from '../models/event';
 import {render, replace, remove} from '../utils/render';
 
 import {Mode, EmptyEvent, SHAKE_ANIMATION_TIMEOUT} from '../data/const';
+import {getAvaliableOffers} from '../utils/common';
 
-const parseFormData = (formData, event, destinationList) => {
-
+const parseFormData = (formData, event, destinationList, offerList) => {
   const start = formData.get(`event-start-time`);
   const end = formData.get(`event-end-time`);
   const destination = destinationList.find((item) => {
     return formData.get(`event-destination`) === item.name;
+  });
+  const isFavorite = formData.get(`event-favorite`);
+  const avaliableOffers = getAvaliableOffers(offerList, event.type);
+
+  const chosenOffers = formData.getAll(`event-offer`).map((chosenOffer) => {
+    return avaliableOffers.find((offer) => {
+      return chosenOffer === offer.title;
+    });
   });
 
   return new EventModel({
@@ -25,8 +33,8 @@ const parseFormData = (formData, event, destinationList) => {
       "pictures": destination.pictures
     },
     "id": event.id,
-    "is_favorite": formData.get(`event-favorite`),
-    "offers": formData.getAll(`event-offer`),
+    "is_favorite": !!isFavorite,
+    "offers": chosenOffers,
     "type": formData.get(`event-type`)
   });
 };

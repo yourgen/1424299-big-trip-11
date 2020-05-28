@@ -68,7 +68,14 @@ const getEditEventTemplate = (event, mode, options = {}) => {
 
         return (
           `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${i}" type="checkbox" name="event-offer" ${checkActiveOffers()}>
+            <input
+              class="event__offer-checkbox  visually-hidden"
+              id="event-offer-${i}"
+              type="checkbox"
+              name="event-offer"
+              value="${avaliableOffer.title}"
+              ${checkActiveOffers()}
+            >
             <label class="event__offer-label" for="event-offer-${i}">
               <span class="event__offer-title">${avaliableOffer.title}</span>
               &plus;
@@ -326,18 +333,19 @@ export default class EditEvent extends AbstractSmartComponent {
 
     const dateStartElement = this.getElement().querySelector(`input[name='event-start-time']`);
     this._flatpickrStart = flatpickr(dateStartElement, {
-      dateFormat: `d/m/Y H:i`,
-      allowInput: true,
+      altInput: true,
+      altFormat: `d/m/Y H:i`,
       enableTime: true,
-      minDate: formatEditEventDateTime(this._event.start),
+      defaultDate: this._event.start,
       [`time_24hr`]: true
     });
     const dateEndElement = this.getElement().querySelector(`input[name='event-end-time']`);
     this._flatpickrEnd = flatpickr(dateEndElement, {
-      dateFormat: `d/m/Y H:i`,
-      allowInput: true,
+      altInput: true,
+      altFormat: `d/m/Y H:i`,
       enableTime: true,
-      minDate: formatEditEventDateTime(this._event.start),
+      defaultDate: this._event.end,
+      minDate: this._event.start,
       [`time_24hr`]: true
     });
   }
@@ -368,7 +376,7 @@ export default class EditEvent extends AbstractSmartComponent {
     element.querySelector(`.event__input--destination`)
       .addEventListener(`change`, (evt) => {
         this._event.destination.name = evt.target.value;
-        this._event.destination.description = `Choose destination from the suggested list`;
+        this._event.destination.description = ``;
         this._event.destination.pictures = [];
 
         this._destinationList.map((destination) => {
@@ -386,5 +394,26 @@ export default class EditEvent extends AbstractSmartComponent {
 
         this.rerender();
       });
+
+    element.querySelector(`input[name='event-start-time']`)
+    .addEventListener(`change`, (evt) => {
+      this._event.start = evt.target.value;
+
+      this.rerender();
+    });
+
+    element.querySelector(`input[name='event-end-time']`)
+    .addEventListener(`change`, (evt) => {
+      this._event.end = evt.target.value;
+
+      this.rerender();
+    });
+    const offersContainer = element.querySelector(`.event__available-offers`);
+    if (offersContainer) {
+      offersContainer.addEventListener(`change`, (evt) => {
+        evt.target.toggleAttribute(`checked`);
+      });
+    }
+
   }
 }

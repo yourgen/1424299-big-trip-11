@@ -1,24 +1,22 @@
 import RouteInfo from '../components/route-info';
 import TripCost from '../components/trip-cost';
-import Sorting, {SortingType} from '../components/sorting';
+import Sorting from '../components/sorting';
 import TripDays from '../components/trip-days';
 import TripDay from '../components/trip-day';
-import NoEvents from "../components/no-events";
+import NoEvents from '../components/no-events';
 
-import EventController from "./event";
+import EventController from './event';
 
-import {Mode as EventControllerMode, EmptyEvent} from '../data/const';
+import {Mode as EventControllerMode, EmptyEvent, SortingType, HIDDEN_CLASS} from '../data/const';
 
-import {render, ElementPosition} from "../utils/render.js";
-import moment from "moment";
+import {render, remove} from '../utils/render';
+import {sortEventsByDuration} from '../utils/common';
 
 const getSortedEvents = (events, sortingType = SortingType.DEFAULT) => {
   let sortedEvents = events.slice();
   switch (sortingType) {
     case SortingType.DURATION:
-      sortedEvents.sort((a, b) => {
-        return moment.duration(moment(b.end).diff(moment(b.start))) - moment.duration(moment(a.end).diff(moment(a.start)));
-      });
+      sortEventsByDuration(sortedEvents);
       break;
     case SortingType.PRICE:
       sortedEvents.sort((a, b) => b.price - a.price);
@@ -45,9 +43,10 @@ const getSortedEvents = (events, sortingType = SortingType.DEFAULT) => {
 };
 
 export default class TripController {
-  constructor(container, headerContainer, eventsModel, api) {
+  constructor(container, headerContainer, addNewEventBtn, eventsModel, api) {
     this._container = container;
     this._headerContainer = headerContainer.getElement();
+    this._addNewEventBtn = addNewEventBtn;
     this._eventsModel = eventsModel;
     this._api = api;
 
@@ -68,13 +67,11 @@ export default class TripController {
   }
 
   hide() {
-    this._sortingComponent.hide();
-    this._tripDaysComponent.hide();
+    this._container.classList.add(HIDDEN_CLASS);
   }
 
   show() {
-    this._sortingComponent.show();
-    this._tripDaysComponent.show();
+    this._container.classList.remove(HIDDEN_CLASS);
   }
 
   render() {
@@ -100,17 +97,24 @@ export default class TripController {
       return;
     }
 
+    const events = this._eventsModel.getEvents();
     const destinationList = this._eventsModel.getDestinations();
     const offerList = this._eventsModel.getOffers();
 
     const tripDaysElement = this._tripDaysComponent.getElement();
-    const emptyDayContainer = new TripDay(0);
-    render(tripDaysElement, emptyDayContainer, ElementPosition.AFTERBEGIN);
-    const container = tripDaysElement.querySelector(`.trip-events__list`);
 
-    this._creatingEvent = new EventController(container, this._onDataChange, this._onViewChange);
+    this._addNewEventBtn.setAttribute(`disabled`, `disabled`);
+
+    if (events.length === 0) {
+      remove(this._noEventsComponent);
+      render(this._container, this._tripDaysComponent);
+    }
+
+    this._creatingEvent = new EventController(tripDaysElement, this._onDataChange, this._onViewChange);
     this._creatingEvent.render(EmptyEvent, destinationList, offerList, EventControllerMode.ADDING);
-    this._activeEventControllers = this._activeEventControllers.concat(this._creatingEvent);
+  }
+  resetSorting() {
+    this._sortingComponent.reset();
   }
 
   _onSortingTypeChange(sortingType) {
@@ -176,8 +180,9 @@ export default class TripController {
   }
 
   _onDataChange(eventController, oldData, newData) {
-    if (oldData === EmptyEvent) {
+    if (oldData.id === EmptyEvent.id) {
       this._creatingEvent = null;
+      this._addNewEventBtn.removeAttribute(`disabled`);
 
       if (newData === null) {
         eventController.destroy();
@@ -186,17 +191,21 @@ export default class TripController {
         this._api.createEvent(newData)
           .then((eventModel) => {
             this._eventsModel.addEvent(eventModel);
-            eventController.render(eventModel, EventControllerMode.DEFAULT);
-
-            this._activeEventControllers = [].concat(eventController, this._activeEventControllers);
-          });
+            this._updateEvents();
+            this._addNewEventBtn.removeAttribute(`disabled`);
+          })
+          .catch(() => eventController.shake());
       }
     } else if (newData === null) {
       this._api.deleteEvent(oldData.id)
         .then(() => {
           this._eventsModel.removeEvent(oldData.id);
           this._updateEvents();
-        });
+          if (this._eventsModel.getEvents().length === 0) {
+            render(this._container, this._noEventsComponent);
+          }
+        })
+        .catch(() => eventController.shake());
     } else {
       this._api.updateEvent(oldData.id, newData)
         .then((eventModel) => {
@@ -206,7 +215,8 @@ export default class TripController {
             eventController.render(eventModel, EventControllerMode.DEFAULT);
             this._updateEvents();
           }
-        });
+        })
+        .catch(() => eventController.shake());
     }
   }
 

@@ -184,19 +184,15 @@ export default class Stats extends AbstractSmartComponent {
   }
 
   _resetCharts() {
-    if (this._moneyChart) {
-      this._moneyChart.destroy();
-      this._moneyChart = null;
-    }
+    this._resetChart(this._moneyChart);
+    this._resetChart(this._transportChart);
+    this._resetChart(this._timeSpentChart);
+  }
 
-    if (this._transportChart) {
-      this._transportChart.destroy();
-      this._transportChart = null;
-    }
-
-    if (this._timeSpentChart) {
-      this._timeSpentChart.destroy();
-      this._timeSpentChart = null;
+  _resetChart(chart) {
+    if (chart) {
+      chart.destroy();
+      chart = null;
     }
   }
 }

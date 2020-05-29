@@ -3,16 +3,24 @@ import EditEvent from '../components/event-edit';
 
 import EventModel from '../models/event';
 
-import {render, replace, remove} from '../utils/render';
+import {render, replace, remove, ElementPosition} from '../utils/render';
 
-import {Mode, EmptyEvent} from '../data/const';
+import {Mode, EmptyEvent, SHAKE_ANIMATION_TIMEOUT} from '../data/const';
+import {getAvaliableOffers} from '../utils/common';
 
-const parseFormData = (formData, event, destinationList) => {
-
+const parseFormData = (formData, event, destinationList, offerList) => {
   const start = formData.get(`event-start-time`);
   const end = formData.get(`event-end-time`);
   const destination = destinationList.find((item) => {
     return formData.get(`event-destination`) === item.name;
+  });
+  const isFavorite = formData.get(`event-favorite`);
+  const avaliableOffers = getAvaliableOffers(offerList, event.type);
+
+  const chosenOffers = formData.getAll(`event-offer`).map((chosenOffer) => {
+    return avaliableOffers.find((offer) => {
+      return chosenOffer === offer.title;
+    });
   });
 
   return new EventModel({
@@ -20,13 +28,13 @@ const parseFormData = (formData, event, destinationList) => {
     "date_from": start ? new Date(start) : ``,
     "date_to": end ? new Date(end) : ``,
     "destination": {
-      "description": destination.name,
-      "name": destination.description,
+      "description": destination.description,
+      "name": destination.name,
       "pictures": destination.pictures
     },
     "id": event.id,
-    "is_favorite": formData.get(`event-favorite`),
-    "offers": formData.getAll(`event-offer`),
+    "is_favorite": !!isFavorite,
+    "offers": chosenOffers,
     "type": formData.get(`event-type`)
   });
 };
@@ -61,8 +69,11 @@ export default class EventController {
       evt.preventDefault();
       const formData = this._eventEditComponent.getData();
       const data = parseFormData(formData, event, destinationList, offerList);
+      this._eventEditComponent.setData({
+        saveBtnText: `Saving...`
+      });
+      this._eventEditComponent.removeFlatpickr();
       this._onDataChange(this, event, data);
-
     });
 
     this._eventEditComponent.setCloseBtnClickHandler(() => {
@@ -70,7 +81,12 @@ export default class EventController {
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    this._eventEditComponent.setDeleteBtnClickHandler(() => this._onDataChange(this, event, null));
+    this._eventEditComponent.setDeleteBtnClickHandler(() => {
+      this._eventEditComponent.setData({
+        deleteBtnText: `Deleting...`,
+      });
+      this._onDataChange(this, event, null);
+    });
 
     if (mode === Mode.EDIT) {
       this._eventEditComponent.setFavoritesBtnClickHandler(() => {
@@ -96,7 +112,7 @@ export default class EventController {
           remove(oldEventEditComponent);
         }
         document.addEventListener(`keydown`, this._onEscKeyDown);
-        render(this._container, this._eventEditComponent);
+        render(this._container, this._eventEditComponent, ElementPosition.AFTERBEGIN);
         break;
     }
   }
@@ -111,6 +127,22 @@ export default class EventController {
     remove(this._eventEditComponent);
     remove(this._eventComponent);
     document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }
+
+  shake() {
+    const eventEditElement = this._eventEditComponent.getElement();
+
+    eventEditElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    eventEditElement.style.border = `1px solid red`;
+
+    setTimeout(() => {
+      eventEditElement.style.animation = ``;
+      eventEditElement.style.border = ``;
+      this._eventEditComponent.setData({
+        deleteBtnText: `Delete`,
+        saveBtnText: `Save`
+      });
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   _replaceEventToEdit() {

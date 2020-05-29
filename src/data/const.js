@@ -4,6 +4,12 @@ export const FilterType = {
   PAST: `past`
 };
 
+export const SortingType = {
+  DURATION: `duration`,
+  PRICE: `price`,
+  DEFAULT: `default`,
+};
+
 export const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
@@ -12,8 +18,8 @@ export const Mode = {
 
 export const EmptyEvent = {
   price: ``,
-  start: new Date().toISOString(),
-  end: new Date().toISOString(),
+  start: new Date(),
+  end: new Date(),
   destination: {
     description: ``,
     name: ``,
@@ -51,4 +57,17 @@ export const chartIconsMap = {
   'check-in': `🏨`,
   'sightseeing': `🏛️`,
   'restaurant': `🍴`,
+};
+
+export const HIDDEN_CLASS = `visually-hidden`;
+
+export const AUTHORIZATION = `Basic diuy32brbd1iubwdsb1wd=`;
+export const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
+
+export const SHAKE_ANIMATION_TIMEOUT = 600;
+
+export const DefaultData = {
+  cancelBtnText: `Cancel`,
+  deleteBtnText: `Delete`,
+  saveBtnText: `Save`
 };

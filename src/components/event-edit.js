@@ -1,13 +1,17 @@
-import {formatEditEventDateTime, getEventTitle, capitalize} from "../utils/common";
-import AbstractSmartComponent from "./abstract-smart-component";
-import {Mode, TRANSFER_TYPES, ACTIVITY_TYPES} from '../data/const';
+import AbstractSmartComponent from './abstract-smart-component';
+
+import {formatEditEventDateTime, getEventTitle, capitalize, getAvaliableOffers} from '../utils/common';
+import {Mode, TRANSFER_TYPES, ACTIVITY_TYPES, DefaultData} from '../data/const';
 
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import {encode} from "he";
 
-const getEditEventTemplate = (event, mode, destinationList, offerList) => {
+const getEditEventTemplate = (event, mode, options = {}) => {
   const {id, type, destination, start, end, price, offers, isFavorite} = event;
+  const {destinationList, offerList, externalData} = options;
+
+  const avaliableOffers = getAvaliableOffers(offerList, type);
 
   const safeInputDestinationName = encode(destination.name);
 
@@ -47,14 +51,6 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
   };
 
   const getOfferList = () => {
-    let avaliableOffers = [];
-
-    offerList.map((offer) => {
-      if (offer.offersType === type) {
-        avaliableOffers = offer.avaliableOffers;
-      }
-    });
-
     return avaliableOffers
       .map((avaliableOffer, i) => {
         const checkActiveOffers = () => {
@@ -67,7 +63,14 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
 
         return (
           `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${i}" type="checkbox" name="event-offer" ${checkActiveOffers()}>
+            <input
+              class="event__offer-checkbox  visually-hidden"
+              id="event-offer-${i}"
+              type="checkbox"
+              name="event-offer"
+              value="${avaliableOffer.title}"
+              ${checkActiveOffers()}
+            >
             <label class="event__offer-label" for="event-offer-${i}">
               <span class="event__offer-title">${avaliableOffer.title}</span>
               &plus;
@@ -90,16 +93,7 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
 
   };
 
-  const getDateInput = (date) => {
-    let dateType;
-    switch (date) {
-      case start:
-        dateType = `start`;
-        break;
-      case end:
-        dateType = `end`;
-        break;
-    }
+  const getDateInput = (date, dateType) => {
     return (
       `<label class="visually-hidden" for="event-${dateType}-time-${id}">
       ${dateType === `start` ? `From` : `To`}
@@ -113,6 +107,35 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
       >`
     );
   };
+
+  const getFavoritesBtnMarkUp = () => {
+    return (
+      `<input 
+        id="event-favorite-${id}"
+        class="event__favorite-checkbox
+        visually-hidden"
+        type="checkbox"
+        name="event-favorite"
+        ${isFavorite ? `checked` : ``}
+      >
+      <label class="event__favorite-btn" for="event-favorite-${id}">
+        <span class="visually-hidden">Add to favorite</span>
+        <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+          <path
+            d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"
+          ></path>
+        </svg>
+      </label>`
+    );
+  };
+
+  const saveBtnText = externalData.saveBtnText;
+  const resetBtnText = mode === Mode.ADDING ? externalData.cancelBtnText : externalData.deleteBtnText;
+  const favoritesBtn = mode === Mode.ADDING ? `` : getFavoritesBtnMarkUp();
+  const closeEditBtn = mode === Mode.ADDING ? `` : `
+    <button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>`;
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -146,8 +169,9 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
             id="event-destination-${id}" 
             type="text" 
             name="event-destination" 
-            value="${safeInputDestinationName || ``}" 
+            value="${safeInputDestinationName}" 
             list="destination-list-${id}"
+            required
           >
           <datalist id="destination-list-${id}">
             ${getDestinationList()}
@@ -155,9 +179,9 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
         </div>
 
         <div class="event__field-group  event__field-group--time">
-          ${getDateInput(start)}
+          ${getDateInput(start, `start`)}
           &mdash;
-          ${getDateInput(end)}
+          ${getDateInput(end, `end`)}
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -172,57 +196,40 @@ const getEditEventTemplate = (event, mode, destinationList, offerList) => {
             name="event-price"
             style="-webkit-appearance: none; margin: 0; -moz-appearance: textfield;"
             value="${price || ``}"
+            required
           >
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit">${saveBtnText}</button>
+        <button class="event__reset-btn" type="reset">${resetBtnText}</button>
+
+        ${favoritesBtn}
+        ${closeEditBtn}
         
-        ${mode === Mode.ADDING ? `
-          <button class="event__reset-btn" type="reset">Cancel</button>
-        ` : `
-          <button class="event__reset-btn" type="reset">Delete</button>
-          <input 
-            id="event-favorite-${id}"
-            class="event__favorite-checkbox
-            visually-hidden"
-            type="checkbox"
-            name="event-favorite"
-            ${isFavorite ? `checked` : ``}
-          >
-          <label class="event__favorite-btn" for="event-favorite-${id}">
-            <span class="visually-hidden">Add to favorite</span>
-            <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
-              <path
-               d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"
-              ></path>
-            </svg>
-          </label>
-        `}
         
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
-        </button>
       </header>
       <section class="event__details">
-        <section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-          <div class="event__available-offers">
-            ${getOfferList()}
-          </div>
-        </section>
-        <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">
-            ${destination.description || ``}
-          </p>
-
-          <div class="event__photos-container">
-            <div class="event__photos-tape">
-              ${getPicturesList()}
+        ${avaliableOffers.length !== 0 ? `
+          <section class="event__section  event__section--offers">
+            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+            <div class="event__available-offers">
+              ${getOfferList()}
             </div>
-          </div>
-        </section>
+          </section>
+        ` : ``}
+        ${destination.name ? `
+          <section class="event__section  event__section--destination">
+            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+            <p class="event__destination-description">
+              ${destination.description}
+            </p>
+            <div class="event__photos-container">
+              <div class="event__photos-tape">
+                ${getPicturesList()}
+              </div>
+            </div>
+          </section>
+        ` : ``}
       </section>
     </form>`
   );
@@ -236,6 +243,7 @@ export default class EditEvent extends AbstractSmartComponent {
     this._mode = mode;
     this._destinationList = destinationList;
     this._offerList = offerList;
+    this._externalData = DefaultData;
 
     this._submitHandler = null;
     this._closeBtnClickHandler = null;
@@ -249,7 +257,11 @@ export default class EditEvent extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return getEditEventTemplate(this._event, this._mode, this._destinationList, this._offerList);
+    return getEditEventTemplate(this._event, this._mode, {
+      destinationList: this._destinationList,
+      offerList: this._offerList,
+      externalData: this._externalData
+    });
   }
 
   recoverListeners() {
@@ -278,15 +290,23 @@ export default class EditEvent extends AbstractSmartComponent {
     return new FormData(this.getElement());
   }
 
+  setData(data) {
+    this._externalData = Object.assign({}, DefaultData, data);
+    this.rerender();
+  }
+
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
     this._submitHandler = handler;
   }
 
   setCloseBtnClickHandler(handler) {
-    this.getElement().querySelector(`.event__rollup-btn`)
-      .addEventListener(`click`, handler);
-    this._closeBtnClickHandler = handler;
+    const closeBtn = this.getElement().querySelector(`.event__rollup-btn`);
+
+    if (closeBtn) {
+      closeBtn.addEventListener(`click`, handler);
+      this._closeBtnClickHandler = handler;
+    }
   }
 
   setDeleteBtnClickHandler(handler) {
@@ -296,41 +316,54 @@ export default class EditEvent extends AbstractSmartComponent {
   }
 
   setFavoritesBtnClickHandler(handler) {
-    this.getElement().querySelector(`.event__favorite-checkbox`)
-      .addEventListener(`change`, handler);
+    const favoritesBtn = this.getElement().querySelector(`.event__favorite-checkbox`);
+
+    if (!favoritesBtn) {
+      return;
+    }
+
+    favoritesBtn.addEventListener(`change`, handler);
     this._favoritesBtnClickHandler = handler;
+  }
+
+  removeFlatpickr() {
+    this._destroyFlatpickr(this._flatpickrStart);
+    this._destroyFlatpickr(this._flatpickrEnd);
   }
 
   _applyFlatpickr() {
     this.removeFlatpickr();
 
     const dateStartElement = this.getElement().querySelector(`input[name='event-start-time']`);
-    this._flatpickrStart = flatpickr(dateStartElement, {
-      dateFormat: `d/m/Y H:i`,
-      allowInput: true,
-      enableTime: true,
-      minDate: formatEditEventDateTime(this._event.start),
-      [`time_24hr`]: true
-    });
+    this._flatpickrStart = flatpickr(dateStartElement, Object.assign({},
+        this._getCommonFlatpickrOptions(),
+        {
+          defaultDate: this._event.start
+        })
+    );
     const dateEndElement = this.getElement().querySelector(`input[name='event-end-time']`);
-    this._flatpickrEnd = flatpickr(dateEndElement, {
-      dateFormat: `d/m/Y H:i`,
-      allowInput: true,
-      enableTime: true,
-      minDate: formatEditEventDateTime(this._event.start),
-      [`time_24hr`]: true
-    });
+    this._flatpickrEnd = flatpickr(dateEndElement, Object.assign({},
+        this._getCommonFlatpickrOptions(),
+        {
+          defaultDate: this._event.end,
+          minDate: this._event.start,
+        })
+    );
   }
 
-  removeFlatpickr() {
-    if (this._flatpickrStart) {
-      this._flatpickrStart.destroy();
-      this._flatpickrStart = null;
-    }
+  _getCommonFlatpickrOptions() {
+    return {
+      altInput: true,
+      altFormat: `d/m/Y H:i`,
+      [`time_24hr`]: true,
+      enableTime: true,
+    };
+  }
 
-    if (this._flatpickrEnd) {
-      this._flatpickrEnd.destroy();
-      this._flatpickrEnd = null;
+  _destroyFlatpickr(flatpickrInput) {
+    if (flatpickrInput) {
+      flatpickrInput.destroy();
+      flatpickrInput = null;
     }
   }
 
@@ -347,12 +380,14 @@ export default class EditEvent extends AbstractSmartComponent {
     });
     element.querySelector(`.event__input--destination`)
       .addEventListener(`change`, (evt) => {
-        this._event.destination.name = evt.target.value;
-        this._event.destination.description = `Choose destination from the suggested list`;
+        const chosenDestination = evt.target.value;
+
+        this._event.destination.name = ``;
+        this._event.destination.description = ``;
         this._event.destination.pictures = [];
 
         this._destinationList.map((destination) => {
-          if (destination.name === evt.target.value) {
+          if (destination.name === chosenDestination) {
             this._event.destination = destination;
           }
         });
@@ -364,7 +399,30 @@ export default class EditEvent extends AbstractSmartComponent {
       .addEventListener(`change`, (evt) => {
         this._event.price = evt.target.value;
 
-        this.rerender();
       });
+
+    element.querySelector(`input[name='event-start-time']`)
+    .addEventListener(`change`, (evt) => {
+      this._event.start = evt.target.value;
+
+      this._event.end = this._event.start < this._event.end ? this._event.end : this._event.start;
+      this._applyFlatpickr();
+
+      this.rerender();
+    });
+
+    element.querySelector(`input[name='event-end-time']`)
+    .addEventListener(`change`, (evt) => {
+      this._event.end = evt.target.value;
+
+      this.rerender();
+    });
+
+    const offersContainer = element.querySelector(`.event__available-offers`);
+    if (offersContainer) {
+      offersContainer.addEventListener(`change`, (evt) => {
+        evt.target.toggleAttribute(`checked`);
+      });
+    }
   }
 }

@@ -38,14 +38,20 @@ export const formatEventDuration = (event) => {
   return duration.format(`DD[D] HH[H] mm[M]`);
 };
 
-export const capitalize = (string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+export const sortEventsByDuration = (events) => {
+  return events.sort((a, b) => {
+    return moment.duration(getTimeDifference(b)) - moment.duration(getTimeDifference(a));
+  });
 };
 
 export const sortEventsByDate = (events) => {
   return events
-    .slice()
-    .sort((a, b) => a.start - b.start);
+  .slice()
+  .sort((a, b) => a.start - b.start);
+};
+
+export const capitalize = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
 export const getEventTitle = (event) => {
@@ -66,3 +72,15 @@ export const getEventTitle = (event) => {
       return ``;
   }
 };
+
+export const getAvaliableOffers = (offerList, type) => {
+  let avaliableOffers = [];
+
+  offerList.map((offer) => {
+    if (offer.offersType === type) {
+      avaliableOffers = offer.avaliableOffers;
+    }
+  });
+  return avaliableOffers;
+};
+

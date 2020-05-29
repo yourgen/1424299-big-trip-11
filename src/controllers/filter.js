@@ -36,9 +36,14 @@ export default class FilterController {
     }
   }
 
+  resetFilter() {
+    this._onFilterChange(FilterType.EVERYTHING);
+  }
+
   _onFilterChange(filterType) {
     this._eventsModel.setFilter(filterType);
     this._activeFilterType = filterType;
+    this.render();
   }
 
   _onDataChange() {

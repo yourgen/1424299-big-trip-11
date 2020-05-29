@@ -12,7 +12,7 @@ export default class EventModel {
 
   toRAW() {
     return {
-      "base_price": this.price,
+      "base_price": parseInt(this.price, 10),
       "date_from": this.start ? this.start.toISOString() : null,
       "date_to": this.end ? this.end.toISOString() : null,
       "destination": this.destination,

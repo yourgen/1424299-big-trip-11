@@ -60,7 +60,10 @@ export default class API {
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json())
-      .then(EventModel.parseEvent);
+      .then(EventModel.parseEvent)
+      .catch((err) => {
+        throw err;
+      });
   }
 
   deleteEvent(id) {

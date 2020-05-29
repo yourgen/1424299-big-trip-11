@@ -71,4 +71,3 @@ Promise.all([api.getEvents(), api.getDestinations(), api.getOffers()])
     eventsModel.setOffers(offers);
     tripController.render();
   });
-
